@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 220" role="img" aria-labelledby="t">
+  <title id="t">Palette myVign issue du logo SONAS</title>
+  <rect width="960" height="220" fill="#F5F7F9"/>
+  <g font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif">
+    <rect x="16" y="16" width="148" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <rect x="16" y="16" width="148" height="88" rx="14" fill="#1790CD"/>
+    <rect x="16" y="90" width="148" height="14" fill="#1790CD"/>
+    <text x="90" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1B2733">Bleu logo</text>
+    <text x="90" y="154" text-anchor="middle" font-size="13" fill="#4E5D6C">#1790CD</text>
+    <text x="90" y="176" text-anchor="middle" font-size="12" fill="#6B7885">Identité</text>
+
+    <rect x="180" y="16" width="148" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <rect x="180" y="16" width="148" height="88" rx="14" fill="#F5C800"/>
+    <rect x="180" y="90" width="148" height="14" fill="#F5C800"/>
+    <text x="254" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#1B2733">Aa 9,5:1</text>
+    <text x="254" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1B2733">Jaune logo</text>
+    <text x="254" y="154" text-anchor="middle" font-size="13" fill="#4E5D6C">#F5C800</text>
+    <text x="254" y="176" text-anchor="middle" font-size="12" fill="#6B7885">1 bouton / écran</text>
+
+    <rect x="344" y="16" width="148" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <rect x="344" y="16" width="148" height="88" rx="14" fill="#CA0920"/>
+    <rect x="344" y="90" width="148" height="14" fill="#CA0920"/>
+    <text x="418" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Aa 5,9:1</text>
+    <text x="418" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1B2733">Rouge logo</text>
+    <text x="418" y="154" text-anchor="middle" font-size="13" fill="#4E5D6C">#CA0920</text>
+    <text x="418" y="176" text-anchor="middle" font-size="12" fill="#6B7885">Urgence 112</text>
+
+    <rect x="508" y="16" width="148" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <rect x="508" y="16" width="148" height="88" rx="14" fill="#116A97"/>
+    <rect x="508" y="90" width="148" height="14" fill="#116A97"/>
+    <text x="582" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Aa 6,0:1</text>
+    <text x="582" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1B2733">Bleu action</text>
+    <text x="582" y="154" text-anchor="middle" font-size="13" fill="#4E5D6C">#116A97</text>
+    <text x="582" y="176" text-anchor="middle" font-size="12" fill="#6B7885">Liens, focus</text>
+
+    <rect x="672" y="16" width="148" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <rect x="672" y="16" width="148" height="88" rx="14" fill="#0A405C"/>
+    <rect x="672" y="90" width="148" height="14" fill="#0A405C"/>
+    <text x="746" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Aa 11:1</text>
+    <text x="746" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1B2733">Bleu nuit</text>
+    <text x="746" y="154" text-anchor="middle" font-size="13" fill="#4E5D6C">#0A405C</text>
+    <text x="746" y="176" text-anchor="middle" font-size="12" fill="#6B7885">Pied de page</text>
+
+    <rect x="836" y="16" width="108" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <rect x="852" y="36" width="76" height="36" rx="8" fill="#E8F4FB" stroke="#1790CD"/>
+    <rect x="852" y="80" width="76" height="36" rx="8" fill="#FFF9E0"/>
+    <rect x="852" y="124" width="76" height="36" rx="8" fill="#FEF0F2"/>
+    <text x="890" y="188" text-anchor="middle" font-size="12" fill="#6B7885">Teintes</text>
+  </g>
+</svg>
