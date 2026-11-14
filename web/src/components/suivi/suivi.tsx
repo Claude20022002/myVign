@@ -8,7 +8,7 @@
 import { type Claim, CLAIM_STATUS_LABELS, type ClaimStatus } from "@myvign/contracts";
 import { CircleCheck, Circle, FileText, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAide } from "@/components/aide/aide";
 import { Bouton } from "@/components/ui/bouton";
 import { ChampTexte } from "@/components/ui/champs";
@@ -57,17 +57,21 @@ export function SuiviDossier({ id }: { id: string }) {
   const [erreur, setErreur] = useState<string>();
   const { ouvrir } = useAide();
 
-  const charger = useCallback(async () => {
-    const r = await sinistreParId(id);
-    if (r.ok) setDossier(r.data);
-    else setErreur(r.code === "NOT_FOUND" ? "Ce dossier est introuvable (le serveur de démonstration a pu redémarrer)." : r.message);
-  }, [id]);
-
   useEffect(() => {
-    charger();
-    const t = setInterval(charger, 8000);
-    return () => clearInterval(t);
-  }, [charger]);
+    let actif = true;
+    const tirer = () =>
+      sinistreParId(id).then((r) => {
+        if (!actif) return;
+        if (r.ok) setDossier(r.data);
+        else setErreur(r.code === "NOT_FOUND" ? "Ce dossier est introuvable (le serveur de démonstration a pu redémarrer)." : r.message);
+      });
+    tirer();
+    const t = setInterval(tirer, 8000);
+    return () => {
+      actif = false;
+      clearInterval(t);
+    };
+  }, [id]);
 
   if (erreur) return <Encadre ton="vigilance">{erreur}</Encadre>;
   if (!dossier) return <p className="text-texte-2">Chargement du dossier…</p>;

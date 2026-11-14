@@ -65,10 +65,22 @@ export function Gestion() {
   }, []);
 
   useEffect(() => {
-    charger();
-    const t = setInterval(charger, 8000);
-    return () => clearInterval(t);
-  }, [charger]);
+    let actif = true;
+    const tirer = () =>
+      listerSinistresGestion().then((r) => {
+        if (!actif) return;
+        if (r.ok) {
+          setLignes(r.data.items);
+          setErreur(undefined);
+        } else setErreur(r.message);
+      });
+    tirer();
+    const t = setInterval(tirer, 8000);
+    return () => {
+      actif = false;
+      clearInterval(t);
+    };
+  }, []);
 
   const compte = (f: (l: Ligne) => boolean) => lignes?.filter(f).length ?? 0;
 
@@ -129,7 +141,7 @@ export function Gestion() {
             </ul>
           )}
         </section>
-        <div>{choisi ? <Fiche id={choisi} apresAction={charger} /> : <p className="rounded-carte border border-dashed border-filet-champ p-6 text-center text-texte-2">Sélectionnez un dossier.</p>}</div>
+        <div>{choisi ? <Fiche key={choisi} id={choisi} apresAction={charger} /> : <p className="rounded-carte border border-dashed border-filet-champ p-6 text-center text-texte-2">Sélectionnez un dossier.</p>}</div>
       </div>
     </>
   );
@@ -164,19 +176,16 @@ function Fiche({ id, apresAction }: { id: string; apresAction: () => void }) {
   const [erreur, setErreur] = useState<string>();
   const [occupe, setOccupe] = useState(false);
 
-  const charger = useCallback(async () => {
-    const r = await sinistreParId(id);
-    if (r.ok) setDossier(r.data);
-  }, [id]);
-
+  // La fiche est remontée à chaque dossier (key) : son état repart de zéro sans effet.
   useEffect(() => {
-    setDossier(null);
-    setRefus(false);
-    setMotif("");
-    setMessage("");
-    setErreur(undefined);
-    charger();
-  }, [charger]);
+    let actif = true;
+    sinistreParId(id).then((r) => {
+      if (actif && r.ok) setDossier(r.data);
+    });
+    return () => {
+      actif = false;
+    };
+  }, [id]);
 
   async function agir(statut: ClaimStatus) {
     if (statut === "rejected" && !refus) return setRefus(true);

@@ -22,7 +22,7 @@ export function CarteRose({ surligne = "cv" }: { surligne?: "cv" | "places" | "d
       <svg viewBox="0 0 320 196" className="h-auto w-full" role="img" aria-labelledby="cr-t">
         <title id="cr-t">Carte rose : la ligne « {zones[surligne].label} » est mise en évidence</title>
         <rect x="6" y="6" width="308" height="184" rx="12" fill="#FDF0F3" stroke={DOUX} strokeWidth="1.5" />
-        <text x="22" y="32" fontSize="13" fontWeight="700" fill={TRAIT} fontFamily="inherit">CERTIFICAT D'IMMATRICULATION</text>
+        <text x="22" y="32" fontSize="13" fontWeight="700" fill={TRAIT} fontFamily="inherit">CERTIFICAT D’IMMATRICULATION</text>
         <text x="236" y="32" fontSize="12" fill={DOUX} fontFamily="inherit">RD Congo</text>
         {(Object.keys(zones) as (keyof typeof zones)[]).map((k) => {
           const z = zones[k];

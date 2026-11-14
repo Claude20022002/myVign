@@ -96,7 +96,8 @@ export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, 
   const titreRef = useRef<HTMLHeadingElement>(null);
   const { definirContexte } = useAide();
 
-  // Reprise du brouillon
+  // Reprise du brouillon : localStorage n'existe qu'après l'hydratation, d'où la lecture dans un effet.
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture unique de localStorage après hydratation
   useEffect(() => {
     try {
       const brut = localStorage.getItem(cle);

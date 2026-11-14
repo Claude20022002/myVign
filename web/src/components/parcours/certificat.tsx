@@ -78,7 +78,7 @@ export function CertificatCarte({ certificat, contrat }: { certificat: Certifica
         </dl>
         <div className="flex flex-col items-center gap-1.5 sm:w-36">
           {qr ? (
-            // biome-ignore lint/performance/noImgElement: image générée localement (data URL), next/image inutile.
+            // eslint-disable-next-line @next/next/no-img-element -- data URL générée localement : next/image inutile
             <img src={qr} alt={`QR code de vérification du certificat ${certificat.code}`} width={136} height={136} className="rounded-md border border-filet" />
           ) : (
             <div className="size-[136px] rounded-md bg-fond" />

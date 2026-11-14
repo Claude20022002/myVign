@@ -7,7 +7,7 @@
  */
 
 import { convertMoney, type Currency, type ExchangeRate, type Money } from "@myvign/contracts";
-import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState, useSyncExternalStore } from "react";
 import { tauxDuJour } from "@/server/actions";
 
 type Ctx = {
@@ -20,23 +20,37 @@ type Ctx = {
 const DeviseCtx = createContext<Ctx | null>(null);
 const CLE = "myvign.devise";
 
+/* Préférence de devise : petit magasin externe (localStorage), lu sans setState dans un effet. */
+const abonnes = new Set<() => void>();
+function lireDevise(): Currency {
+  try {
+    return localStorage.getItem(CLE) === "USD" ? "USD" : "CDF";
+  } catch {
+    return "CDF";
+  }
+}
+function abonner(rappel: () => void) {
+  abonnes.add(rappel);
+  return () => {
+    abonnes.delete(rappel);
+  };
+}
+
 export function DeviseProvider({ children }: { children: ReactNode }) {
-  const [devise, setDevise] = useState<Currency>("CDF");
+  const devise = useSyncExternalStore<Currency>(abonner, lireDevise, () => "CDF");
   const [taux, setTaux] = useState<ExchangeRate | null>(null);
 
   useEffect(() => {
-    try {
-      const memo = localStorage.getItem(CLE);
-      if (memo === "USD" || memo === "CDF") setDevise(memo);
-    } catch {}
-    tauxDuJour().then((r) => r.ok && setTaux(r.data));
+    tauxDuJour().then((r) => {
+      if (r.ok) setTaux(r.data);
+    });
   }, []);
 
   const choisir = useCallback((d: Currency) => {
-    setDevise(d);
     try {
       localStorage.setItem(CLE, d);
     } catch {}
+    for (const a of abonnes) a();
   }, []);
 
   const convertir = useCallback(

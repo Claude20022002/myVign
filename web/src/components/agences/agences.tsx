@@ -15,6 +15,7 @@ import { Bouton } from "@/components/ui/bouton";
 import { ChampTexte } from "@/components/ui/champs";
 import { Encadre } from "@/components/ui/encadre";
 import { telNational } from "@/lib/format";
+import { useMaintenant } from "@/lib/horloge";
 import { fold } from "@/lib/villes";
 import { creneauxRendezVous, prendreRendezVous } from "@/server/actions";
 
@@ -62,14 +63,8 @@ export function Localisateur() {
   const [actif, setActif] = useState<string | null>(null);
   const [carteMobile, setCarteMobile] = useState(false);
   const [rdv, setRdv] = useState<AgencySeed | null>(null);
-  const [maintenant, setMaintenant] = useState<Date | null>(null);
+  const maintenant = useMaintenant();
   const refs = useRef(new Map<string, HTMLLIElement>());
-
-  useEffect(() => {
-    setMaintenant(new Date());
-    const t = setInterval(() => setMaintenant(new Date()), 60_000);
-    return () => clearInterval(t);
-  }, []);
 
   const liste = useMemo(() => {
     const q = fold(recherche);
@@ -328,7 +323,9 @@ export function ModaleRdv({ agence, fermer }: { agence: AgencySeed; fermer: () =
   const fenetre = useRef<HTMLDivElement>(null);
   // Référence stable : le parent recrée `fermer` à chaque rendu, il ne doit pas relancer le chargement.
   const fermerRef = useRef(fermer);
-  fermerRef.current = fermer;
+  useEffect(() => {
+    fermerRef.current = fermer;
+  });
 
   useEffect(() => {
     creneauxRendezVous(agence.slug).then((r) => (r.ok ? setCreneaux(r.data) : setErreur(r.message)));
@@ -428,8 +425,7 @@ export function ModaleRdv({ agence, fermer }: { agence: AgencySeed; fermer: () =
 /** Liste d'agences d'une page ville (fiches + rendez-vous). */
 export function AgencesVille({ slugs }: { slugs: string[] }) {
   const [rdv, setRdv] = useState<AgencySeed | null>(null);
-  const [maintenant, setMaintenant] = useState<Date | null>(null);
-  useEffect(() => setMaintenant(new Date()), []);
+  const maintenant = useMaintenant();
   const agences = AGENCY_SEED.filter((a) => slugs.includes(a.slug));
   return (
     <>

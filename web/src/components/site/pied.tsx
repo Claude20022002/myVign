@@ -7,7 +7,7 @@ export function Pied() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="font-titre text-xl font-semibold">SONAS SA</p>
-          <p className="mt-2 text-[15px] text-bleu-clair">Société nationale d'assurances, plus de 60 ans au service de la RDC.</p>
+          <p className="mt-2 text-[15px] text-bleu-clair">Société nationale d’assurances, plus de 60 ans au service de la RDC.</p>
           <p className="mt-3 text-[15px] text-bleu-clair">Agrément ARCA n° {SONAS.agrement}</p>
         </div>
         <div>

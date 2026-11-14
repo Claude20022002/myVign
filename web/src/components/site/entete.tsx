@@ -18,7 +18,7 @@ const LIENS = [
 export function BandeauDemo() {
   return (
     <div className="no-print bg-encre px-4 py-1.5 text-center text-[14px] text-white">
-      Démonstration myVign : aucune donnée n'est transmise à la SONAS, les paiements sont simulés.
+      Démonstration myVign : aucune donnée n’est transmise à la SONAS, les paiements sont simulés.
     </div>
   );
 }
