@@ -148,3 +148,4 @@ export const TransitionClaimBody = z
     message: 'Un refus doit être motivé (10 caractères au moins)',
     path: ['reason'],
   });
+export type ClaimSummary = z.infer<typeof ClaimSummary>;

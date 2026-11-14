@@ -7,6 +7,7 @@ import { ChampTexte, Segmente } from "@/components/ui/champs";
 import { Encadre } from "@/components/ui/encadre";
 import { SONAS } from "@/lib/referentiels";
 import { telAffiche, telNational } from "@/lib/format";
+import { demanderRappel } from "@/server/actions";
 
 export type QuestionAide = { q: string; r: string };
 export type ContexteAide = { lieu: string; mode: "souscription" | "sinistre" | "general"; faq?: QuestionAide[] };
@@ -183,6 +184,7 @@ function FormRappel({ sujet }: { sujet: string }) {
   const [quand, setQuand] = useState("asap");
   const [envoye, setEnvoye] = useState(false);
   const [erreur, setErreur] = useState<string>();
+  const [occupe, setOccupe] = useState(false);
   if (envoye)
     return (
       <Encadre ton="succes" titre="Demande de rappel enregistrée">
@@ -191,9 +193,14 @@ function FormRappel({ sujet }: { sujet: string }) {
     );
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         if (telNational(tel).length !== 9) return setErreur("Entrez les 9 chiffres après +243, par exemple 81 234 5678.");
+        setOccupe(true);
+        const creneau = { asap: "asap", aprem: "today_14_16", demain: "tomorrow_9_11" }[quand] ?? "asap";
+        const r = await demanderRappel({ telephone: `+243${telNational(tel)}`, creneau, sujet });
+        setOccupe(false);
+        if (!r.ok) return setErreur("La demande n’a pas pu être envoyée. Appelez-nous directement au " + SONAS.telInfo + ".");
         setEnvoye(true);
       }}
       noValidate
@@ -204,7 +211,7 @@ function FormRappel({ sujet }: { sujet: string }) {
       <p className="mb-1.5 text-base font-semibold">Sujet</p>
       <p className="mb-4 rounded-champ border border-filet bg-fond px-3.5 py-3">{sujet}</p>
       <Encadre className="mb-4">Votre dossier est transmis au conseiller : inutile de tout répéter.</Encadre>
-      <Bouton type="submit" bloc>
+      <Bouton type="submit" bloc chargement={occupe}>
         Demander le rappel
       </Bouton>
     </form>

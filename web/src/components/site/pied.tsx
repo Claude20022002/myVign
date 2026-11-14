@@ -14,7 +14,6 @@ export function Pied() {
           <p className="font-semibold">Souscrire</p>
           <ul className="mt-2 space-y-1.5 text-[15px] text-bleu-clair">
             <li><Link className="hover:text-white hover:underline" href="/souscrire/auto">Assurance auto</Link></li>
-            <li><Link className="hover:text-white hover:underline" href="/souscrire/habitation">Assurance habitation</Link></li>
             <li><Link className="hover:text-white hover:underline" href="/#assurances">Toutes nos assurances</Link></li>
           </ul>
         </div>
@@ -39,9 +38,9 @@ export function Pied() {
       <div className="border-t border-white/15">
         <div className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-4 text-[14px] text-bleu-clair">
           <span>Démonstration myVign, novembre 2026</span>
-          <span>Mentions légales</span>
-          <span>Protection de vos données</span>
-          <span>Accessibilité</span>
+          <Link className="hover:text-white hover:underline" href="/mentions-legales">Mentions légales</Link>
+          <Link className="hover:text-white hover:underline" href="/donnees-personnelles">Protection de vos données</Link>
+          <Link className="hover:text-white hover:underline" href="/gestion">Espace gestionnaire (démo)</Link>
         </div>
       </div>
     </footer>

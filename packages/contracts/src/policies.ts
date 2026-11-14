@@ -70,3 +70,5 @@ export const CertificateVerification = z.object({
 });
 
 export const CertificateParams = z.object({ code: z.string().min(6).max(32) });
+
+export type CertificateVerification = z.infer<typeof CertificateVerification>;

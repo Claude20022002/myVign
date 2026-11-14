@@ -78,3 +78,4 @@ export const ProvinceSummary = z.object({
 });
 
 export const ProvinceList = z.object({ items: z.array(ProvinceSummary) });
+export type ProvinceSummary = z.infer<typeof ProvinceSummary>;

@@ -15,6 +15,7 @@ import { Bouton } from "@/components/ui/bouton";
 import { ChampTexte } from "@/components/ui/champs";
 import { Encadre } from "@/components/ui/encadre";
 import { telNational } from "@/lib/format";
+import { fold } from "@/lib/villes";
 import { creneauxRendezVous, prendreRendezVous } from "@/server/actions";
 
 /* ---------- Données ---------- */
@@ -24,13 +25,6 @@ export function horaires(a: AgencySeed) {
   return { ouvre: a.isHeadOffice ? "07:30" : "08:00", ferme: "16:00", jours: [1, 2, 3, 4, 5] };
 }
 
-export function fold(s: string) {
-  return s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[\s-]+/g, " ").trim();
-}
-
-export function slugVille(ville: string) {
-  return fold(ville).replace(/\s+/g, "-");
-}
 
 const distanceKm = (a: readonly [number, number], b: readonly [number, number]) => {
   const r = (d: number) => (d * Math.PI) / 180;

@@ -71,3 +71,7 @@ export const ContactInfo = z.object({
   email: z.string(),
   whatsappChannelUrl: z.url().nullable(),
 });
+
+export type AppointmentSlotList = z.infer<typeof AppointmentSlotList>;
+export type Appointment = z.infer<typeof Appointment>;
+export type ContactInfo = z.infer<typeof ContactInfo>;
