@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" role="img" aria-labelledby="t">
+  <title id="t">Moyens de paiement</title>
+  <rect width="720" height="120" fill="#F5F7F9"/>
+  <g font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" font-weight="700">
+    <rect x="8" y="28" width="112" height="64" rx="12" fill="#fff" stroke="#D5DDE5"/>
+    <text x="64" y="66" text-anchor="middle" fill="#1B2733">M-Pesa</text>
+    <rect x="128" y="28" width="132" height="64" rx="12" fill="#fff" stroke="#D5DDE5"/>
+    <text x="194" y="66" text-anchor="middle" fill="#1B2733">Orange Money</text>
+    <rect x="268" y="28" width="124" height="64" rx="12" fill="#fff" stroke="#D5DDE5"/>
+    <text x="330" y="66" text-anchor="middle" fill="#1B2733">Airtel Money</text>
+    <rect x="400" y="28" width="112" height="64" rx="12" fill="#fff" stroke="#D5DDE5"/>
+    <text x="456" y="66" text-anchor="middle" fill="#1B2733">Afrimoney</text>
+    <rect x="520" y="28" width="88" height="64" rx="12" fill="#fff" stroke="#D5DDE5"/>
+    <text x="564" y="66" text-anchor="middle" fill="#1B2733">Carte</text>
+    <rect x="616" y="28" width="96" height="64" rx="12" fill="#E8F4FB" stroke="#116A97"/>
+    <text x="664" y="66" text-anchor="middle" fill="#116A97">Agence</text>
+  </g>
+</svg>
