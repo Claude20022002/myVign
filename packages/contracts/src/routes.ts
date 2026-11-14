@@ -9,7 +9,15 @@ import {
 } from './appointments';
 import { Callback, CallbackSlotList, CreateCallbackBody } from './callbacks';
 import { Product, ProductCode, ProductList } from './catalog';
-import { Claim, ClaimParams, CreateUploadBody, UploadTicket } from './claims';
+import {
+  Claim,
+  ClaimLookupQuery,
+  ClaimParams,
+  ClaimSummaryList,
+  CreateUploadBody,
+  TransitionClaimBody,
+  UploadTicket,
+} from './claims';
 import {
   CreateDraftBody,
   Draft,
@@ -302,6 +310,15 @@ export const routes = {
     success: { status: 201, schema: Claim },
     errors: [404, 409, 410, 500],
   },
+  lookupClaim: {
+    method: 'GET',
+    path: '/v1/claims/lookup',
+    summary: 'Retrouver un sinistre par son numéro et le téléphone de la déclaration',
+    tag: 'claims',
+    query: ClaimLookupQuery,
+    success: { status: 200, schema: Claim },
+    errors: [404, 422, 429, 500],
+  },
   getClaim: {
     method: 'GET',
     path: '/v1/claims/{claimId}',
@@ -320,6 +337,27 @@ export const routes = {
     body: CreateUploadBody,
     success: { status: 201, schema: UploadTicket },
     errors: [404, 422, 429, 500],
+  },
+
+  // --- Back-office (agents SONAS) ---
+  // Démo : non authentifié. Phase 6 : session agent + 2FA + rôles + journal d'audit.
+  backofficeListClaims: {
+    method: 'GET',
+    path: '/v1/backoffice/claims',
+    summary: 'File de travail des sinistres (plus récents en premier)',
+    tag: 'backoffice',
+    success: { status: 200, schema: ClaimSummaryList },
+    errors: [401, 403, 500],
+  },
+  backofficeTransitionClaim: {
+    method: 'POST',
+    path: '/v1/backoffice/claims/{claimId}/transition',
+    summary: "Faire avancer un sinistre (transitions autorisées : CLAIM_TRANSITIONS)",
+    tag: 'backoffice',
+    params: ClaimParams,
+    body: TransitionClaimBody,
+    success: { status: 200, schema: Claim },
+    errors: [401, 403, 404, 409, 422, 500],
   },
 
   // --- Rappel conseiller ---

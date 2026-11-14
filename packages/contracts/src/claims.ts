@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ProductCode } from './catalog';
-import { Id, IsoDateTime } from './common';
+import { Id, IsoDateTime, PhoneCD } from './common';
 
 /**
  * Statuts d'un sinistre, tous visibles par le client (réponse à la plainte n°1 : l'opacité).
@@ -83,3 +83,68 @@ export const UploadTicket = z.object({
   headers: z.record(z.string(), z.string()),
   expiresAt: IsoDateTime,
 });
+
+/**
+ * Transitions autorisées (règle partagée : l'API la fait respecter, le back-office n'affiche
+ * que les actions possibles). Un refus est toujours motivé.
+ */
+export const CLAIM_TRANSITIONS: Record<ClaimStatus, readonly ClaimStatus[]> = {
+  declared: ['received', 'rejected'],
+  received: ['under_review', 'rejected'],
+  under_review: ['expertise', 'offer_made', 'rejected'],
+  expertise: ['offer_made', 'rejected'],
+  offer_made: ['accepted', 'rejected'],
+  accepted: ['paid'],
+  paid: ['closed'],
+  rejected: ['closed'],
+  closed: [],
+};
+
+/** Libellés lisibles par le client (jamais de code interne à l'écran). */
+export const CLAIM_STATUS_LABELS: Record<ClaimStatus, string> = {
+  declared: 'Déclaration envoyée',
+  received: 'Déclaration reçue',
+  under_review: 'Dossier en instruction',
+  expertise: 'Expertise en cours',
+  offer_made: "Offre d'indemnisation",
+  accepted: 'Offre acceptée',
+  paid: 'Indemnité versée',
+  rejected: 'Demande refusée',
+  closed: 'Dossier clôturé',
+};
+
+/** Suivi sans compte : n° de sinistre + téléphone de la déclaration. */
+export const ClaimLookupQuery = z.object({
+  number: z.string().min(5).max(40),
+  phone: PhoneCD,
+});
+
+/** Ligne de la file de travail du back-office. */
+export const ClaimSummary = z.object({
+  id: Id,
+  number: z.string(),
+  product: ProductCode,
+  type: z.string(),
+  status: ClaimStatus,
+  holderName: z.string(),
+  maskedPhone: z.string(),
+  plate: z.string().nullable(),
+  missingDocuments: z.int().nonnegative(),
+  createdAt: IsoDateTime,
+  updatedAt: IsoDateTime,
+});
+
+export const ClaimSummaryList = z.object({ items: z.array(ClaimSummary) });
+
+export const TransitionClaimBody = z
+  .object({
+    status: ClaimStatus,
+    /** Message affiché au client dans la chronologie (sinon un message standard). */
+    message: z.string().max(300).nullable().default(null),
+    /** Motif obligatoire en cas de refus. */
+    reason: z.string().max(300).nullable().default(null),
+  })
+  .refine((v) => v.status !== 'rejected' || (v.reason ?? '').trim().length >= 10, {
+    message: 'Un refus doit être motivé (10 caractères au moins)',
+    path: ['reason'],
+  });
