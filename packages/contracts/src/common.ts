@@ -1,0 +1,93 @@
+import { z } from 'zod';
+
+/** Devises acceptées. Le marché RDC raisonne en francs congolais et en dollars. */
+export const Currency = z.enum(['CDF', 'USD']);
+export type Currency = z.infer<typeof Currency>;
+
+/**
+ * Montant en unités mineures (entier) : jamais de flottant pour de l'argent.
+ * CDF : 1 franc = 100 centimes. USD : 1 dollar = 100 cents.
+ */
+export const Money = z.object({
+  amount: z.int().nonnegative(),
+  currency: Currency,
+});
+export type Money = z.infer<typeof Money>;
+
+/** Date calendaire ISO (AAAA-MM-JJ). */
+export const IsoDate = z.iso.date();
+/** Horodatage ISO 8601 avec fuseau. */
+export const IsoDateTime = z.iso.datetime({ offset: true });
+
+/** Identifiant opaque généré par l'API. */
+export const Id = z.string().min(1).max(64);
+
+/**
+ * Téléphone RDC au format E.164 (+243 suivi de 9 chiffres).
+ * La saisie libre (« 081 234 5678 », « +243 81 234 5678 ») est normalisée.
+ */
+export const PhoneCD = z
+  .string()
+  .transform((raw) => normalizePhoneCD(raw))
+  .pipe(z.string().regex(/^\+243[1-9]\d{8}$/, 'Numéro RDC invalide (ex. +243 81 234 5678)'));
+
+export function normalizePhoneCD(raw: string): string {
+  const digits = raw.replace(/[^\d+]/g, '');
+  if (digits.startsWith('+243')) return digits;
+  if (digits.startsWith('00243')) return `+${digits.slice(2)}`;
+  if (digits.startsWith('243')) return `+${digits}`;
+  if (digits.startsWith('0')) return `+243${digits.slice(1)}`;
+  return digits;
+}
+
+/**
+ * Plaque d'immatriculation RDC : 4 chiffres, 2 lettres, 2 chiffres (ex. « 4521AB 01 »).
+ * Espaces et tirets ignorés, lettres passées en majuscules.
+ */
+export const PlateCD = z
+  .string()
+  .transform((raw) => normalizePlateCD(raw))
+  .pipe(z.string().regex(/^\d{4}[A-Z]{2}\d{2}$/, 'Plaque invalide (format attendu : 4521AB 01)'));
+
+export function normalizePlateCD(raw: string): string {
+  return raw.replace(/[\s-]/g, '').toUpperCase();
+}
+
+export const Email = z.email();
+
+/** Codes d'erreur stables : le front s'appuie dessus pour choisir l'écran d'erreur. */
+export const ErrorCode = z.enum([
+  'VALIDATION_FAILED',
+  'NOT_FOUND',
+  'VEHICLE_NOT_FOUND',
+  'DRAFT_EXPIRED',
+  'DRAFT_INCOMPLETE',
+  'QUOTE_EXPIRED',
+  'PAYMENT_REFUSED',
+  'PAYMENT_EXPIRED',
+  'IDEMPOTENCY_CONFLICT',
+  'RATE_LIMITED',
+  'UNAUTHENTICATED',
+  'FORBIDDEN',
+  'SERVICE_UNAVAILABLE',
+  'INTERNAL_ERROR',
+]);
+export type ErrorCode = z.infer<typeof ErrorCode>;
+
+/** Format unique des erreurs renvoyées par l'API (et par le serveur simulé). */
+export const ApiError = z.object({
+  error: z.object({
+    code: ErrorCode,
+    message: z.string(),
+    /** Erreurs de champ : clé = chemin du champ (ex. « vehicle.plate »). */
+    fields: z.record(z.string(), z.array(z.string())).optional(),
+    traceId: z.string().optional(),
+  }),
+});
+export type ApiError = z.infer<typeof ApiError>;
+
+export const Paginated = <T extends z.ZodType>(item: T) =>
+  z.object({
+    items: z.array(item),
+    total: z.int().nonnegative(),
+  });
