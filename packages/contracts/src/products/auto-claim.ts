@@ -1,25 +1,31 @@
 import { z } from 'zod';
-import { Email, IsoDate, PhoneCD, PlateCD } from '../common';
+import { Email, IsoDate, PhoneCD, PlateCD, Province } from '../common';
 
 /**
- * Déclaration de sinistre auto (maquette « 3 · Déclaration de sinistre auto »).
- * 8 étapes de questions, puis récapitulatif. Brouillon conservé 60 jours.
+ * Déclaration de sinistre auto, sans compte. Champs alignés sur
+ * docs/recherche_formulaires_rdc.md §3.4. Brouillon conservé 60 jours.
+ * Une déclaration tardive n'est JAMAIS bloquée (CA 19) ; les pièces ne sont jamais bloquantes.
  */
 
-/** C1 · Vos coordonnées */
-export const AutoClaimStepContact = z.object({
-  lastName: z.string().min(1).max(80),
-  firstName: z.string().min(1).max(80),
-  phone: PhoneCD,
-  workPhone: PhoneCD.nullable(),
-  email: Email.nullable(),
-  plate: PlateCD,
-  policyNumber: z.string().max(40).nullable(),
-});
+/** Bloc « contact » : identification par n° de contrat OU par plaque + téléphone. */
+export const AutoClaimStepContact = z
+  .object({
+    lastName: z.string().min(1).max(80),
+    firstName: z.string().min(1).max(80),
+    phone: PhoneCD,
+    email: Email.nullable(),
+    plate: PlateCD.nullable(),
+    policyNumber: z.string().max(40).nullable(),
+  })
+  .refine((v) => v.plate !== null || v.policyNumber !== null, {
+    message: 'Indiquez le numéro de contrat ou la plaque du véhicule',
+    path: ['policyNumber'],
+  });
 
 export const AutoClaimType = z.enum([
   'accident',
-  'vol_vandalisme',
+  'vol',
+  'vandalisme',
   'bris_de_glace',
   'incendie',
   'evenement_climatique',
@@ -27,20 +33,21 @@ export const AutoClaimType = z.enum([
 ]);
 export type AutoClaimType = z.infer<typeof AutoClaimType>;
 
-/** C2 · Le type de sinistre */
+/** Bloc « type » */
 export const AutoClaimStepType = z.object({ type: AutoClaimType });
 
-/** C3 · La date et le lieu */
+/** Bloc « whenWhere » : date, heure et lieu. */
 export const AutoClaimStepWhenWhere = z.object({
   date: IsoDate,
   time: z.string().regex(/^\d{2}:\d{2}$/),
+  province: Province,
   city: z.string().min(2).max(80),
   commune: z.string().min(2).max(80),
+  placeDescription: z.string().max(200).nullable(),
   abroad: z.boolean(),
-  vehicleStillAbroad: z.boolean().nullable(),
 });
 
-/** C4 · La situation et les circonstances */
+/** Bloc « circumstances » : situation et récit libre (500 caractères). */
 export const AutoClaimStepCircumstances = z.object({
   vehicleSituation: z.enum([
     'en_circulation',
@@ -63,7 +70,7 @@ export const DamageZone = z.enum([
   'arriere_droit',
 ]);
 
-/** C5 · Les dégâts */
+/** Bloc « damage » : zones de choc et nature des dégâts. */
 export const AutoClaimStepDamage = z.object({
   zones: z.array(DamageZone).max(9),
   natures: z.array(z.enum(['carrosserie', 'pare_brise', 'serrure', 'optiques', 'interieur'])),
@@ -71,33 +78,44 @@ export const AutoClaimStepDamage = z.object({
   objectsStolen: z.boolean(),
 });
 
-/** C6 · Les personnes impliquées */
+/**
+ * Bloc « people » : blessés, police, conducteur au moment des faits.
+ * Blessés → afficher le 112 et la ligne sinistre SONAS (+243 81 641 5515) en priorité.
+ * Le permis du conducteur conditionne la garantie (exclusion si permis invalide, CA 114).
+ */
 export const AutoClaimStepPeople = z.object({
   injured: z.boolean(),
+  deceased: z.boolean(),
   policeIntervened: z.boolean(),
-  driver: z.enum(['main_driver', 'spouse_or_employee', 'other']),
-  otherDriver: z
-    .object({ lastName: z.string().min(1).max(80), firstName: z.string().min(1).max(80) })
+  policeReportNumber: z.string().max(60).nullable(),
+  driver: z.enum(['assure', 'conjoint_ou_employe', 'autre']),
+  driverIdentity: z
+    .object({
+      lastName: z.string().min(1).max(80),
+      firstName: z.string().min(1).max(80),
+      licenseNumber: z.string().min(3).max(40),
+    })
     .nullable(),
-  noviceDriver: z.boolean(),
-  usage: z.enum(['prive', 'domicile_travail', 'professionnel']),
 });
 
-/** C7 · La responsabilité */
+/** Bloc « liability » : tiers et responsabilité estimée. */
 export const AutoClaimStepLiability = z.object({
-  liability: z.enum(['none', 'full', 'shared', 'unknown']),
+  liabilityPercent: z.enum(['0', '50', '100', 'unknown']),
   thirdPartyInvolved: z.boolean(),
   thirdParty: z
     .object({
       lastName: z.string().min(1).max(80),
       firstName: z.string().max(80).nullable(),
-      commune: z.string().max(80).nullable(),
+      phone: PhoneCD.nullable(),
       plate: PlateCD.nullable(),
+      /** Utile au recours entre assureurs. */
+      insurerName: z.string().max(80).nullable(),
+      certificateNumber: z.string().max(60).nullable(),
     })
     .nullable(),
 });
 
-/** C8 · Photos et documents (facultatif : jamais bloquant) */
+/** Bloc « documents » : facultatif, jamais bloquant. */
 export const AutoClaimStepDocuments = z.object({
   documentIds: z.array(z.string()).max(20),
 });

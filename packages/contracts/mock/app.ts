@@ -81,6 +81,10 @@ export function createMockApp(options: MockOptions = {}) {
   const policies = new Map<string, Policy>();
   const claims = new Map<string, Claim & { createdMs: number }>();
   const certificates = new Map<string, { policyId: string }>();
+  const certificateDetails = new Map<
+    string,
+    { holderAddress: string; holderProfession: string; coveredCountries: string[] }
+  >();
   let sequence = 0;
 
   const newId = (prefix: string) => `${prefix}_${randomBytes(16).toString('hex')}`;
@@ -161,7 +165,7 @@ export function createMockApp(options: MockOptions = {}) {
     if (draft.kind === 'subscription' && draft.product === 'auto') {
       const vehicle = draft.steps.vehicle as { category?: string } | undefined;
       const history = draft.steps.history as { claimsLast36Months?: string } | undefined;
-      const usage = draft.steps.usage as { parking?: string } | undefined;
+      const usage = draft.steps.usage as { nightParking?: string; usage?: string } | undefined;
       const formula = draft.steps.formula as { formulaCode?: string } | undefined;
       if (vehicle) {
         draft.estimate = {
@@ -169,7 +173,8 @@ export function createMockApp(options: MockOptions = {}) {
             {
               category: vehicle.category,
               claimsLast36Months: history?.claimsLast36Months,
-              parking: usage?.parking,
+              parking: usage?.nightParking,
+              usage: usage?.usage,
             },
             formula?.formulaCode ?? 'tous_risques',
           ),
@@ -181,26 +186,53 @@ export function createMockApp(options: MockOptions = {}) {
   }
 
   function settlePayment(payment: StoredPayment) {
-    if (payment.status !== 'pending') return;
+    // Paiement en agence : reste en attente jusqu'à la confirmation par un agent (back-office).
+    if (payment.status !== 'pending' || payment.method === 'agency') return;
     const elapsed = now().getTime() - new Date(payment.createdAt).getTime();
     if (elapsed < paymentDelayMs) return;
     payment.status = payment.outcome;
     if (payment.outcome === 'failed') payment.failureReason = 'insufficient_funds';
-    if (payment.outcome === 'succeeded') payment.policyId = issuePolicy(payment.draftId);
+    if (payment.outcome === 'succeeded') {
+      payment.receipt = {
+        operatorTransactionId: `MOCK${randomBytes(4).toString('hex').toUpperCase()}`,
+        amount: payment.amount,
+        paidAt: iso(),
+      };
+      payment.policyId = issuePolicy(payment.draftId, payment.amount);
+    }
   }
 
-  function issuePolicy(draftId: string): string {
+  function issuePolicy(draftId: string, premium: Payment['amount']): string {
     const draft = drafts.get(draftId);
     const app = AutoApplication.safeParse(draft?.steps);
     const holder = app.success ? app.data.holder : undefined;
     const vehicle = app.success ? app.data.vehicle : undefined;
     const formula = app.success ? app.data.formula.formulaCode : 'tous_risques';
-    const start = app.success ? app.data.contract.startDate : iso().slice(0, 10);
-    const end = new Date(new Date(start).getTime() + 365 * DAY - DAY).toISOString().slice(0, 10);
+    // La couverture démarre au plus tôt au paiement confirmé (CA 16).
+    const today = iso().slice(0, 10);
+    const wanted = app.success ? app.data.contract.startDate : today;
+    const start = wanted > today ? wanted : today;
+    const months =
+      app.success && app.data.contract.duration === 'courte_duree'
+        ? (app.data.contract.shortDurationMonths ?? 12)
+        : 12;
+    const endDate = new Date(start);
+    endDate.setMonth(endDate.getMonth() + months);
+    endDate.setDate(endDate.getDate() - 1);
+    const end = endDate.toISOString().slice(0, 10);
     const offer = priceAuto({}).find((o) => o.formulaCode === formula);
     const policyId = newId('pol');
     const code = randomBytes(5).toString('hex').toUpperCase();
     certificates.set(code, { policyId });
+    const address = holder?.address;
+    certificateDetails.set(policyId, {
+      holderAddress: address
+        ? [address.street, address.quartier, address.commune, address.city].filter(Boolean).join(', ')
+        : 'Kinshasa',
+      holderProfession: holder?.profession ?? 'Non renseignée',
+      coveredCountries:
+        app.success && app.data.formula.options.yellowCard ? ['RDC', 'SADC', 'COMESA'] : ['RDC'],
+    });
     policies.set(policyId, {
       id: policyId,
       number: nextNumber('AUTO'),
@@ -208,11 +240,15 @@ export function createMockApp(options: MockOptions = {}) {
       formulaCode: formula,
       formulaName: offer?.formulaName ?? formula,
       status: 'active',
-      holderName: holder ? `${holder.firstName} ${holder.lastName}` : 'Client démo',
-      insuredObject: vehicle ? `${vehicle.make} ${vehicle.model} · ${vehicle.plate}` : 'Véhicule',
+      holderName: holder
+        ? [holder.firstName, holder.lastName, holder.postName].filter(Boolean).join(' ')
+        : 'Client démo',
+      insuredObject: vehicle
+        ? `${vehicle.make} ${vehicle.model} · ${vehicle.plate ?? `châssis ${vehicle.chassisNumber}`}`
+        : 'Véhicule',
       startDate: start,
       endDate: end,
-      annualPremium: offer?.annualPremium ?? { amount: 0, currency: 'CDF' },
+      annualPremium: offer?.annualPremium ?? premium,
       certificateCode: code,
       createdAt: iso(),
     });
@@ -291,8 +327,10 @@ export function createMockApp(options: MockOptions = {}) {
       version: null,
       category: 'particulier' as const,
       energy: 'essence' as const,
+      fiscalHorsepower: 9,
+      seats: 5,
+      manufactureYear: 2017,
       firstRegistrationDate: '2018-06-01',
-      estimatedValueUsd: 900_000,
     };
     return ok(c, 'lookupVehicle', vehicle);
   });
@@ -393,15 +431,13 @@ export function createMockApp(options: MockOptions = {}) {
     if (draft.kind !== 'subscription') {
       return fail(c, 409, 'DRAFT_INCOMPLETE', "Un devis ne s'applique qu'à une souscription");
     }
-    const required = ['holder', 'drivers', 'vehicle', 'history', 'usage'];
-    const missing = required.filter((s) => !(s in draft.steps));
+    const missing = AUTO_QUOTE_PREREQUISITES.filter((s) => !(s in draft.steps));
     if (missing.length > 0) {
       return fail(c, 409, 'DRAFT_INCOMPLETE', `Étapes à compléter : ${missing.join(', ')}`);
     }
     const vehicle = draft.steps.vehicle as { category?: string };
     const history = draft.steps.history as { claimsLast36Months?: string };
-    const usage = draft.steps.usage as { parking?: string };
-    const contract = draft.steps.contract as { paymentFrequency?: 'annual' } | undefined;
+    const usage = draft.steps.usage as { nightParking?: string; usage?: string };
     return ok(c, 'createQuote', {
       id: newId('quo'),
       draftId: draft.id,
@@ -409,8 +445,8 @@ export function createMockApp(options: MockOptions = {}) {
       offers: priceAuto({
         category: vehicle.category,
         claimsLast36Months: history.claimsLast36Months,
-        parking: usage.parking,
-        frequency: contract?.paymentFrequency,
+        parking: usage.nightParking,
+        usage: usage.usage,
       }),
       createdAt: iso(),
       validUntil: iso(30 * DAY),
@@ -458,7 +494,8 @@ export function createMockApp(options: MockOptions = {}) {
     const offer = priceAuto({
       category: application.data.vehicle.category,
       claimsLast36Months: application.data.history.claimsLast36Months,
-      parking: application.data.usage.parking,
+      parking: application.data.usage.nightParking,
+      usage: application.data.usage.usage,
     }).find((o) => o.formulaCode === application.data.formula.formulaCode);
 
     const phone = 'phone' in body.data ? body.data.phone : null;
@@ -469,32 +506,45 @@ export function createMockApp(options: MockOptions = {}) {
         : phone?.endsWith('0003')
           ? 'verifying'
           : 'succeeded';
+    const method = body.data.method;
     const operator = {
       mpesa: 'M-Pesa',
       orange_money: 'Orange Money',
       airtel_money: 'Airtel Money',
+      afrimoney: 'Afrimoney',
       card: 'carte',
-    }[body.data.method];
+      agency: 'agence',
+    }[method];
     const id = newId('pay');
-    const payment: StoredPayment = {
-      id,
-      draftId: draft.id,
-      method: body.data.method,
-      status: 'pending',
-      amount: offer?.annualPremium ?? { amount: 0, currency: 'CDF' },
-      maskedPhone: phone ? `${phone.slice(0, 7)} ••• ${phone.slice(-4)}` : null,
-      instructions:
-        body.data.method === 'card'
-          ? ['Vous allez être redirigé vers la page de paiement sécurisée de votre banque.']
+    const agencyReference = method === 'agency' ? nextNumber('PAG') : null;
+    const instructions =
+      method === 'card'
+        ? ['Vous allez être redirigé vers la page de paiement sécurisée de votre banque.']
+        : method === 'agency'
+          ? [
+              `Présentez la référence ${agencyReference} dans une agence SONAS.`,
+              'Votre couverture démarrera dès que l’agent aura confirmé le paiement.',
+            ]
           : [
               `Une demande de paiement ${operator} a été envoyée sur votre téléphone.`,
               'Saisissez votre code PIN pour la valider.',
-            ],
-      redirectUrl: body.data.method === 'card' ? `${publicUrl}/mock/3ds/${id}` : null,
+            ];
+    const payment: StoredPayment = {
+      id,
+      draftId: draft.id,
+      method,
+      status: 'pending',
+      amount: offer?.annualPremium ?? { amount: 0, currency: 'CDF' },
+      maskedPhone: phone ? `${phone.slice(0, 7)} ••• ${phone.slice(-4)}` : null,
+      instructions,
+      redirectUrl: method === 'card' ? `${publicUrl}/mock/3ds/${id}` : null,
+      agencyReference,
       failureReason: null,
+      receipt: null,
       policyId: null,
       createdAt: iso(),
-      expiresAt: iso(5 * 60 * 1000),
+      // Mobile money : la demande expire en ~2 min (E4). Agence : 3 jours pour passer au guichet.
+      expiresAt: iso(method === 'agency' ? 3 * DAY : 2 * 60 * 1000),
       outcome,
     };
     payments.set(id, payment);
@@ -524,12 +574,23 @@ export function createMockApp(options: MockOptions = {}) {
   app.get(r('getCertificate'), (c) => {
     const policy = policies.get(param(c, 'policyId'));
     if (!policy?.certificateCode) return fail(c, 404, 'NOT_FOUND', 'Attestation introuvable');
+    const details = certificateDetails.get(policy.id);
     return ok(c, 'getCertificate', {
       code: policy.certificateCode,
-      snecaNumber: `SNECA-MOCK-${policy.certificateCode}`,
+      // Simulation : provisoire immédiat ; le définitif viendra du SNECA (CA 120).
+      kind: 'provisoire',
+      snecaNumber: null,
+      insurer: {
+        name: 'SONAS SA',
+        address: 'Immeuble Sankuru, 6664 boulevard du 30 Juin, Gombe, Kinshasa',
+        arcaAgreement: '12007',
+      },
       policyNumber: policy.number,
       holderName: policy.holderName,
+      holderAddress: details?.holderAddress ?? 'Kinshasa',
+      holderProfession: details?.holderProfession ?? 'Non renseignée',
       insuredObject: policy.insuredObject,
+      coveredCountries: details?.coveredCountries ?? ['RDC'],
       validFrom: policy.startDate,
       validTo: policy.endDate,
       verifyUrl: `${webUrl}/verifier/${policy.certificateCode}`,
@@ -588,33 +649,7 @@ export function createMockApp(options: MockOptions = {}) {
       );
     }
     const d = declaration.data;
-    const docs: Claim['requiredDocuments'] = [
-      {
-        code: 'photos',
-        label: 'Photos des dégâts',
-        hint: 'Une vue d’ensemble et un gros plan de chaque zone touchée.',
-        mandatory: false,
-        status: d.documents.documentIds.length > 0 ? 'received' : 'missing',
-      },
-    ];
-    if (d.type.type === 'vol_vandalisme' || d.people.policeIntervened) {
-      docs.push({
-        code: 'police_report',
-        label: 'Procès-verbal de police',
-        hint: 'Délivré par le commissariat où vous avez déclaré les faits.',
-        mandatory: true,
-        status: 'missing',
-      });
-    }
-    if (d.type.type === 'accident' && d.liability.thirdPartyInvolved) {
-      docs.push({
-        code: 'amicable_report',
-        label: 'Constat amiable signé',
-        hint: 'Signé par les deux conducteurs, si vous en avez rempli un.',
-        mandatory: false,
-        status: 'missing',
-      });
-    }
+    const docs = requiredDocumentsFor(d, d.documents.documentIds.length > 0);
     const id = newId('clm');
     const claim = {
       id,
@@ -686,6 +721,63 @@ export function createMockApp(options: MockOptions = {}) {
   });
 
   return app;
+}
+
+/**
+ * Pièces demandées selon le cas (docs/recherche_formulaires_rdc.md §3.4, d'après sonas.cd).
+ * Jamais bloquantes : elles peuvent être transmises plus tard (CA 19).
+ * La vraie règle vivra dans packages/domain (partie B).
+ */
+function requiredDocumentsFor(
+  d: z.output<typeof AutoClaimDeclaration>,
+  hasPhotos: boolean,
+): Claim['requiredDocuments'] {
+  const doc = (code: string, label: string, hint: string | null, mandatory = true) => ({
+    code,
+    label,
+    hint,
+    mandatory,
+    status: 'missing' as const,
+  });
+  const docs: Claim['requiredDocuments'] = [
+    {
+      ...doc('photos', 'Photos des dégâts', 'Une vue d’ensemble et un gros plan par zone.', false),
+      status: hasPhotos ? 'received' : 'missing',
+    },
+  ];
+  const type = d.type.type;
+  if (type === 'accident') {
+    docs.push(doc('police_report', 'Procès-verbal ou constat de police', null));
+    docs.push(doc('repair_quote', 'Devis de réparation', 'Établi par un garage de votre choix.'));
+  }
+  if (type === 'vol') {
+    docs.push(doc('police_report', 'Déclaration de vol à la police', null));
+    docs.push(doc('keys', 'Clés du véhicule', 'À déposer en agence.'));
+    docs.push(doc('registration_card', 'Carte rose', null));
+  }
+  if (type === 'incendie') {
+    docs.push(doc('police_report', 'Constat de police', null));
+    docs.push(doc('maintenance', 'Justificatifs d’entretien', null));
+  }
+  if (d.people.injured) {
+    docs.push(doc('medical_bills', 'Factures de soins', null));
+    docs.push(doc('medical_report', 'Rapport médical', null));
+    docs.push(doc('identity', 'Pièce d’identité de la victime', null));
+  }
+  if (d.people.deceased) {
+    docs.push(
+      doc(
+        'death_certificate',
+        'Certificat de décès et permis d’inhumation',
+        'Originaux à déposer en agence.',
+      ),
+    );
+  }
+  if (d.liability.thirdPartyInvolved) {
+    docs.push(doc('amicable_report', 'Constat amiable signé', 'Si vous en avez rempli un.', false));
+  }
+  // Une même pièce peut être demandée par plusieurs règles : on garde la première.
+  return docs.filter((x, i) => docs.findIndex((y) => y.code === x.code) === i);
 }
 
 function stripOutcome(payment: StoredPayment): Payment {

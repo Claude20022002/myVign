@@ -25,15 +25,27 @@ export type Policy = z.infer<typeof Policy>;
 export const PolicyParams = z.object({ policyId: Id });
 
 /**
- * Attestation d'assurance (certificat SNECA pour la RC auto).
- * Le QR code pointe vers la page publique /verifier/{code} d'apps/web.
+ * Certificat d'assurance RC auto. Mentions obligatoires CA 121-122.
+ * Après paiement : certificat PROVISOIRE immédiat (valable 1 mois au plus), puis DÉFINITIF
+ * via le SNECA sous 10 jours (CA 120). Le QR code pointe vers la page publique /verifier/{code} du site.
  */
 export const Certificate = z.object({
   code: z.string().describe('Code de vérification imprimé sous le QR code'),
-  snecaNumber: z.string().nullable().describe('Numéro attribué par le SNECA (ARCA)'),
+  kind: z.enum(['provisoire', 'definitif']),
+  snecaNumber: z.string().nullable().describe('Numéro attribué par le SNECA (ARCA), si définitif'),
+  insurer: z.object({
+    name: z.literal('SONAS SA'),
+    address: z.string(),
+    arcaAgreement: z.literal('12007'),
+  }),
   policyNumber: z.string(),
   holderName: z.string(),
+  holderAddress: z.string(),
+  holderProfession: z.string(),
+  /** Nature, type, marque, immatriculation ou n° de châssis. */
   insuredObject: z.string(),
+  /** Pays couverts si extension carte jaune. */
+  coveredCountries: z.array(z.string()),
   validFrom: IsoDate,
   validTo: IsoDate,
   verifyUrl: z.url(),
