@@ -209,7 +209,8 @@ export function createMockApp(options: MockOptions = {}) {
         amount: payment.amount,
         paidAt: iso(),
       };
-      payment.policyId = issuePolicy(payment.draftId, payment.amount);
+      // La prime du contrat est celle du tarif payé (dans la devise du tarif), jamais recalculée.
+      payment.policyId = issuePolicy(payment.draftId, payment.exchange?.tariffAmount ?? payment.amount);
     }
   }
 
@@ -262,7 +263,7 @@ export function createMockApp(options: MockOptions = {}) {
         : 'Véhicule',
       startDate: start,
       endDate: end,
-      annualPremium: offer?.annualPremium ?? premium,
+      annualPremium: premium,
       certificateCode: code,
       createdAt: iso(),
     });

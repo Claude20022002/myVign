@@ -5,6 +5,15 @@ import type { ProvinceCode } from './provinces';
 
 export const PROVINCE_MAP_VIEWBOX = '0 0 1000 988';
 
+/** Projection utilisée : x = (lng - minLng) * scale ; y = (maxLat - lat) * scale. */
+export const PROVINCE_MAP_PROJECTION = { minLng: 12.200987, maxLat: 5.391931, scale: 52.420693 } as const;
+
+/** Projette un point [latitude, longitude] dans le repère de la carte. */
+export function projeter(lat: number, lng: number): [number, number] {
+  const { minLng, maxLat, scale } = PROVINCE_MAP_PROJECTION;
+  return [(lng - minLng) * scale, (maxLat - lat) * scale];
+}
+
 export interface ProvinceShape {
   /** Tracé SVG (attribut d) dans le repère PROVINCE_MAP_VIEWBOX. */
   path: string;

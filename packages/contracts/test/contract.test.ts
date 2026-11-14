@@ -177,6 +177,8 @@ describe('parcours de souscription auto (serveur simulé)', () => {
 
     const policy = await api.call('getPolicy', { params: { policyId } });
     expect(policy.ok && policy.data.startDate).toBe('2026-11-14'); // dès le paiement (CA 16)
+    // La prime du contrat est exactement le montant facturé (pas de recalcul).
+    expect(policy.ok && policy.data.annualPremium).toEqual(payment.amount);
 
     const certificate = await api.call('getCertificate', { params: { policyId } });
     if (!certificate.ok) throw new Error(certificate.error.message);
