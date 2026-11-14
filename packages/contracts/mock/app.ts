@@ -131,6 +131,7 @@ export function createMockApp(options: MockOptions = {}) {
 
   const toHonoPath = (path: string) => path.replace(/\{(\w+)\}/g, ':$1');
   const r = (key: RouteKey) => toHonoPath(routes[key].path);
+  const param = (c: Context, name: string) => c.req.param(name) ?? '';
 
   function loadDraft(c: Context): StoredDraft | Response {
     const draftId = c.req.param('draftId') ?? '';
@@ -235,7 +236,7 @@ export function createMockApp(options: MockOptions = {}) {
   app.get(r('listProducts'), (c) => ok(c, 'listProducts', { items: PRODUCT_SUMMARIES }));
 
   app.get(r('getProduct'), (c) => {
-    const product = productDetail(c.req.param('code'));
+    const product = productDetail(param(c, 'code'));
     return product ? ok(c, 'getProduct', product) : fail(c, 404, 'NOT_FOUND', 'Produit inconnu');
   });
 
@@ -265,7 +266,7 @@ export function createMockApp(options: MockOptions = {}) {
 
   app.get(r('getAgency'), (c) => {
     // Le slug contient un « / » : il arrive encodé dans le chemin.
-    const slug = decodeURIComponent(c.req.param('slug'));
+    const slug = decodeURIComponent(param(c, 'slug'));
     const agency = AGENCIES.find((a) => a.slug === slug || a.id === slug);
     return agency ? ok(c, 'getAgency', agency) : fail(c, 404, 'NOT_FOUND', 'Agence introuvable');
   });
@@ -419,7 +420,7 @@ export function createMockApp(options: MockOptions = {}) {
     const existing = paymentsByIdempotencyKey.get(key);
     if (existing) {
       const payment = payments.get(existing);
-      if (payment?.draftId !== draft.id) {
+      if (!payment || payment.draftId !== draft.id) {
         return fail(c, 409, 'IDEMPOTENCY_CONFLICT', 'Clé déjà utilisée pour un autre dossier');
       }
       return ok(c, 'createPayment', stripOutcome(payment));
@@ -480,19 +481,19 @@ export function createMockApp(options: MockOptions = {}) {
   );
 
   app.get(r('getPayment'), (c) => {
-    const payment = payments.get(c.req.param('paymentId'));
+    const payment = payments.get(param(c, 'paymentId'));
     if (!payment) return fail(c, 404, 'NOT_FOUND', 'Paiement introuvable');
     settlePayment(payment);
     return ok(c, 'getPayment', stripOutcome(payment));
   });
 
   app.get(r('getPolicy'), (c) => {
-    const policy = policies.get(c.req.param('policyId'));
+    const policy = policies.get(param(c, 'policyId'));
     return policy ? ok(c, 'getPolicy', policy) : fail(c, 404, 'NOT_FOUND', 'Contrat introuvable');
   });
 
   app.get(r('getCertificate'), (c) => {
-    const policy = policies.get(c.req.param('policyId'));
+    const policy = policies.get(param(c, 'policyId'));
     if (!policy?.certificateCode) return fail(c, 404, 'NOT_FOUND', 'Attestation introuvable');
     return ok(c, 'getCertificate', {
       code: policy.certificateCode,
@@ -513,7 +514,7 @@ export function createMockApp(options: MockOptions = {}) {
   });
 
   app.get(r('verifyCertificate'), (c) => {
-    const code = c.req.param('code').toUpperCase();
+    const code = param(c, 'code').toUpperCase();
     const entry = certificates.get(code);
     const policy = entry ? policies.get(entry.policyId) : undefined;
     if (!policy) {
@@ -602,12 +603,12 @@ export function createMockApp(options: MockOptions = {}) {
   });
 
   app.get(r('getClaim'), (c) => {
-    const claim = claims.get(c.req.param('claimId'));
+    const claim = claims.get(param(c, 'claimId'));
     return claim ? ok(c, 'getClaim', claimView(claim)) : fail(c, 404, 'NOT_FOUND', 'Sinistre introuvable');
   });
 
   app.post(r('createClaimUpload'), async (c) => {
-    if (!claims.has(c.req.param('claimId'))) return fail(c, 404, 'NOT_FOUND', 'Sinistre introuvable');
+    if (!claims.has(param(c, 'claimId'))) return fail(c, 404, 'NOT_FOUND', 'Sinistre introuvable');
     return createUpload(c, 'createClaimUpload');
   });
 

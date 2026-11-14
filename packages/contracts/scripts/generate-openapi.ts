@@ -43,8 +43,8 @@ for (const [operationId, route] of Object.entries(routes) as [string, RouteDef][
     };
   }
 
-  paths[route.path] ??= {};
-  paths[route.path][route.method.toLowerCase()] = {
+  const pathItem = (paths[route.path] ??= {});
+  pathItem[route.method.toLowerCase()] = {
     operationId,
     summary: route.summary,
     tags: [route.tag],
