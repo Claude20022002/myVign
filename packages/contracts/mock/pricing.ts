@@ -30,6 +30,7 @@ interface PricingInput {
   category?: string;
   claimsLast36Months?: string;
   parking?: string;
+  usage?: string;
   frequency?: 'annual' | 'semiannual' | 'quarterly';
 }
 
@@ -37,13 +38,17 @@ const DIVISOR = { annual: 1, semiannual: 2, quarterly: 4 } as const;
 
 export function priceAuto(input: PricingInput): z.output<typeof QuoteOffer>[] {
   const category = CATEGORY_FACTOR[input.category ?? 'particulier'] ?? 1;
-  const history =
-    input.claimsLast36Months === '2+' ? 1.3 : input.claimsLast36Months === '1' ? 1.12 : 1;
+  const history = { '0': 1, '1': 1.12, '2': 1.3, '3+': 1.5 }[input.claimsLast36Months ?? '0'] ?? 1;
   const parking = input.parking === 'garage_ferme' || input.parking === 'parking_ferme' ? 0.95 : 1;
+  const commercial = ['taxi', 'moto_taxi', 'transport_public', 'location'].includes(
+    input.usage ?? '',
+  )
+    ? 1.6
+    : 1;
   const frequency = input.frequency ?? 'annual';
 
   return Object.entries(BASE_CDF).map(([code, base]) => {
-    const francs = Math.round((base * category * history * parking) / 1000) * 1000;
+    const francs = Math.round((base * category * history * parking * commercial) / 1000) * 1000;
     const rc = Math.round((francs * 0.55) / 1000) * 1000;
     const amount = francs * 100;
     return {

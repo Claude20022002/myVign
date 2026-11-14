@@ -2,6 +2,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { type Context, Hono } from 'hono';
 import type { z } from 'zod';
 import {
+  AUTO_QUOTE_PREREQUISITES,
   type ApiError,
   AutoApplication,
   AutoClaimDeclaration,
