@@ -43,7 +43,8 @@ for (const [operationId, route] of Object.entries(routes) as [string, RouteDef][
     };
   }
 
-  const pathItem = (paths[route.path] ??= {});
+  const pathItem = paths[route.path] ?? {};
+  paths[route.path] = pathItem;
   pathItem[route.method.toLowerCase()] = {
     operationId,
     summary: route.summary,
@@ -67,7 +68,8 @@ const document = {
   info: {
     title: 'API myVign (SONAS)',
     version: CONTRACT_VERSION,
-    description: 'Contrat généré depuis packages/contracts/src/routes.ts. Ne pas modifier à la main.',
+    description:
+      'Contrat généré depuis packages/contracts/src/routes.ts. Ne pas modifier à la main.',
   },
   servers: [{ url: 'http://localhost:4010', description: 'Serveur simulé' }],
   paths,

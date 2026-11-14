@@ -2,7 +2,19 @@
   "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
-    "includes": ["**", "!**/dist", "!**/.next", "!**/coverage", "!docs/sonas-site", "!**/openapi.json"]
+    "includes": [
+      "packages/**",
+      "apps/api/**",
+      "apps/worker/**",
+      "infra/**",
+      "*.json",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/.next",
+      "!**/coverage",
+      "!docs/sonas-site",
+      "!**/openapi.json"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -11,8 +23,7 @@
     "lineWidth": 100
   },
   "linter": {
-    "enabled": true,
-    "rules": { "recommended": true }
+    "enabled": true
   },
   "javascript": {
     "formatter": { "quoteStyle": "single", "semicolons": "always", "trailingCommas": "all" }

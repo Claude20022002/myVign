@@ -69,7 +69,10 @@ export const CreateUploadBody = z.object({
   fileName: z.string().min(1).max(200),
   contentType: z.enum(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']),
   /** Taille en octets, plafonnée à 10 Mo (les photos sont compressées côté client). */
-  size: z.int().positive().max(10 * 1024 * 1024),
+  size: z
+    .int()
+    .positive()
+    .max(10 * 1024 * 1024),
   category: DocumentCategory,
 });
 

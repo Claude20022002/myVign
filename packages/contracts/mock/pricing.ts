@@ -37,7 +37,8 @@ const DIVISOR = { annual: 1, semiannual: 2, quarterly: 4 } as const;
 
 export function priceAuto(input: PricingInput): z.output<typeof QuoteOffer>[] {
   const category = CATEGORY_FACTOR[input.category ?? 'particulier'] ?? 1;
-  const history = input.claimsLast36Months === '2+' ? 1.3 : input.claimsLast36Months === '1' ? 1.12 : 1;
+  const history =
+    input.claimsLast36Months === '2+' ? 1.3 : input.claimsLast36Months === '1' ? 1.12 : 1;
   const parking = input.parking === 'garage_ferme' || input.parking === 'parking_ferme' ? 0.95 : 1;
   const frequency = input.frequency ?? 'annual';
 

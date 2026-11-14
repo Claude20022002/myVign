@@ -115,13 +115,29 @@ const AUTO: z.output<typeof Product> = {
   subscriptionSteps: 9,
   claimSupported: true,
   description:
-    "La responsabilité civile automobile est obligatoire en RDC. Choisissez la formule qui protège aussi votre véhicule.",
+    'La responsabilité civile automobile est obligatoire en RDC. Choisissez la formule qui protège aussi votre véhicule.',
   guarantees: [
-    { code: 'rc', label: 'Responsabilité civile', description: 'Dommages causés aux tiers (obligatoire).' },
-    { code: 'defense', label: 'Défense et recours', description: 'Assistance juridique après un accident.' },
-    { code: 'vol_incendie', label: 'Vol et incendie', description: 'Votre véhicule volé ou incendié.' },
+    {
+      code: 'rc',
+      label: 'Responsabilité civile',
+      description: 'Dommages causés aux tiers (obligatoire).',
+    },
+    {
+      code: 'defense',
+      label: 'Défense et recours',
+      description: 'Assistance juridique après un accident.',
+    },
+    {
+      code: 'vol_incendie',
+      label: 'Vol et incendie',
+      description: 'Votre véhicule volé ou incendié.',
+    },
     { code: 'bris_glace', label: 'Bris de glace', description: 'Pare-brise, vitres et optiques.' },
-    { code: 'dommages', label: 'Dommages tous accidents', description: 'Réparations même si vous êtes responsable.' },
+    {
+      code: 'dommages',
+      label: 'Dommages tous accidents',
+      description: 'Réparations même si vous êtes responsable.',
+    },
     { code: 'assistance', label: 'Assistance 24 h/24', description: 'Dépannage et remorquage.' },
   ],
   formulas: [

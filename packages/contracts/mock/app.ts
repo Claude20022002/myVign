@@ -16,7 +16,13 @@ import {
   type RouteKey,
   routes,
 } from '../src';
-import { AGENCIES, CALLBACK_SLOTS, KNOWN_VEHICLES, PRODUCT_SUMMARIES, productDetail } from './fixtures';
+import {
+  AGENCIES,
+  CALLBACK_SLOTS,
+  KNOWN_VEHICLES,
+  PRODUCT_SUMMARIES,
+  productDetail,
+} from './fixtures';
 import { estimateAuto, priceAuto } from './pricing';
 
 /**
@@ -88,8 +94,10 @@ export function createMockApp(options: MockOptions = {}) {
     const scenario = c.req.header('x-mock-scenario');
     const delay = latencyMs + (scenario === 'slow' ? 3000 : 0);
     if (delay > 0) await new Promise((r) => setTimeout(r, delay));
-    if (scenario === 'technical-error') return fail(c, 500, 'INTERNAL_ERROR', 'Erreur technique simulée');
-    if (scenario === 'rate-limited') return fail(c, 429, 'RATE_LIMITED', 'Trop de tentatives, réessayez plus tard');
+    if (scenario === 'technical-error')
+      return fail(c, 500, 'INTERNAL_ERROR', 'Erreur technique simulée');
+    if (scenario === 'rate-limited')
+      return fail(c, 429, 'RATE_LIMITED', 'Trop de tentatives, réessayez plus tard');
     await next();
   });
 
@@ -248,11 +256,7 @@ export function createMockApp(options: MockOptions = {}) {
     const { q, region, lat, lng } = query.data;
     const needle = q?.toLowerCase();
     const items = AGENCIES.filter((a) => !region || a.region === region)
-      .filter(
-        (a) =>
-          !needle ||
-          `${a.name} ${a.city} ${a.address}`.toLowerCase().includes(needle),
-      )
+      .filter((a) => !needle || `${a.name} ${a.city} ${a.address}`.toLowerCase().includes(needle))
       .map((a) => ({
         ...a,
         distanceKm:
@@ -337,7 +341,13 @@ export function createMockApp(options: MockOptions = {}) {
     }
     const values = schema.safeParse(body.data.values);
     if (!values.success) {
-      return fail(c, 422, 'VALIDATION_FAILED', 'Certains champs sont à corriger', fieldErrors(values.error));
+      return fail(
+        c,
+        422,
+        'VALIDATION_FAILED',
+        'Certains champs sont à corriger',
+        fieldErrors(values.error),
+      );
     }
     draft.steps[step] = values.data as Record<string, unknown>;
     refreshProgress(draft);
@@ -427,11 +437,23 @@ export function createMockApp(options: MockOptions = {}) {
     }
     const application = AutoApplication.safeParse(draft.steps);
     if (!application.success) {
-      return fail(c, 409, 'DRAFT_INCOMPLETE', 'Le dossier doit être complet avant le paiement', fieldErrors(application.error));
+      return fail(
+        c,
+        409,
+        'DRAFT_INCOMPLETE',
+        'Le dossier doit être complet avant le paiement',
+        fieldErrors(application.error),
+      );
     }
     const body = await parseBody(c, routes.createPayment.body);
     if (!body.success) {
-      return fail(c, 422, 'VALIDATION_FAILED', 'Moyen de paiement invalide', fieldErrors(body.error));
+      return fail(
+        c,
+        422,
+        'VALIDATION_FAILED',
+        'Moyen de paiement invalide',
+        fieldErrors(body.error),
+      );
     }
     const offer = priceAuto({
       category: application.data.vehicle.category,
@@ -447,7 +469,12 @@ export function createMockApp(options: MockOptions = {}) {
         : phone?.endsWith('0003')
           ? 'verifying'
           : 'succeeded';
-    const operator = { mpesa: 'M-Pesa', orange_money: 'Orange Money', airtel_money: 'Airtel Money', card: 'carte' }[body.data.method];
+    const operator = {
+      mpesa: 'M-Pesa',
+      orange_money: 'Orange Money',
+      airtel_money: 'Airtel Money',
+      card: 'carte',
+    }[body.data.method];
     const id = newId('pay');
     const payment: StoredPayment = {
       id,
@@ -477,7 +504,9 @@ export function createMockApp(options: MockOptions = {}) {
   });
 
   app.get('/mock/3ds/:paymentId', (c) =>
-    c.html('<!doctype html><meta charset="utf-8"><title>3-D Secure simulé</title><p>Paiement par carte simulé : vous pouvez fermer cette page.</p>'),
+    c.html(
+      '<!doctype html><meta charset="utf-8"><title>3-D Secure simulé</title><p>Paiement par carte simulé : vous pouvez fermer cette page.</p>',
+    ),
   );
 
   app.get(r('getPayment'), (c) => {
@@ -550,7 +579,13 @@ export function createMockApp(options: MockOptions = {}) {
     }
     const declaration = AutoClaimDeclaration.safeParse(draft.steps);
     if (!declaration.success) {
-      return fail(c, 409, 'DRAFT_INCOMPLETE', 'La déclaration est incomplète', fieldErrors(declaration.error));
+      return fail(
+        c,
+        409,
+        'DRAFT_INCOMPLETE',
+        'La déclaration est incomplète',
+        fieldErrors(declaration.error),
+      );
     }
     const d = declaration.data;
     const docs: Claim['requiredDocuments'] = [
@@ -590,7 +625,11 @@ export function createMockApp(options: MockOptions = {}) {
       statusReason: null,
       requiredDocuments: docs,
       timeline: [
-        { at: iso(), status: 'declared' as const, message: 'Votre déclaration a bien été envoyée.' },
+        {
+          at: iso(),
+          status: 'declared' as const,
+          message: 'Votre déclaration a bien été envoyée.',
+        },
       ],
       callbackPlanned: true,
       createdAt: iso(),
@@ -604,7 +643,9 @@ export function createMockApp(options: MockOptions = {}) {
 
   app.get(r('getClaim'), (c) => {
     const claim = claims.get(param(c, 'claimId'));
-    return claim ? ok(c, 'getClaim', claimView(claim)) : fail(c, 404, 'NOT_FOUND', 'Sinistre introuvable');
+    return claim
+      ? ok(c, 'getClaim', claimView(claim))
+      : fail(c, 404, 'NOT_FOUND', 'Sinistre introuvable');
   });
 
   app.post(r('createClaimUpload'), async (c) => {
@@ -617,10 +658,19 @@ export function createMockApp(options: MockOptions = {}) {
   app.post(r('createCallback'), async (c) => {
     const body = await parseBody(c, routes.createCallback.body);
     if (!body.success) {
-      return fail(c, 422, 'VALIDATION_FAILED', 'Demande de rappel invalide', fieldErrors(body.error));
+      return fail(
+        c,
+        422,
+        'VALIDATION_FAILED',
+        'Demande de rappel invalide',
+        fieldErrors(body.error),
+      );
     }
     const slot = CALLBACK_SLOTS.find((s) => s.id === body.data.slotId);
-    if (!slot) return fail(c, 422, 'VALIDATION_FAILED', 'Créneau indisponible', { slotId: ['Créneau inconnu'] });
+    if (!slot)
+      return fail(c, 422, 'VALIDATION_FAILED', 'Créneau indisponible', {
+        slotId: ['Créneau inconnu'],
+      });
     return ok(c, 'createCallback', {
       id: newId('cbk'),
       reference: nextNumber('RAP'),
@@ -646,7 +696,9 @@ function stripOutcome(payment: StoredPayment): Payment {
 function maskName(fullName: string): string {
   return fullName
     .split(' ')
-    .map((part) => (part.length <= 1 ? part : `${part[0]}${'•'.repeat(Math.min(part.length - 1, 4))}`))
+    .map((part) =>
+      part.length <= 1 ? part : `${part[0]}${'•'.repeat(Math.min(part.length - 1, 4))}`,
+    )
     .join(' ');
 }
 
@@ -654,7 +706,9 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): nu
   const toRad = (d: number) => (d * Math.PI) / 180;
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
   return 6371 * 2 * Math.asin(Math.sqrt(a));
 }
 

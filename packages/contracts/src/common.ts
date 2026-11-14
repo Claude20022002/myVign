@@ -43,6 +43,8 @@ export function normalizePhoneCD(raw: string): string {
 /**
  * Plaque d'immatriculation RDC : 4 chiffres, 2 lettres, 2 chiffres (ex. « 4521AB 01 »).
  * Espaces et tirets ignorés, lettres passées en majuscules.
+ * À ÉLARGIR quand le format de la nouvelle plaque sécurisée DGI (janvier 2026) sera connu :
+ * les deux formats devront être acceptés (docs/recherche_formulaires_rdc.md §2).
  */
 export const PlateCD = z
   .string()
@@ -54,6 +56,77 @@ export function normalizePlateCD(raw: string): string {
 }
 
 export const Email = z.email();
+
+/** Numéro de châssis (VIN) ou de moteur : identifie un véhicule sans plaque (CA 121). */
+export const ChassisNumber = z
+  .string()
+  .transform((raw) => raw.replace(/[\s-]/g, '').toUpperCase())
+  .pipe(z.string().regex(/^[A-Z0-9]{6,20}$/, 'Numéro de châssis invalide'));
+
+/** Les 26 provinces de la RDC. */
+export const Province = z.enum([
+  'kinshasa',
+  'kongo_central',
+  'kwango',
+  'kwilu',
+  'mai_ndombe',
+  'kasai',
+  'kasai_central',
+  'kasai_oriental',
+  'lomami',
+  'sankuru',
+  'maniema',
+  'sud_kivu',
+  'nord_kivu',
+  'ituri',
+  'haut_uele',
+  'bas_uele',
+  'tshopo',
+  'nord_ubangi',
+  'sud_ubangi',
+  'mongala',
+  'equateur',
+  'tshuapa',
+  'tanganyika',
+  'haut_lomami',
+  'lualaba',
+  'haut_katanga',
+]);
+export type Province = z.infer<typeof Province>;
+
+/**
+ * Adresse au format RDC : pas de code postal, un point de repère libre
+ * (« en face de la paroisse… »). Ex. : 96, av. Kamba, C/Dilala, Q/Biashara, Kolwezi.
+ */
+export const AddressCD = z.object({
+  province: Province,
+  city: z.string().min(2).max(80),
+  commune: z.string().min(2).max(80),
+  quartier: z.string().max(80).nullable(),
+  street: z.string().min(2).max(120).describe('Avenue et numéro'),
+  landmark: z.string().max(160).nullable().describe('Point de repère'),
+});
+export type AddressCD = z.infer<typeof AddressCD>;
+
+/** Pièces d'identité courantes en RDC (pas de CNI généralisée en 2026). */
+export const IdentityDocument = z.object({
+  type: z.enum(['carte_electeur', 'passeport', 'permis_conduire', 'cni_onip', 'carte_resident']),
+  number: z.string().min(3).max(40),
+  /** Sans objet pour la carte d'électeur. */
+  expiresAt: IsoDate.nullable(),
+});
+
+/** Personne morale (flottes, incendie des bâtiments professionnels, RC pro). */
+export const Company = z.object({
+  name: z.string().min(2).max(160),
+  rccm: z.string().min(3).max(40),
+  idNat: z.string().min(3).max(40),
+  nif: z.string().min(3).max(40),
+  representative: z.object({
+    fullName: z.string().min(2).max(160),
+    role: z.string().min(2).max(80),
+  }),
+});
 
 /** Codes d'erreur stables : le front s'appuie dessus pour choisir l'écran d'erreur. */
 export const ErrorCode = z.enum([

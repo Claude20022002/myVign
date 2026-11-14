@@ -31,12 +31,18 @@ const holder = {
 };
 
 async function completeAutoDraft(api: ApiClient) {
-  const created = await api.call('createDraft', { body: { kind: 'subscription', product: 'auto' } });
+  const created = await api.call('createDraft', {
+    body: { kind: 'subscription', product: 'auto' },
+  });
   if (!created.ok) throw new Error(created.error.message);
   const draftId = created.data.id;
   const steps: Record<string, unknown> = {
     holder,
-    drivers: { mainDriverLicenseDate: '2010-06-01', licenseObtainedInDrc: true, additionalDrivers: [] },
+    drivers: {
+      mainDriverLicenseDate: '2010-06-01',
+      licenseObtainedInDrc: true,
+      additionalDrivers: [],
+    },
     vehicle: {
       category: 'particulier',
       plate: '4521AB 01',
@@ -47,8 +53,17 @@ async function completeAutoDraft(api: ApiClient) {
       acquisitionDate: '2021-03-01',
     },
     history: { claimsLast36Months: '0', licenseSuspended: false },
-    usage: { usage: 'domicile_travail', annualKm: 12000, parking: 'garage_ferme', parkingAddressSameAsHome: true },
-    formula: { formulaCode: 'tous_risques', deductible: 'standard', options: { legalProtection: true, driverProtection: false } },
+    usage: {
+      usage: 'domicile_travail',
+      annualKm: 12000,
+      parking: 'garage_ferme',
+      parkingAddressSameAsHome: true,
+    },
+    formula: {
+      formulaCode: 'tous_risques',
+      deductible: 'standard',
+      options: { legalProtection: true, driverProtection: false },
+    },
     contract: { startDate: '2026-12-01', paymentFrequency: 'annual', acceptsTerms: true },
   };
   for (const [step, values] of Object.entries(steps)) {
@@ -114,7 +129,9 @@ describe('parcours de souscription auto (serveur simulé)', () => {
 
   it('refuse une étape invalide avec les erreurs par champ', async () => {
     const { api } = setup();
-    const created = await api.call('createDraft', { body: { kind: 'subscription', product: 'auto' } });
+    const created = await api.call('createDraft', {
+      body: { kind: 'subscription', product: 'auto' },
+    });
     if (!created.ok) throw new Error();
     const saved = await api.call('saveDraftStep', {
       params: { draftId: created.data.id, step: 'holder' },
@@ -129,7 +146,9 @@ describe('parcours de souscription auto (serveur simulé)', () => {
 
   it('bloque le devis tant que le dossier est incomplet', async () => {
     const { api } = setup();
-    const created = await api.call('createDraft', { body: { kind: 'subscription', product: 'auto' } });
+    const created = await api.call('createDraft', {
+      body: { kind: 'subscription', product: 'auto' },
+    });
     if (!created.ok) throw new Error();
     const quote = await api.call('createQuote', { params: { draftId: created.data.id } });
     expect(!quote.ok && quote.error.code).toBe('DRAFT_INCOMPLETE');
@@ -202,13 +221,52 @@ describe('déclaration de sinistre auto', () => {
     if (!created.ok) throw new Error();
     const draftId = created.data.id;
     const steps: Record<string, unknown> = {
-      contact: { lastName: 'Kabongo', firstName: 'Mireille', phone: '+243812345678', workPhone: null, email: null, plate: '4521AB01', policyNumber: null },
+      contact: {
+        lastName: 'Kabongo',
+        firstName: 'Mireille',
+        phone: '+243812345678',
+        workPhone: null,
+        email: null,
+        plate: '4521AB01',
+        policyNumber: null,
+      },
       type: { type: 'accident' },
-      whenWhere: { date: '2026-11-05', time: '18:30', city: 'Kinshasa', commune: 'Ngaliema', abroad: false, vehicleStillAbroad: null },
-      circumstances: { vehicleSituation: 'en_circulation', description: "À l'arrêt au feu rouge, un véhicule m'a percuté par l'arrière." },
-      damage: { zones: ['arriere_gauche', 'arriere'], natures: ['carrosserie', 'optiques'], vehicleDrivable: true, objectsStolen: false },
-      people: { injured: false, policeIntervened: false, driver: 'main_driver', otherDriver: null, noviceDriver: false, usage: 'domicile_travail' },
-      liability: { liability: 'none', thirdPartyInvolved: true, thirdParty: { lastName: 'Mukendi', firstName: 'Joseph', commune: 'Lingwala', plate: '7810KC01' } },
+      whenWhere: {
+        date: '2026-11-05',
+        time: '18:30',
+        city: 'Kinshasa',
+        commune: 'Ngaliema',
+        abroad: false,
+        vehicleStillAbroad: null,
+      },
+      circumstances: {
+        vehicleSituation: 'en_circulation',
+        description: "À l'arrêt au feu rouge, un véhicule m'a percuté par l'arrière.",
+      },
+      damage: {
+        zones: ['arriere_gauche', 'arriere'],
+        natures: ['carrosserie', 'optiques'],
+        vehicleDrivable: true,
+        objectsStolen: false,
+      },
+      people: {
+        injured: false,
+        policeIntervened: false,
+        driver: 'main_driver',
+        otherDriver: null,
+        noviceDriver: false,
+        usage: 'domicile_travail',
+      },
+      liability: {
+        liability: 'none',
+        thirdPartyInvolved: true,
+        thirdParty: {
+          lastName: 'Mukendi',
+          firstName: 'Joseph',
+          commune: 'Lingwala',
+          plate: '7810KC01',
+        },
+      },
       documents: { documentIds: [] },
     };
     for (const [step, values] of Object.entries(steps)) {
