@@ -14,6 +14,7 @@ export const QuoteOffer = z.object({
   breakdown: z.array(z.object({ label: z.string(), amount: Money })),
   recommended: z.boolean(),
 });
+export type QuoteOffer = z.infer<typeof QuoteOffer>;
 
 export const Quote = z.object({
   id: Id,

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#0A405C" };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${saira.variable} ${atkinson.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">

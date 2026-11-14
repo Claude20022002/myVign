@@ -199,16 +199,16 @@ export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, 
             {phases.map((p, i) => {
               const etat = i < etape.phase ? "fait" : i === etape.phase ? "encours" : "avenir";
               return (
-                <li key={p} className="flex-1" aria-current={etat === "encours" ? "step" : undefined}>
+                <li key={p} className="min-w-0 flex-1" aria-current={etat === "encours" ? "step" : undefined}>
                   <span className="mb-1 block h-1 overflow-hidden rounded-full bg-filet">
                     <span
                       className="block h-full rounded-full bg-bleu-logo transition-[width] duration-300"
                       style={{ width: etat === "fait" ? "100%" : etat === "encours" ? `${(rangDansPhase / Math.max(1, dansPhase.length)) * 100}%` : "0%" }}
                     />
                   </span>
-                  <span className={`flex items-center gap-1 text-[13px] sm:text-sm ${etat === "encours" ? "font-bold text-encre" : "text-texte-2"}`}>
+                  <span className={`flex min-w-0 items-center gap-1 text-[13px] sm:text-sm ${etat === "encours" ? "font-bold text-encre" : "text-texte-2 max-sm:sr-only"}`}>
                     {etat === "fait" && <Check className="size-3.5 text-bleu-action" aria-hidden="true" />}
-                    {p}
+                    <span className="truncate">{p}</span>
                     <span className="sr-only">{etat === "fait" ? " (terminé)" : etat === "encours" ? " (en cours)" : " (à venir)"}</span>
                   </span>
                 </li>

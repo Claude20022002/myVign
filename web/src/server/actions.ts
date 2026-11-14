@@ -7,7 +7,7 @@
  */
 
 import { randomUUID } from "node:crypto";
-import type { Currency, PaymentMethod } from "@myvign/contracts";
+import type { Certificate, Currency, Draft, PaymentMethod, Policy } from "@myvign/contracts";
 import { cookies } from "next/headers";
 import { api, type Resultat, versResultat } from "./api";
 
@@ -53,7 +53,7 @@ export async function enregistrerBloc(
   bloc: string,
   valeurs: Record<string, unknown>,
   dejaSaisis: Record<string, Record<string, unknown>> = {},
-) {
+): Promise<Resultat<Draft>> {
   let id = await lireBrouillon(parcours);
   if (!id) {
     const cree = await nouveauBrouillon(parcours);
@@ -97,11 +97,14 @@ export async function lancerPaiement(entree: { methode: PaymentMethod; telephone
   if (!MOYENS.includes(entree.methode)) {
     return { ok: false, code: "VALIDATION_FAILED", message: "Moyen de paiement inconnu" } as Resultat<never>;
   }
-  const currency = entree.devise === "USD" ? "USD" : "CDF";
+  const currency: Currency = entree.devise === "USD" ? "USD" : "CDF";
+  const methode = entree.methode;
   const body =
-    entree.methode === "card" || entree.methode === "agency"
-      ? { method: entree.methode, currency }
-      : { method: entree.methode, phone: texte(entree.telephone, 20), currency };
+    methode === "card"
+      ? { method: "card" as const, currency }
+      : methode === "agency"
+        ? { method: "agency" as const, currency }
+        : { method: methode, phone: texte(entree.telephone, 20), currency };
   return versResultat(
     await api.call("createPayment", {
       params: { draftId: id },
@@ -116,7 +119,9 @@ export async function suivrePaiement(paymentId: string) {
   return versResultat(await api.call("getPayment", { params: { paymentId: texte(paymentId, 64) } }));
 }
 
-export async function obtenirContrat(policyId: string) {
+export async function obtenirContrat(
+  policyId: string,
+): Promise<Resultat<{ contrat: Policy; certificat: Certificate }>> {
   const [contrat, certificat] = await Promise.all([
     api.call("getPolicy", { params: { policyId: texte(policyId, 64) } }),
     api.call("getCertificate", { params: { policyId: texte(policyId, 64) } }),
@@ -124,7 +129,7 @@ export async function obtenirContrat(policyId: string) {
   if (!contrat.ok) return versResultat(contrat);
   if (!certificat.ok) return versResultat(certificat);
   await oublierParcours("souscription");
-  return { ok: true, data: { contrat: contrat.data, certificat: certificat.data } } as const;
+  return { ok: true, data: { contrat: contrat.data, certificat: certificat.data } };
 }
 
 export async function envoyerDeclaration() {
