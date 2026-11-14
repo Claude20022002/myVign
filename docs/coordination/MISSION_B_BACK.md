@@ -24,8 +24,8 @@ Couverture après paiement confirmé seulement (CA 16) ; certificat provisoire i
 ## Phases
 | Phase | Ma part | État |
 |---|---|---|
-| 0 | Monorepo, contrat v1.1, serveur simulé, CI, docker-compose, coordination | **Fait** |
-| 1 | `packages/db` + `apps/api` (catalog, agencies), nettoyage et géocodage des 62 agences (`docs/sonas-site/agences.json`), staging | À faire |
+| 0 | Monorepo, contrat v1.2 (formulaire minimal, change, provinces), `packages/geo`, serveur simulé, CI, docker-compose, coordination | **Fait** |
+| 1 | `packages/db` + `apps/api` (catalog, agencies, provinces, exchange-rate), récupération quotidienne du taux BCC (worker) avec saisie manuelle de secours, géocodage précis des agences (le nettoyage et la province sont faits dans `packages/geo`), staging | À faire |
 | 2 | Tarification auto (`packages/domain`), brouillons, paiement (adaptateur mock), certificat PDF + QR | À faire |
 | 3 | Sinistres, stockage S3, ClamAV, notifications | À faire |
 | 4 | Tarification habitation | À faire |

@@ -4,8 +4,9 @@ Contrat d'API de myVign : **source unique de vérité** entre le front (`web/`),
 
 | Fichier | Rôle |
 |---|---|
-| `src/routes.ts` | Registre des 22 routes `/v1` : méthode, chemin, schémas d'entrée et de sortie, statuts d'erreur |
-| `src/products/auto.ts` | Blocs de la souscription auto (alignés sur `docs/recherche_formulaires_rdc.md` §3.1) |
+| `src/routes.ts` | Registre des 24 routes `/v1` : méthode, chemin, schémas d'entrée et de sortie, statuts d'erreur |
+| `src/products/auto.ts` | Souscription auto en 6 blocs, **prix après les 3 premiers**, valeurs par défaut partout où c'est possible |
+| `src/exchange.ts` | Taux du jour USD → CDF et `convertMoney()` (même calcul côté front et côté API) |
 | `src/products/auto-claim.ts` | Blocs de la déclaration de sinistre auto (§3.4) |
 | `src/steps.ts` | Registre des parcours : ajouter une branche = une entrée ici |
 | `src/client.ts` | Client typé (côté serveur Next.js uniquement) |
@@ -47,8 +48,9 @@ const check = AutoSteps.vehicle.safeParse(values); // erreurs par champ dans che
 | En-tête `x-mock-scenario: rate-limited` / `slow` | 429 / +3 s |
 | Brouillon `draft_expired` | 410 `DRAFT_EXPIRED` |
 | Sinistre déclaré | passe `received` 10 s plus tard |
+| `currency: 'USD'` au paiement | montant converti au taux simulé, taux figé dans `exchange` |
 
-Variables : `MOCK_PORT` (4010), `MOCK_LATENCY_MS` (300), `MOCK_PAYMENT_DELAY_MS` (5000), `MOCK_WEB_URL` (http://localhost:3000, lien du QR).
+Variables : `MOCK_PORT` (4010), `MOCK_USD_CDF_RATE` (2850), `MOCK_LATENCY_MS` (300), `MOCK_PAYMENT_DELAY_MS` (5000), `MOCK_WEB_URL` (http://localhost:3000, lien du QR).
 
 **Toute réponse du mock est validée par le schéma du contrat** : le mock ne peut pas diverger de ce que l'API réelle devra renvoyer.
 

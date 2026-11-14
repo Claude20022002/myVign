@@ -17,8 +17,10 @@ Deux agents travaillent **en parallèle** sur ce dépôt. Lire d'abord sa fiche 
 5. **Règles métier RDC** : `docs/recherche_formulaires_rdc.md` fait foi (Code des assurances : CA). Exemples : couverture seulement après paiement confirmé (CA 16), profession sur le certificat (CA 121), certification d'exactitude non précochée (CA 13-15), déclaration de sinistre jamais bloquée (CA 19).
 6. **Charte** : `DESIGN.md` fait foi (palette du logo SONAS : bleu, jaune, rouge réservé à l'urgence). La palette verte des maquettes PDF n'est **pas** retenue.
 7. **Tenir `docs/coordination/STATUS.md` à jour** à chaque fin de tâche : en cours, fait, bloqué, questions.
-8. **Montants** : entiers en unités mineures + devise (`Money`). Jamais de flottant.
-9. Langue du produit et des messages : **français**. Prévoir l'i18n (lingala, swahili).
+8. **Montants** : entiers en unités mineures + devise (`Money`). Jamais de flottant. Conversion CDF ↔ USD uniquement avec `convertMoney()` et le taux de `GET /v1/exchange-rate`.
+9. **Formulaires au plus court** (exigence de l'utilisateur) : prix d'abord, pré-remplissage, valeurs par défaut, rien de ce qui peut attendre n'est demandé avant le paiement.
+10. Langue du produit et des messages : **français**. Prévoir l'i18n (lingala, swahili).
+11. **Commits et push : faits par l'utilisateur.** Les agents ne committent pas.
 
 ## Commandes (racine, pnpm 11, Node ≥ 22.12)
 ```bash
@@ -33,5 +35,6 @@ pnpm infra:up         # Postgres, Redis, Mailpit (Docker)
 Le front `web/` s'installe et se lance à part (voir sa fiche de mission).
 
 ## Références
+- Géographie (provinces, carte SVG, agences) : `packages/geo`.
 - Architecture et plan : `docs/coordination/MISSION_*.md` ; recherche métier : `docs/recherche_formulaires_rdc.md` ; benchmark : `docs/benchmark_concurrents.md`.
 - Maquette : `docs/Sonas - troisieme version.pdf` (parcours et cas d'erreur E1 à E6 ; sa palette n'est pas retenue).

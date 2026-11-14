@@ -1,107 +1,34 @@
+import { AGENCY_SEED, PROVINCES, REGION_LABELS } from '@myvign/geo';
 import type { z } from 'zod';
 import type { Agency, Product, ProductList, VehicleInfo } from '../src';
 
 /**
- * Données factices du serveur simulé. Les agences reprennent quelques adresses publiques
- * de sonas.cd (le jeu complet, nettoyé et géocodé, arrive avec l'API réelle en phase 1).
- * Coordonnées approximatives, horaires fictifs.
+ * Données du serveur simulé. Agences : référentiel réel nettoyé (@myvign/geo).
+ * Produits, véhicules et créneaux : factices.
  */
 
 const weekdayHours = (opens: string, closes: string) =>
   (['mon', 'tue', 'wed', 'thu', 'fri'] as const).map((day) => ({ day, opens, closes }));
 
-export const AGENCIES: z.output<typeof Agency>[] = [
-  {
-    id: 'agc_siege',
-    slug: 'direction-generale/gombe-boulevard-30-juin',
-    name: 'Siège social · Gombe',
-    region: 'direction-generale',
-    regionLabel: 'Direction générale',
-    address: '6664, Immeuble Sankuru, boulevard du 30 Juin',
-    city: 'Kinshasa · Gombe',
-    timeZone: 'Africa/Kinshasa',
-    phone: '+243816877156',
-    email: 'sonas@sonas.cd',
-    location: { lat: -4.3036, lng: 15.3061 },
-    openingHours: weekdayHours('07:30', '16:00'),
-    isHeadOffice: true,
-  },
-  {
-    id: 'agc_limete',
-    slug: 'kinshasa-est-bandundu/limete',
-    name: 'Agence de Limete',
-    region: 'kinshasa-est-bandundu',
-    regionLabel: 'Kinshasa-Est / Bandundu',
-    address: '337, place Mandrandele, 7e rue',
-    city: 'Kinshasa · Limete',
-    timeZone: 'Africa/Kinshasa',
-    phone: null,
-    email: 'sonas@sonas.cd',
-    location: { lat: -4.3655, lng: 15.3398 },
-    openingHours: weekdayHours('08:00', '16:00'),
-    isHeadOffice: false,
-  },
-  {
-    id: 'agc_gombe_dgi',
-    slug: 'kinshasa-ouest-equateur/gombe-dgi',
-    name: 'Agence de la Gombe · DGI',
-    region: 'kinshasa-ouest-equateur',
-    regionLabel: 'Kinshasa-Ouest / Équateur',
-    address: 'Bâtiment DGI, Gombe',
-    city: 'Kinshasa · Gombe',
-    timeZone: 'Africa/Kinshasa',
-    phone: null,
-    email: 'sonas@sonas.cd',
-    location: { lat: -4.3105, lng: 15.2963 },
-    openingHours: weekdayHours('08:00', '16:00'),
-    isHeadOffice: false,
-  },
-  {
-    id: 'agc_matadi',
-    slug: 'region-ouest/matadi',
-    name: 'Agence de Matadi',
-    region: 'ouest',
-    regionLabel: 'Région Ouest',
-    address: 'Avenue Major Vangu n° 15, quartier Ville basse',
-    city: 'Matadi',
-    timeZone: 'Africa/Kinshasa',
-    phone: null,
-    email: 'sonas@sonas.cd',
-    location: { lat: -5.8167, lng: 13.45 },
-    openingHours: weekdayHours('08:00', '16:00'),
-    isHeadOffice: false,
-  },
-  {
-    id: 'agc_goma',
-    slug: 'region-est/goma',
-    name: 'Agence de Goma',
-    region: 'est',
-    regionLabel: 'Région Est',
-    address: '50, boulevard Kanyamuhanga, quartier des Volcans',
-    city: 'Goma',
-    timeZone: 'Africa/Lubumbashi',
-    phone: '+243893221604',
-    email: 'sonas@sonas.cd',
-    location: { lat: -1.6792, lng: 29.2228 },
-    openingHours: weekdayHours('08:00', '16:00'),
-    isHeadOffice: false,
-  },
-  {
-    id: 'agc_lubumbashi',
-    slug: 'region-sud/lubumbashi',
-    name: 'Agence de Lubumbashi',
-    region: 'sud',
-    regionLabel: 'Région Sud',
-    address: '7678, avenue Munongo, quartier Makutano',
-    city: 'Lubumbashi',
-    timeZone: 'Africa/Lubumbashi',
-    phone: null,
-    email: 'sonas@sonas.cd',
-    location: { lat: -11.6609, lng: 27.4794 },
-    openingHours: weekdayHours('08:00', '16:00'),
-    isHeadOffice: false,
-  },
-];
+/** Les 59 agences réelles (référentiel @myvign/geo). Horaires FICTIFS en attendant la SONAS. */
+export const AGENCIES: z.output<typeof Agency>[] = AGENCY_SEED.map((seed) => ({
+  id: `agc_${seed.slug.replace(/-/g, '_')}`,
+  slug: seed.slug,
+  name: seed.name,
+  region: seed.region,
+  regionLabel: REGION_LABELS[seed.region],
+  province: seed.province,
+  provinceLabel: PROVINCES[seed.province].name,
+  city: seed.city,
+  commune: seed.commune,
+  address: seed.address,
+  timeZone: PROVINCES[seed.province].timeZone,
+  phone: seed.phone,
+  email: 'sonas@sonas.cd',
+  location: { lat: seed.location[0], lng: seed.location[1], precision: seed.locationPrecision },
+  openingHours: seed.isHeadOffice ? weekdayHours('07:30', '16:00') : weekdayHours('08:00', '16:00'),
+  isHeadOffice: seed.isHeadOffice,
+}));
 
 const cdf = (francs: number) => ({ amount: francs * 100, currency: 'CDF' as const });
 

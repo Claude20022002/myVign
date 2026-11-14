@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Agency, AgencyList, AgencyListQuery } from './agencies';
+import { Agency, AgencyList, AgencyListQuery, ProvinceList } from './agencies';
 import { Callback, CallbackSlotList, CreateCallbackBody } from './callbacks';
 import { Product, ProductCode, ProductList } from './catalog';
 import { Claim, ClaimParams, CreateUploadBody, UploadTicket } from './claims';
@@ -12,6 +12,7 @@ import {
   SendResumeLinkBody,
   SendResumeLinkResponse,
 } from './drafts';
+import { ExchangeRate } from './exchange';
 import { CreatePaymentBody, Payment, PaymentParams } from './payments';
 import {
   Certificate,
@@ -104,6 +105,27 @@ export const routes = {
     params: z.object({ slug: z.string().min(1).max(120) }),
     success: { status: 200, schema: Agency },
     errors: [404, 500],
+    public: true,
+  },
+
+  listProvinces: {
+    method: 'GET',
+    path: '/v1/provinces',
+    summary: 'Les 26 provinces et la couverture SONAS (carte interactive)',
+    tag: 'agencies',
+    success: { status: 200, schema: ProvinceList },
+    errors: [500],
+    public: true,
+  },
+
+  // --- Change ---
+  getExchangeRate: {
+    method: 'GET',
+    path: '/v1/exchange-rate',
+    summary: 'Taux du jour USD → CDF (Banque centrale du Congo)',
+    tag: 'catalog',
+    success: { status: 200, schema: ExchangeRate },
+    errors: [503],
     public: true,
   },
 

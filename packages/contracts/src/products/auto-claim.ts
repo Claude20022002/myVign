@@ -13,9 +13,9 @@ export const AutoClaimStepContact = z
     lastName: z.string().min(1).max(80),
     firstName: z.string().min(1).max(80),
     phone: PhoneCD,
-    email: Email.nullable(),
-    plate: PlateCD.nullable(),
-    policyNumber: z.string().max(40).nullable(),
+    email: Email.nullable().default(null),
+    plate: PlateCD.nullable().default(null),
+    policyNumber: z.string().max(40).nullable().default(null),
   })
   .refine((v) => v.plate !== null || v.policyNumber !== null, {
     message: 'Indiquez le numéro de contrat ou la plaque du véhicule',
@@ -41,20 +41,17 @@ export const AutoClaimStepWhenWhere = z.object({
   date: IsoDate,
   time: z.string().regex(/^\d{2}:\d{2}$/),
   province: Province,
-  city: z.string().min(2).max(80),
+  city: z.string().min(2).max(80).nullable().default(null),
   commune: z.string().min(2).max(80),
-  placeDescription: z.string().max(200).nullable(),
-  abroad: z.boolean(),
+  placeDescription: z.string().max(200).nullable().default(null),
+  abroad: z.boolean().default(false),
 });
 
 /** Bloc « circumstances » : situation et récit libre (500 caractères). */
 export const AutoClaimStepCircumstances = z.object({
-  vehicleSituation: z.enum([
-    'en_circulation',
-    'stationnement_voie_publique',
-    'parking_garage',
-    'ne_sais_pas',
-  ]),
+  vehicleSituation: z
+    .enum(['en_circulation', 'stationnement_voie_publique', 'parking_garage', 'ne_sais_pas'])
+    .default('en_circulation'),
   description: z.string().min(10).max(500),
 });
 
@@ -72,10 +69,12 @@ export const DamageZone = z.enum([
 
 /** Bloc « damage » : zones de choc et nature des dégâts. */
 export const AutoClaimStepDamage = z.object({
-  zones: z.array(DamageZone).max(9),
-  natures: z.array(z.enum(['carrosserie', 'pare_brise', 'serrure', 'optiques', 'interieur'])),
-  vehicleDrivable: z.boolean(),
-  objectsStolen: z.boolean(),
+  zones: z.array(DamageZone).max(9).default([]),
+  natures: z
+    .array(z.enum(['carrosserie', 'pare_brise', 'serrure', 'optiques', 'interieur']))
+    .default([]),
+  vehicleDrivable: z.boolean().default(true),
+  objectsStolen: z.boolean().default(false),
 });
 
 /**
@@ -85,39 +84,41 @@ export const AutoClaimStepDamage = z.object({
  */
 export const AutoClaimStepPeople = z.object({
   injured: z.boolean(),
-  deceased: z.boolean(),
-  policeIntervened: z.boolean(),
-  policeReportNumber: z.string().max(60).nullable(),
-  driver: z.enum(['assure', 'conjoint_ou_employe', 'autre']),
+  deceased: z.boolean().default(false),
+  policeIntervened: z.boolean().default(false),
+  policeReportNumber: z.string().max(60).nullable().default(null),
+  driver: z.enum(['assure', 'conjoint_ou_employe', 'autre']).default('assure'),
   driverIdentity: z
     .object({
       lastName: z.string().min(1).max(80),
       firstName: z.string().min(1).max(80),
       licenseNumber: z.string().min(3).max(40),
     })
-    .nullable(),
+    .nullable()
+    .default(null),
 });
 
 /** Bloc « liability » : tiers et responsabilité estimée. */
 export const AutoClaimStepLiability = z.object({
-  liabilityPercent: z.enum(['0', '50', '100', 'unknown']),
+  liabilityPercent: z.enum(['0', '50', '100', 'unknown']).default('unknown'),
   thirdPartyInvolved: z.boolean(),
   thirdParty: z
     .object({
       lastName: z.string().min(1).max(80),
-      firstName: z.string().max(80).nullable(),
-      phone: PhoneCD.nullable(),
-      plate: PlateCD.nullable(),
+      firstName: z.string().max(80).nullable().default(null),
+      phone: PhoneCD.nullable().default(null),
+      plate: PlateCD.nullable().default(null),
       /** Utile au recours entre assureurs. */
-      insurerName: z.string().max(80).nullable(),
-      certificateNumber: z.string().max(60).nullable(),
+      insurerName: z.string().max(80).nullable().default(null),
+      certificateNumber: z.string().max(60).nullable().default(null),
     })
-    .nullable(),
+    .nullable()
+    .default(null),
 });
 
 /** Bloc « documents » : facultatif, jamais bloquant. */
 export const AutoClaimStepDocuments = z.object({
-  documentIds: z.array(z.string()).max(20),
+  documentIds: z.array(z.string()).max(20).default([]),
 });
 
 export const AutoClaimSteps = {

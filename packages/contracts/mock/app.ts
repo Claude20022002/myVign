@@ -1,4 +1,6 @@
 import { randomBytes, randomUUID } from 'node:crypto';
+import { agencyCountByProvince, PROVINCE_CODES, PROVINCES } from '@myvign/geo';
+import { PROVINCE_SHAPES } from '@myvign/geo/map';
 import { type Context, Hono } from 'hono';
 import type { z } from 'zod';
 import {
@@ -7,6 +9,7 @@ import {
   AutoApplication,
   AutoClaimDeclaration,
   type Claim,
+  convertMoney,
   type Draft,
   type ErrorCode,
   getJourney,
@@ -54,6 +57,8 @@ export interface MockOptions {
   webUrl?: string;
   /** Horloge injectable pour les tests. */
   now?: () => Date;
+  /** Taux simulé USD → CDF (francs pour 1 dollar). */
+  usdCdfRate?: number;
 }
 
 type Out<K extends RouteKey> = z.output<(typeof routes)[K]['success']['schema']>;
@@ -74,6 +79,7 @@ export function createMockApp(options: MockOptions = {}) {
   const publicUrl = options.publicUrl ?? 'http://localhost:4010';
   const webUrl = options.webUrl ?? 'http://localhost:3000';
   const now = options.now ?? (() => new Date());
+  const usdCdfRate = options.usdCdfRate ?? 2850;
   const iso = (offsetMs = 0) => new Date(now().getTime() + offsetMs).toISOString();
 
   const drafts = new Map<string, StoredDraft>();
@@ -165,7 +171,7 @@ export function createMockApp(options: MockOptions = {}) {
     draft.updatedAt = iso();
     if (draft.kind === 'subscription' && draft.product === 'auto') {
       const vehicle = draft.steps.vehicle as { category?: string } | undefined;
-      const history = draft.steps.history as { claimsLast36Months?: string } | undefined;
+      const history = draft.steps.driver as { claimsLast36Months?: string } | undefined;
       const usage = draft.steps.usage as { nightParking?: string; usage?: string } | undefined;
       const formula = draft.steps.formula as { formulaCode?: string } | undefined;
       if (vehicle) {
@@ -211,12 +217,12 @@ export function createMockApp(options: MockOptions = {}) {
     const formula = app.success ? app.data.formula.formulaCode : 'tous_risques';
     // La couverture démarre au plus tôt au paiement confirmé (CA 16).
     const today = iso().slice(0, 10);
-    const wanted = app.success ? app.data.contract.startDate : today;
+    const wanted = (app.success ? app.data.formula.startDate : null) ?? today;
     // biome-ignore lint/complexity/useMathMinMax: dates ISO en texte, Math.max ne s'applique pas.
     const start = wanted > today ? wanted : today;
     const months =
-      app.success && app.data.contract.duration === 'courte_duree'
-        ? (app.data.contract.shortDurationMonths ?? 12)
+      app.success && app.data.formula.duration === 'courte_duree'
+        ? (app.data.formula.shortDurationMonths ?? 12)
         : 12;
     const endDate = new Date(start);
     endDate.setMonth(endDate.getMonth() + months);
@@ -293,9 +299,10 @@ export function createMockApp(options: MockOptions = {}) {
     if (!query.success) {
       return fail(c, 422, 'VALIDATION_FAILED', 'Recherche invalide', fieldErrors(query.error));
     }
-    const { q, region, lat, lng } = query.data;
+    const { q, region, province, lat, lng } = query.data;
     const needle = q?.toLowerCase();
     const items = AGENCIES.filter((a) => !region || a.region === region)
+      .filter((a) => !province || a.province === province)
       .filter((a) => !needle || `${a.name} ${a.city} ${a.address}`.toLowerCase().includes(needle))
       .map((a) => ({
         ...a,
@@ -314,6 +321,29 @@ export function createMockApp(options: MockOptions = {}) {
     const agency = AGENCIES.find((a) => a.slug === slug || a.id === slug);
     return agency ? ok(c, 'getAgency', agency) : fail(c, 404, 'NOT_FOUND', 'Agence introuvable');
   });
+
+  app.get(r('listProvinces'), (c) => {
+    const counts = agencyCountByProvince();
+    const items = PROVINCE_CODES.map((code) => ({
+      code,
+      name: PROVINCES[code].name,
+      capital: PROVINCES[code].capital,
+      agencyCount: counts[code] ?? 0,
+      center: { lat: PROVINCE_SHAPES[code].center[0], lng: PROVINCE_SHAPES[code].center[1] },
+    }));
+    return ok(c, 'listProvinces', { items });
+  });
+
+  app.get(r('getExchangeRate'), (c) =>
+    ok(c, 'getExchangeRate', {
+      base: 'USD',
+      quote: 'CDF',
+      rate: usdCdfRate,
+      source: 'mock',
+      effectiveDate: iso().slice(0, 10),
+      fetchedAt: iso(),
+    }),
+  );
 
   app.get(r('lookupVehicle'), (c) => {
     const query = routes.lookupVehicle.query.safeParse(c.req.query());
@@ -440,7 +470,7 @@ export function createMockApp(options: MockOptions = {}) {
       return fail(c, 409, 'DRAFT_INCOMPLETE', `Étapes à compléter : ${missing.join(', ')}`);
     }
     const vehicle = draft.steps.vehicle as { category?: string };
-    const history = draft.steps.history as { claimsLast36Months?: string };
+    const history = draft.steps.driver as { claimsLast36Months?: string };
     const usage = draft.steps.usage as { nightParking?: string; usage?: string };
     return ok(c, 'createQuote', {
       id: newId('quo'),
@@ -497,12 +527,20 @@ export function createMockApp(options: MockOptions = {}) {
     }
     const offer = priceAuto({
       category: application.data.vehicle.category,
-      claimsLast36Months: application.data.history.claimsLast36Months,
+      claimsLast36Months: application.data.driver.claimsLast36Months,
       parking: application.data.usage.nightParking,
       usage: application.data.usage.usage,
     }).find((o) => o.formulaCode === application.data.formula.formulaCode);
 
     const phone = 'phone' in body.data ? body.data.phone : null;
+    // Devise choisie par le client : conversion au taux du jour, figée dans le paiement.
+    const tariffAmount = offer?.annualPremium ?? { amount: 0, currency: 'CDF' as const };
+    const payCurrency = body.data.currency ?? tariffAmount.currency;
+    const exchange =
+      payCurrency === tariffAmount.currency
+        ? null
+        : { tariffAmount, rateCdfPerUsd: usdCdfRate, rateDate: iso().slice(0, 10) };
+    const amount = convertMoney(tariffAmount, payCurrency, usdCdfRate);
     const outcome = phone?.endsWith('0001')
       ? 'failed'
       : phone?.endsWith('0002')
@@ -538,13 +576,14 @@ export function createMockApp(options: MockOptions = {}) {
       draftId: draft.id,
       method,
       status: 'pending',
-      amount: offer?.annualPremium ?? { amount: 0, currency: 'CDF' },
+      amount,
       maskedPhone: phone ? `${phone.slice(0, 7)} ••• ${phone.slice(-4)}` : null,
       instructions,
       redirectUrl: method === 'card' ? `${publicUrl}/mock/3ds/${id}` : null,
       agencyReference,
       failureReason: null,
       receipt: null,
+      exchange,
       policyId: null,
       createdAt: iso(),
       // Mobile money : la demande expire en ~2 min (E4). Agence : 3 jours pour passer au guichet.

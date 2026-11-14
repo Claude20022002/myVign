@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Id, IsoDateTime, Money, PhoneCD } from './common';
+import { Currency, Id, IsoDate, IsoDateTime, Money, PhoneCD } from './common';
 
 /**
  * Moyens de paiement (docs/recherche_formulaires_rdc.md §4).
@@ -31,8 +31,14 @@ export const PaymentStatus = z.enum([
 ]);
 export type PaymentStatus = z.infer<typeof PaymentStatus>;
 
+/**
+ * Devise dans laquelle le client paie. Omise = devise du tarif (CDF).
+ * Si elle diffère, l'API convertit au taux du jour et FIGE ce taux dans Payment.exchange.
+ */
+const PayCurrency = Currency.optional();
+
 const MobileMoney = (method: 'mpesa' | 'orange_money' | 'airtel_money' | 'afrimoney') =>
-  z.object({ method: z.literal(method), phone: PhoneCD });
+  z.object({ method: z.literal(method), phone: PhoneCD, currency: PayCurrency });
 
 /**
  * En-tête obligatoire `Idempotency-Key` (UUID généré par le BFF) :
@@ -43,8 +49,8 @@ export const CreatePaymentBody = z.discriminatedUnion('method', [
   MobileMoney('orange_money'),
   MobileMoney('airtel_money'),
   MobileMoney('afrimoney'),
-  z.object({ method: z.literal('card') }),
-  z.object({ method: z.literal('agency') }),
+  z.object({ method: z.literal('card'), currency: PayCurrency }),
+  z.object({ method: z.literal('agency'), currency: PayCurrency }),
 ]);
 
 export const PaymentFailureReason = z.enum([
@@ -67,8 +73,16 @@ export const Payment = z.object({
   draftId: Id,
   method: PaymentMethod,
   status: PaymentStatus,
-  /** Montant recalculé par le serveur à partir du devis, jamais repris du client. */
+  /** Montant facturé, dans la devise choisie. Recalculé par le serveur, jamais repris du client. */
   amount: Money,
+  /** Conversion appliquée quand la devise payée diffère de celle du tarif. */
+  exchange: z
+    .object({
+      tariffAmount: Money,
+      rateCdfPerUsd: z.number().positive(),
+      rateDate: IsoDate,
+    })
+    .nullable(),
   /** Numéro masqué (ex. +243 81 ••• 5678). */
   maskedPhone: z.string().nullable(),
   /** Instructions à afficher (ex. « Validez la demande M-Pesa avec votre code PIN »). */

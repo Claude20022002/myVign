@@ -1,3 +1,4 @@
+import { PROVINCE_CODES } from '@myvign/geo/provinces';
 import { z } from 'zod';
 
 /** Devises acceptées. Le marché RDC raisonne en francs congolais et en dollars. */
@@ -63,35 +64,8 @@ export const ChassisNumber = z
   .transform((raw) => raw.replace(/[\s-]/g, '').toUpperCase())
   .pipe(z.string().regex(/^[A-Z0-9]{6,20}$/, 'Numéro de châssis invalide'));
 
-/** Les 26 provinces de la RDC. */
-export const Province = z.enum([
-  'kinshasa',
-  'kongo_central',
-  'kwango',
-  'kwilu',
-  'mai_ndombe',
-  'kasai',
-  'kasai_central',
-  'kasai_oriental',
-  'lomami',
-  'sankuru',
-  'maniema',
-  'sud_kivu',
-  'nord_kivu',
-  'ituri',
-  'haut_uele',
-  'bas_uele',
-  'tshopo',
-  'nord_ubangi',
-  'sud_ubangi',
-  'mongala',
-  'equateur',
-  'tshuapa',
-  'tanganyika',
-  'haut_lomami',
-  'lualaba',
-  'haut_katanga',
-]);
+/** Les 26 provinces de la RDC (référentiel : @myvign/geo). */
+export const Province = z.enum(PROVINCE_CODES);
 export type Province = z.infer<typeof Province>;
 
 /**
@@ -100,11 +74,12 @@ export type Province = z.infer<typeof Province>;
  */
 export const AddressCD = z.object({
   province: Province,
-  city: z.string().min(2).max(80),
+  /** Facultatif : déduit de la province si omis (ex. Kinshasa). */
+  city: z.string().min(2).max(80).nullable().default(null),
   commune: z.string().min(2).max(80),
-  quartier: z.string().max(80).nullable(),
+  quartier: z.string().max(80).nullable().default(null),
   street: z.string().min(2).max(120).describe('Avenue et numéro'),
-  landmark: z.string().max(160).nullable().describe('Point de repère'),
+  landmark: z.string().max(160).nullable().default(null).describe('Point de repère'),
 });
 export type AddressCD = z.infer<typeof AddressCD>;
 
@@ -113,7 +88,7 @@ export const IdentityDocument = z.object({
   type: z.enum(['carte_electeur', 'passeport', 'permis_conduire', 'cni_onip', 'carte_resident']),
   number: z.string().min(3).max(40),
   /** Sans objet pour la carte d'électeur. */
-  expiresAt: IsoDate.nullable(),
+  expiresAt: IsoDate.nullable().default(null),
 });
 
 /** Personne morale (flottes, incendie des bâtiments professionnels, RC pro). */

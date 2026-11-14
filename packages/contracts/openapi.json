@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "API myVign (SONAS)",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Contrat généré depuis packages/contracts/src/routes.ts. Ne pas modifier à la main."
   },
   "servers": [
@@ -405,8 +405,43 @@
                 "kinshasa-ouest-equateur",
                 "est",
                 "ouest",
-                "sud",
-                "nord-ouest"
+                "sud"
+              ]
+            }
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "kinshasa",
+                "kongo_central",
+                "kwango",
+                "kwilu",
+                "mai_ndombe",
+                "kasai",
+                "kasai_central",
+                "kasai_oriental",
+                "lomami",
+                "sankuru",
+                "maniema",
+                "sud_kivu",
+                "nord_kivu",
+                "ituri",
+                "haut_uele",
+                "bas_uele",
+                "tshopo",
+                "nord_ubangi",
+                "sud_ubangi",
+                "mongala",
+                "equateur",
+                "tshuapa",
+                "tanganyika",
+                "haut_lomami",
+                "lualaba",
+                "haut_katanga"
               ]
             }
           },
@@ -463,17 +498,55 @@
                               "kinshasa-ouest-equateur",
                               "est",
                               "ouest",
-                              "sud",
-                              "nord-ouest"
+                              "sud"
                             ]
                           },
                           "regionLabel": {
                             "type": "string"
                           },
-                          "address": {
+                          "province": {
+                            "type": "string",
+                            "enum": [
+                              "kinshasa",
+                              "kongo_central",
+                              "kwango",
+                              "kwilu",
+                              "mai_ndombe",
+                              "kasai",
+                              "kasai_central",
+                              "kasai_oriental",
+                              "lomami",
+                              "sankuru",
+                              "maniema",
+                              "sud_kivu",
+                              "nord_kivu",
+                              "ituri",
+                              "haut_uele",
+                              "bas_uele",
+                              "tshopo",
+                              "nord_ubangi",
+                              "sud_ubangi",
+                              "mongala",
+                              "equateur",
+                              "tshuapa",
+                              "tanganyika",
+                              "haut_lomami",
+                              "lualaba",
+                              "haut_katanga"
+                            ]
+                          },
+                          "provinceLabel": {
                             "type": "string"
                           },
                           "city": {
+                            "type": "string"
+                          },
+                          "commune": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "address": {
+                            "nullable": true,
                             "type": "string"
                           },
                           "timeZone": {
@@ -502,11 +575,20 @@
                               },
                               "lng": {
                                 "type": "number"
+                              },
+                              "precision": {
+                                "type": "string",
+                                "enum": [
+                                  "exacte",
+                                  "commune",
+                                  "ville"
+                                ]
                               }
                             },
                             "required": [
                               "lat",
-                              "lng"
+                              "lng",
+                              "precision"
                             ],
                             "additionalProperties": false
                           },
@@ -558,8 +640,11 @@
                           "name",
                           "region",
                           "regionLabel",
-                          "address",
+                          "province",
+                          "provinceLabel",
                           "city",
+                          "commune",
+                          "address",
                           "timeZone",
                           "phone",
                           "email",
@@ -656,17 +741,55 @@
                         "kinshasa-ouest-equateur",
                         "est",
                         "ouest",
-                        "sud",
-                        "nord-ouest"
+                        "sud"
                       ]
                     },
                     "regionLabel": {
                       "type": "string"
                     },
-                    "address": {
+                    "province": {
+                      "type": "string",
+                      "enum": [
+                        "kinshasa",
+                        "kongo_central",
+                        "kwango",
+                        "kwilu",
+                        "mai_ndombe",
+                        "kasai",
+                        "kasai_central",
+                        "kasai_oriental",
+                        "lomami",
+                        "sankuru",
+                        "maniema",
+                        "sud_kivu",
+                        "nord_kivu",
+                        "ituri",
+                        "haut_uele",
+                        "bas_uele",
+                        "tshopo",
+                        "nord_ubangi",
+                        "sud_ubangi",
+                        "mongala",
+                        "equateur",
+                        "tshuapa",
+                        "tanganyika",
+                        "haut_lomami",
+                        "lualaba",
+                        "haut_katanga"
+                      ]
+                    },
+                    "provinceLabel": {
                       "type": "string"
                     },
                     "city": {
+                      "type": "string"
+                    },
+                    "commune": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "address": {
+                      "nullable": true,
                       "type": "string"
                     },
                     "timeZone": {
@@ -695,11 +818,20 @@
                         },
                         "lng": {
                           "type": "number"
+                        },
+                        "precision": {
+                          "type": "string",
+                          "enum": [
+                            "exacte",
+                            "commune",
+                            "ville"
+                          ]
                         }
                       },
                       "required": [
                         "lat",
-                        "lng"
+                        "lng",
+                        "precision"
                       ],
                       "additionalProperties": false
                     },
@@ -747,8 +879,11 @@
                     "name",
                     "region",
                     "regionLabel",
-                    "address",
+                    "province",
+                    "provinceLabel",
                     "city",
+                    "commune",
+                    "address",
                     "timeZone",
                     "phone",
                     "email",
@@ -772,6 +907,198 @@
             }
           },
           "500": {
+            "description": "Erreur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/provinces": {
+      "get": {
+        "operationId": "listProvinces",
+        "summary": "Les 26 provinces et la couverture SONAS (carte interactive)",
+        "tags": [
+          "agencies"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "enum": [
+                              "kinshasa",
+                              "kongo_central",
+                              "kwango",
+                              "kwilu",
+                              "mai_ndombe",
+                              "kasai",
+                              "kasai_central",
+                              "kasai_oriental",
+                              "lomami",
+                              "sankuru",
+                              "maniema",
+                              "sud_kivu",
+                              "nord_kivu",
+                              "ituri",
+                              "haut_uele",
+                              "bas_uele",
+                              "tshopo",
+                              "nord_ubangi",
+                              "sud_ubangi",
+                              "mongala",
+                              "equateur",
+                              "tshuapa",
+                              "tanganyika",
+                              "haut_lomami",
+                              "lualaba",
+                              "haut_katanga"
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "capital": {
+                            "type": "string"
+                          },
+                          "agencyCount": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "center": {
+                            "type": "object",
+                            "properties": {
+                              "lat": {
+                                "type": "number"
+                              },
+                              "lng": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "lat",
+                              "lng"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "code",
+                          "name",
+                          "capital",
+                          "agencyCount",
+                          "center"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/exchange-rate": {
+      "get": {
+        "operationId": "getExchangeRate",
+        "summary": "Taux du jour USD → CDF (Banque centrale du Congo)",
+        "tags": [
+          "catalog"
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "type": "string",
+                      "enum": [
+                        "USD"
+                      ]
+                    },
+                    "quote": {
+                      "type": "string",
+                      "enum": [
+                        "CDF"
+                      ]
+                    },
+                    "rate": {
+                      "type": "number",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "bcc",
+                        "manual",
+                        "mock"
+                      ]
+                    },
+                    "effectiveDate": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                    },
+                    "fetchedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                    }
+                  },
+                  "required": [
+                    "base",
+                    "quote",
+                    "rate",
+                    "source",
+                    "effectiveDate",
+                    "fetchedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
             "description": "Erreur",
             "content": {
               "application/json": {
@@ -2120,6 +2447,13 @@
                       },
                       "phone": {
                         "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "CDF",
+                          "USD"
+                        ]
                       }
                     },
                     "required": [
@@ -2138,6 +2472,13 @@
                       },
                       "phone": {
                         "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "CDF",
+                          "USD"
+                        ]
                       }
                     },
                     "required": [
@@ -2156,6 +2497,13 @@
                       },
                       "phone": {
                         "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "CDF",
+                          "USD"
+                        ]
                       }
                     },
                     "required": [
@@ -2174,6 +2522,13 @@
                       },
                       "phone": {
                         "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "CDF",
+                          "USD"
+                        ]
                       }
                     },
                     "required": [
@@ -2189,6 +2544,13 @@
                         "enum": [
                           "card"
                         ]
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "CDF",
+                          "USD"
+                        ]
                       }
                     },
                     "required": [
@@ -2202,6 +2564,13 @@
                         "type": "string",
                         "enum": [
                           "agency"
+                        ]
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "CDF",
+                          "USD"
                         ]
                       }
                     },
@@ -2273,6 +2642,50 @@
                       "required": [
                         "amount",
                         "currency"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "exchange": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "tariffAmount": {
+                          "type": "object",
+                          "properties": {
+                            "amount": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "CDF",
+                                "USD"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amount",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "rateCdfPerUsd": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "rateDate": {
+                          "type": "string",
+                          "format": "date",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                        }
+                      },
+                      "required": [
+                        "tariffAmount",
+                        "rateCdfPerUsd",
+                        "rateDate"
                       ],
                       "additionalProperties": false
                     },
@@ -2371,6 +2784,7 @@
                     "method",
                     "status",
                     "amount",
+                    "exchange",
                     "maskedPhone",
                     "instructions",
                     "redirectUrl",
@@ -2530,6 +2944,50 @@
                       ],
                       "additionalProperties": false
                     },
+                    "exchange": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "tariffAmount": {
+                          "type": "object",
+                          "properties": {
+                            "amount": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "CDF",
+                                "USD"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amount",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "rateCdfPerUsd": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "rateDate": {
+                          "type": "string",
+                          "format": "date",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                        }
+                      },
+                      "required": [
+                        "tariffAmount",
+                        "rateCdfPerUsd",
+                        "rateDate"
+                      ],
+                      "additionalProperties": false
+                    },
                     "maskedPhone": {
                       "nullable": true,
                       "type": "string"
@@ -2625,6 +3083,7 @@
                     "method",
                     "status",
                     "amount",
+                    "exchange",
                     "maskedPhone",
                     "instructions",
                     "redirectUrl",

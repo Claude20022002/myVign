@@ -48,6 +48,35 @@ Il implémente tout le contrat, avec les scénarios d'erreur (plaque `0000…` �
 ### Code existant à faire converger
 `web/src/lib/tarif.ts`, `vehicules.ts` et `stockage.ts` simulent tarif, véhicules et stockage côté client. À terme, ces données viennent de l'API via le BFF (le mock les fournit déjà). Garde-les le temps de la transition, puis supprime-les.
 
+## Demandes de l'utilisateur (2026-11-14)
+
+### Formulaire : le plus simple et le plus rapide possible
+Le contrat 1.2.0 est taillé pour ça (`packages/contracts/src/products/auto.ts`). Ordre recommandé, **prix d'abord** :
+
+| Écran | Bloc | Ce que le client fait vraiment |
+|---|---|---|
+| 1 | `vehicle` | Tape sa **plaque** → `lookupVehicle` pré-remplit marque, modèle, énergie, CV, places, année → il confirme d'un tap. Lien « Pas encore de plaque » → n° de châssis. |
+| 2 | `usage` | 2 choix en cartes : usage, stationnement de nuit |
+| 3 | `driver` | Date de naissance, date du permis, sinistres sur 3 ans (« Aucun » présélectionné) |
+| → | `createQuote` | **Le prix s'affiche ici**, avant toute question d'identité |
+| 4 | `formula` | 1 carte à choisir (Tous risques recommandée). Options repliées. Valeur du véhicule demandée seulement si la formule le couvre. |
+| 5 | `holder` | Prénom, nom, téléphone, profession (liste + recherche), province (pré-remplie), commune, avenue |
+| 6 | `declaration` | 2 cases non précochées, puis paiement |
+
+Règles : un sujet par écran ; **ne jamais afficher un champ qui a une valeur par défaut** (sauf repli « Modifier ») ; clavier numérique pour téléphone et dates ; téléphone pré-rempli pour le paiement ; pas d'e-mail obligatoire ; pièce d'identité demandée **après** le paiement, par SMS, pour le certificat définitif. Sinistre : même logique (champs secondaires par défaut, blessés et 112 en premier).
+
+### Devises : CDF ↔ USD au taux du jour
+- `GET /v1/exchange-rate` donne le taux du jour (source BCC). Mettre en cache côté serveur (1 h) ; afficher « Taux BCC du JJ/MM : 1 $ = 2 850 FC ».
+- **Bascule FC / $** visible près du prix (pied collant), mémorisée (cookie). Conversion avec `convertMoney()` de `@myvign/contracts` : le même calcul que l'API, au centime près.
+- Au paiement : proposer de payer en FC ou en $ (`currency` dans `createPayment`). Le reçu montre le montant payé, le montant du tarif et le taux figé (`Payment.exchange`).
+
+### Carte interactive des provinces
+- Données prêtes : `@myvign/geo/map` (`PROVINCE_MAP_VIEWBOX`, `PROVINCE_SHAPES[code].path`, 31 Ko) et `GET /v1/provinces` (nombre d'agences par province). La SONAS couvre **20 provinces sur 26**.
+- Usages : (1) choisir sa province dans le bloc `holder` ; (2) localisateur d'agences (clic sur une province → `listAgencies?province=`).
+- SVG inline, sans bibliothèque de cartes. Provinces couvertes en couleur, non couvertes en gris (« Pas encore d'agence : souscription en ligne possible »).
+- **Accessibilité et rapidité** : chaque province est focusable au clavier, avec un nom accessible et l'état sélectionné. La carte ne remplace jamais une **liste ou une recherche** (Kinshasa et Kasaï-Oriental sont minuscules). Pré-sélectionner la province par géolocalisation (bouton « Utiliser ma position »), sinon Kinshasa.
+- Mention obligatoire sous la carte : « © contributeurs OpenStreetMap » (licence ODbL).
+
 ## Exigences de qualité (bloquantes en CI à terme)
 - **Performance**, profil mobile en 3G lente : LCP < 2,5 s, INP < 200 ms, CLS < 0,1, JavaScript < 120 Ko compressés par page de parcours. Server Components par défaut, polices auto-hébergées, images AVIF/WebP, photos de sinistre compressées sur le téléphone (environ 300 Ko) avant envoi.
 - **Accessibilité** : WCAG 2.2 AA, zéro violation axe sérieuse.
@@ -58,8 +87,8 @@ Il implémente tout le contrat, avec les scénarios d'erreur (plaque `0000…` �
 ## Tes phases (le rendez-vous valide chaque phase avec B)
 | Phase | Ta part | Rendez-vous |
 |---|---|---|
-| 1 | Accueil (façon Macif, segmenté Particuliers / Professionnels), pages produits, localisateur d'agences (position, liste/carte, ouvert/fermé, appel, itinéraire, rappel) | Site public branché sur l'API réelle |
-| 2 | Souscription auto complète (blocs `holder` → `declaration`, puis paiement) + E1 à E6 + page `/verifier/[code]` | Souscription de bout en bout |
+| 1 | Accueil (façon Macif, segmenté Particuliers / Professionnels), pages produits, localisateur d'agences (carte des provinces, position, liste, ouvert/fermé, appel, itinéraire, rappel), bascule FC / $ | Site public branché sur l'API réelle |
+| 2 | Souscription auto complète (blocs `vehicle` → `declaration`, prix après `driver`, paiement FC ou $) + E1 à E6 + page `/verifier/[code]` | Souscription de bout en bout |
 | 3 | Déclaration de sinistre auto, envoi des photos, page de suivi par statuts | Sinistre déclaré et suivi |
 | 4 | Habitation (souscription et sinistre) | Habitation de bout en bout |
 | 5 | Espace client (connexion OTP, contrats, certificats, sinistres, renouvellement) | Connexion et consultation |

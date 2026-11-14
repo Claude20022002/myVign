@@ -8,6 +8,7 @@ const app = createMockApp({
   paymentDelayMs: Number(process.env.MOCK_PAYMENT_DELAY_MS ?? 5000),
   publicUrl: process.env.MOCK_PUBLIC_URL ?? `http://localhost:${port}`,
   webUrl: process.env.MOCK_WEB_URL ?? 'http://localhost:3000',
+  usdCdfRate: Number(process.env.MOCK_USD_CDF_RATE ?? 2850),
 });
 
 serve({ fetch: app.fetch, port }, (info) => {
