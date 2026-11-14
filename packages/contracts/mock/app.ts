@@ -2,8 +2,8 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { type Context, Hono } from 'hono';
 import type { z } from 'zod';
 import {
-  AUTO_QUOTE_PREREQUISITES,
   type ApiError,
+  AUTO_QUOTE_PREREQUISITES,
   AutoApplication,
   AutoClaimDeclaration,
   type Claim,
@@ -228,7 +228,9 @@ export function createMockApp(options: MockOptions = {}) {
     const address = holder?.address;
     certificateDetails.set(policyId, {
       holderAddress: address
-        ? [address.street, address.quartier, address.commune, address.city].filter(Boolean).join(', ')
+        ? [address.street, address.quartier, address.commune, address.city]
+            .filter(Boolean)
+            .join(', ')
         : 'Kinshasa',
       holderProfession: holder?.profession ?? 'Non renseignée',
       coveredCountries:

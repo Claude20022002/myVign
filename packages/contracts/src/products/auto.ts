@@ -108,7 +108,9 @@ export const AutoStepUsage = z.object({
   ]),
   annualKm: z.int().min(0).max(300_000),
   nightParking: z.enum(['voie_publique', 'cour_parcelle', 'parking_ferme', 'garage_ferme']),
-  nightParkingAddress: AddressCD.nullable().describe('Nul si identique à l’adresse du souscripteur'),
+  nightParkingAddress: AddressCD.nullable().describe(
+    'Nul si identique à l’adresse du souscripteur',
+  ),
 });
 
 /** Bloc « formula » : formule, franchise et options. */
@@ -181,7 +183,13 @@ export type AutoStepKey = z.infer<typeof AutoStepKey>;
 export const AUTO_STEP_ORDER = [...AutoStepKey.options, 'payment'] as const;
 
 /** Blocs nécessaires au calcul du devis (avant le choix de formule). */
-export const AUTO_QUOTE_PREREQUISITES = ['holder', 'drivers', 'vehicle', 'history', 'usage'] as const;
+export const AUTO_QUOTE_PREREQUISITES = [
+  'holder',
+  'drivers',
+  'vehicle',
+  'history',
+  'usage',
+] as const;
 
 /** Dossier complet, tel que l'API le valide avant le paiement. */
 export const AutoApplication = z

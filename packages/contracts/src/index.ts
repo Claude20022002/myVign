@@ -14,4 +14,4 @@ export * from './steps';
 export * from './vehicles';
 
 /** Version du contrat : à incrémenter à chaque changement (voir docs/coordination/CONTRACT_CHANGES.md). */
-export const CONTRACT_VERSION = '1.0.0';
+export const CONTRACT_VERSION = '1.1.0';

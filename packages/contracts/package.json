@@ -1,6 +1,6 @@
 {
   "name": "@myvign/contracts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Contrat d'API myVign : schémas Zod partagés (front, API, mobile), registre des routes, client typé, serveur simulé.",
   "type": "module",
