@@ -26,7 +26,7 @@ import { Encadre } from "@/components/ui/encadre";
 import { telNational } from "@/lib/format";
 import { SONAS } from "@/lib/referentiels";
 import { enregistrerBloc, envoyerDeclaration } from "@/server/actions";
-import { type Blocs, erreursApi, useChamp, validerChamps } from "./blocs";
+import { type Blocs, erreursApi, majBloc, useChamp, validerChamps } from "./blocs";
 import { type Etape, type OutilsParcours, Parcours, useParcours } from "./parcours";
 
 type DSinistre = {
@@ -243,8 +243,9 @@ function EcranContact() {
   const [nom, setNom, eNom] = useChamp<string>("contact", "lastName", "");
   const [prenom, setPrenom, ePrenom] = useChamp<string>("contact", "firstName", "");
   const [tel, setTel, eTel] = useChamp<string>("contact", "phone", "");
-  const [plaque, setPlaque, ePlaque] = useChamp<string | null>("contact", "plate", "");
-  const [contrat, setContrat, eContrat] = useChamp<string | null>("contact", "policyNumber", "");
+  // Plaque et n° de contrat s'excluent : mis à jour ensemble, en une seule fois.
+  const [plaque, , ePlaque] = useChamp<string | null>("contact", "plate", "");
+  const [contrat, , eContrat] = useChamp<string | null>("contact", "policyNumber", "");
   return (
     <>
       <div className="grid gap-x-3 sm:grid-cols-2">
@@ -253,9 +254,9 @@ function EcranContact() {
       </div>
       <ChampTexte label="Téléphone" type="tel" inputMode="tel" prefixe="+243" cle="contact.phone" valeur={tel ?? ""} onChange={(v) => setTel(telNational(v))} placeholder="81 234 5678" aide="Un gestionnaire vous rappelle sur ce numéro." erreur={eTel ? "Entrez les 9 chiffres après +243." : undefined} />
       {d.parContrat ? (
-        <ChampTexte label="Numéro de contrat" cle="contact.policyNumber" valeur={contrat ?? ""} onChange={(v) => { setContrat(v || null); setPlaque(null); }} majuscules placeholder="AUTO-2026-000123" erreur={eContrat} />
+        <ChampTexte label="Numéro de contrat" cle="contact.policyNumber" valeur={contrat ?? ""} onChange={(v) => majBloc(d, maj, "contact", { policyNumber: v || null, plate: null })} majuscules placeholder="AUTO-2026-000123" erreur={eContrat} />
       ) : (
-        <ChampTexte label="Plaque du véhicule assuré" cle="contact.plate" valeur={plaque ?? ""} onChange={(v) => { setPlaque(v || null); setContrat(null); }} majuscules placeholder="4521AB 01" erreur={ePlaque ? "Format attendu : 4521AB 01." : eContrat} />
+        <ChampTexte label="Plaque du véhicule assuré" cle="contact.plate" valeur={plaque ?? ""} onChange={(v) => majBloc(d, maj, "contact", { plate: v || null, policyNumber: null })} majuscules placeholder="4521AB 01" erreur={ePlaque ? "Format attendu : 4521AB 01." : eContrat} />
       )}
       <Bouton variante="discret" className="-ml-2" onClick={() => maj({ parContrat: !d.parContrat })}>
         {d.parContrat ? "Indiquer plutôt la plaque" : "Indiquer plutôt le numéro de contrat"}
@@ -270,9 +271,10 @@ function EcranType() {
 }
 
 function EcranQuand() {
+  const { d, maj } = useParcours<DSinistre>();
   const [date, setDate, eDate] = useChamp<string>("whenWhere", "date", "");
   const [heure, setHeure, eHeure] = useChamp<string>("whenWhere", "time", "");
-  const [province, setProvince] = useChamp<string>("whenWhere", "province", "kinshasa");
+  const [province] = useChamp<string>("whenWhere", "province", "kinshasa");
   const [commune, setCommune, eCommune] = useChamp<string>("whenWhere", "commune", "");
   return (
     <>
@@ -280,7 +282,7 @@ function EcranQuand() {
         <ChampTexte label="Date" type="date" cle="whenWhere.date" valeur={date ?? ""} onChange={setDate} erreur={eDate} />
         <ChampTexte label="Heure" type="text" inputMode="numeric" placeholder="18:30" cle="whenWhere.time" valeur={heure ?? ""} onChange={(v) => setHeure(v.replace(/[^\d:]/g, "").slice(0, 5))} erreur={eHeure ? "Format HH:MM, par exemple 18:30." : undefined} />
       </div>
-      <ChampSelect label="Province" valeur={province ?? "kinshasa"} onChange={(v) => { setProvince(v); setCommune(""); }} options={PROVINCES_TRIEES.map((c) => ({ value: c, label: PROVINCES[c].name }))} />
+      <ChampSelect label="Province" valeur={province ?? "kinshasa"} onChange={(v) => majBloc(d, maj, "whenWhere", { province: v, commune: "" })} options={PROVINCES_TRIEES.map((c) => ({ value: c, label: PROVINCES[c].name }))} />
       {(province ?? "kinshasa") === "kinshasa" ? (
         <ChampSelect label="Commune" cle="whenWhere.commune" valeur={commune ?? ""} onChange={setCommune} options={[...KINSHASA_COMMUNES]} erreur={eCommune ? "Choisissez la commune." : undefined} />
       ) : (
