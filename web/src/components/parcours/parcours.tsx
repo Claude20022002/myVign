@@ -79,12 +79,14 @@ type ParcoursProps<D extends Donnees> = {
   etapes: Etape<D>[];
   initial: D;
   prix?: (d: D) => number | null;
+  /** Prix déjà mis en forme (devise choisie) : prioritaire sur `prix`. */
+  rendrePrix?: (d: D) => ReactNode | null;
   prixSuffixe?: string;
   mode: "souscription" | "sinistre";
   dureeAnnoncee: string;
 };
 
-export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, prix, prixSuffixe = "/ an", mode, dureeAnnoncee }: ParcoursProps<D>) {
+export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, prix, rendrePrix, prixSuffixe = "/ an", mode, dureeAnnoncee }: ParcoursProps<D>) {
   const cle = `myvign.parcours.${id}`;
   const [d, setD] = useState<D>(initial);
   const [index, setIndex] = useState(0);
@@ -173,6 +175,7 @@ export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, 
   }
 
   const valeurPrix = prix && !etape.sansPrix ? prix(d) : null;
+  const prixRendu = rendrePrix && !etape.sansPrix ? rendrePrix(d) : null;
   const titre = typeof etape.titre === "function" ? etape.titre(d) : etape.titre;
   const sousTitre = typeof etape.sousTitre === "function" ? etape.sousTitre(d) : etape.sousTitre;
   const cta = typeof etape.cta === "function" ? etape.cta(d) : etape.cta ?? "Continuer";
@@ -243,10 +246,11 @@ export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, 
                 <span className="flex items-center gap-1.5 text-[14px] text-succes">
                   <Check className="size-4" aria-hidden="true" /> Enregistré automatiquement
                 </span>
-                {valeurPrix != null && (
+                {(prixRendu != null || valeurPrix != null) && (
                   <span className="sm:mt-0.5 sm:block" aria-live="polite">
                     <span className="mr-2 text-[15px] text-texte-2 max-sm:hidden">Estimation</span>
-                    <span className="prix text-[22px]">{fc(valeurPrix)}</span> <span className="text-[15px] text-texte-2">{prixSuffixe}</span>
+                    <span className="text-[22px]">{prixRendu ?? <span className="prix">{fc(valeurPrix ?? 0)}</span>}</span>{" "}
+                    <span className="text-[15px] text-texte-2">{prixSuffixe}</span>
                   </span>
                 )}
               </div>
