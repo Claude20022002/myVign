@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 220" role="img" aria-labelledby="t">
+  <title id="t">Branches SONAS sur myVign</title>
+  <rect width="1080" height="220" fill="#F5F7F9"/>
+  <g font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif">
+    <!-- Auto -->
+    <rect x="12" y="16" width="168" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <circle cx="96" cy="64" r="28" fill="#E8F4FB"/>
+    <rect x="72" y="56" width="48" height="22" rx="6" fill="#1790CD"/>
+    <circle cx="80" cy="80" r="6" fill="#1B2733"/>
+    <circle cx="112" cy="80" r="6" fill="#1B2733"/>
+    <text x="96" y="118" text-anchor="middle" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1B2733">Auto</text>
+    <text x="96" y="142" text-anchor="middle" font-size="13" fill="#4E5D6C">En ligne</text>
+    <rect x="44" y="158" width="104" height="28" rx="8" fill="#FFF9E0"/>
+    <text x="96" y="177" text-anchor="middle" font-size="12" font-weight="700" fill="#1B2733">Priorité</text>
+
+    <rect x="192" y="16" width="168" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <circle cx="276" cy="64" r="28" fill="#E8F4FB"/>
+    <rect x="258" y="50" width="36" height="28" rx="4" fill="#1790CD"/>
+    <polygon points="258,50 276,38 294,50" fill="#116A97"/>
+    <text x="276" y="118" text-anchor="middle" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1B2733">Habitation</text>
+    <text x="276" y="142" text-anchor="middle" font-size="13" fill="#4E5D6C">En ligne</text>
+    <text x="276" y="172" text-anchor="middle" font-size="12" fill="#6B7885">Incendie art. 210</text>
+
+    <rect x="372" y="16" width="168" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <circle cx="456" cy="64" r="28" fill="#E8F4FB"/>
+    <path d="M440 72 L456 48 L472 72 Z" fill="#1790CD"/>
+    <rect x="448" y="68" width="16" height="8" fill="#116A97"/>
+    <text x="456" y="118" text-anchor="middle" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1B2733">Voyage</text>
+    <text x="456" y="142" text-anchor="middle" font-size="13" fill="#4E5D6C">En ligne</text>
+    <text x="456" y="172" text-anchor="middle" font-size="12" fill="#6B7885">Attestation visa</text>
+
+    <rect x="552" y="16" width="168" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <circle cx="636" cy="64" r="28" fill="#E8F4FB"/>
+    <rect x="620" y="50" width="32" height="28" rx="3" fill="#1790CD"/>
+    <line x1="624" y1="58" x2="648" y2="58" stroke="#fff" stroke-width="2"/>
+    <line x1="624" y1="66" x2="644" y2="66" stroke="#fff" stroke-width="2"/>
+    <text x="636" y="118" text-anchor="middle" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1B2733">Scolaire</text>
+    <text x="636" y="142" text-anchor="middle" font-size="13" fill="#4E5D6C">En ligne</text>
+
+    <rect x="732" y="16" width="168" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <circle cx="816" cy="64" r="28" fill="#E8F4FB"/>
+    <rect x="798" y="54" width="36" height="20" rx="4" fill="#1790CD"/>
+    <circle cx="806" cy="78" r="5" fill="#1B2733"/>
+    <circle cx="826" cy="78" r="5" fill="#1B2733"/>
+    <text x="816" y="118" text-anchor="middle" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1B2733">Transport</text>
+    <text x="816" y="142" text-anchor="middle" font-size="13" fill="#4E5D6C">Rappel conseiller</text>
+
+    <rect x="912" y="16" width="156" height="188" rx="14" fill="#fff" stroke="#D5DDE5"/>
+    <circle cx="990" cy="64" r="28" fill="#E8F4FB"/>
+    <rect x="976" y="50" width="28" height="28" rx="4" fill="#1790CD"/>
+    <text x="990" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">+</text>
+    <text x="990" y="118" text-anchor="middle" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1B2733">Entreprise</text>
+    <text x="990" y="142" text-anchor="middle" font-size="13" fill="#4E5D6C">Rappel conseiller</text>
+  </g>
+</svg>
