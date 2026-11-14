@@ -7,7 +7,14 @@ import "./globals.css";
 
 // Polices de la charte (DESIGN.md §5), auto-hébergées par next/font, sous-ensemble latin.
 const saira = Saira({ variable: "--font-saira", subsets: ["latin"], display: "swap" });
-const atkinson = Atkinson_Hyperlegible_Next({ variable: "--font-atkinson", subsets: ["latin"], display: "swap" });
+const atkinson = Atkinson_Hyperlegible_Next({
+  variable: "--font-atkinson",
+  subsets: ["latin"],
+  display: "swap",
+  // Next n'a pas de métriques de repli pour cette police : repli système explicite.
+  adjustFontFallback: false,
+  fallback: ["system-ui", "Arial", "sans-serif"],
+});
 
 export const metadata: Metadata = {
   title: { default: "SONAS · Assurance en ligne", template: "%s · SONAS" },

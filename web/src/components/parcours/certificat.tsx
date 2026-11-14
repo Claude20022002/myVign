@@ -8,11 +8,21 @@
 import type { Certificate, Policy } from "@myvign/contracts";
 import { Download, QrCode } from "lucide-react";
 import Link from "next/link";
-import { useQr } from "@/components/parcours/attestation";
+import QRCode from "qrcode";
+import { useEffect, useState } from "react";
 import { Bouton } from "@/components/ui/bouton";
 import { formaterMontant } from "@/components/ui/devise";
 import { Encadre } from "@/components/ui/encadre";
 import { dateLongue } from "@/lib/format";
+
+/** QR code généré dans le navigateur (data URL), aux couleurs de la charte. */
+function useQr(texte: string) {
+  const [src, setSrc] = useState<string>();
+  useEffect(() => {
+    QRCode.toDataURL(texte, { margin: 1, width: 240, color: { dark: "#1B2733", light: "#FFFFFF" } }).then(setSrc);
+  }, [texte]);
+  return src;
+}
 
 export function CertificatCarte({ certificat, contrat }: { certificat: Certificate; contrat?: Policy }) {
   const qr = useQr(certificat.verifyUrl);

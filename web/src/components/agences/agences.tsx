@@ -90,7 +90,7 @@ export function Localisateur() {
     refs.current.get(slug)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   };
 
-  const lieu = province ? `en ${PROVINCES[province].name}` : position ? "près de vous" : "en RDC";
+  const lieu = province ? `· ${PROVINCES[province].name}` : position ? "près de vous" : "en RDC";
 
   return (
     <>
@@ -171,6 +171,18 @@ export function Localisateur() {
   );
 }
 
+/** Cadre carré autour d'un ensemble d'agences, avec une marge (null si aucune agence). */
+function cadrerSur(agences: readonly AgencySeed[]) {
+  if (agences.length === 0) return null;
+  const points = agences.map((a) => projeter(a.location[0], a.location[1]));
+  const xs = points.map((p) => p[0]);
+  const ys = points.map((p) => p[1]);
+  const cote = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys), 14) * 1.25;
+  const cx = (Math.max(...xs) + Math.min(...xs)) / 2;
+  const cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+  return { x: cx - cote / 2, y: cy - cote / 2, l: cote, h: cote };
+}
+
 /* ---------- Carte : provinces + marqueurs numérotés synchronisés ---------- */
 
 function CarteAgences({
@@ -188,10 +200,11 @@ function CarteAgences({
   choisirProvince: (p: ProvinceCode) => void;
   choisirAgence: (slug: string) => void;
 }) {
-  const vue = province ? boite(province) : null;
+  // Province choisie : on cadre sur ses agences (Kinshasa est vaste, ses agences très groupées).
+  const vue = province ? (cadrerSur(liste) ?? boite(province)) : null;
   const viewBox = vue ? `${vue.x} ${vue.y} ${vue.l} ${vue.h}` : PROVINCE_MAP_VIEWBOX;
   const echelle = vue ? vue.l / 1000 : 1;
-  const r = 13 * echelle;
+  const r = 24 * echelle;
   return (
     <figure className="m-0 rounded-carte border border-filet bg-carte p-2">
       <svg viewBox={viewBox} className="h-auto max-h-[680px] w-full transition-all" role="group" aria-label="Carte des agences">
@@ -223,7 +236,7 @@ function CarteAgences({
               className="cursor-pointer outline-none"
             >
               <circle cx={x} cy={y} r={surligne ? r * 1.35 : r} className={surligne ? "fill-bleu-action" : "fill-bleu-nuit"} stroke="#fff" strokeWidth={2 * echelle} />
-              <text x={x} y={y} dy="0.35em" textAnchor="middle" fill="#fff" fontSize={(surligne ? 15 : 12) * echelle} fontWeight="700" fontFamily="inherit">
+              <text x={x} y={y} dy="0.35em" textAnchor="middle" fill="#fff" fontSize={(surligne ? 20 : 16) * echelle} fontWeight="700" fontFamily="inherit">
                 {i + 1}
               </text>
             </g>
