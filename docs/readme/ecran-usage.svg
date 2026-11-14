@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" role="img" aria-labelledby="t">
+  <title id="t">Écran usage du véhicule</title>
+  <rect width="390" height="780" rx="28" fill="#F5F7F9"/>
+  <rect width="390" height="3" fill="#1790CD"/>
+  <rect y="3" width="390" height="64" fill="#fff"/>
+  <line x1="0" y1="67" x2="390" y2="67" stroke="#D5DDE5"/>
+  <text x="20" y="44" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1790CD">SONAS</text>
+  <rect x="286" y="18" width="84" height="36" rx="10" fill="#fff" stroke="#D5DDE5"/>
+  <text x="328" y="42" text-anchor="middle" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" font-weight="600" fill="#116A97">Aide</text>
+
+  <rect x="20" y="88" width="78" height="4" rx="2" fill="#1790CD"/>
+  <rect x="108" y="88" width="86" height="4" rx="2" fill="#1790CD"/>
+  <rect x="210" y="88" width="80" height="4" rx="2" fill="#D5DDE5"/>
+  <rect x="308" y="88" width="62" height="4" rx="2" fill="#D5DDE5"/>
+  <text x="20" y="128" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" fill="#4E5D6C">Votre véhicule, 4 sur 5</text>
+  <text x="20" y="168" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="24" font-weight="600" fill="#1B2733">Comment utilisez-vous</text>
+  <text x="20" y="198" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="24" font-weight="600" fill="#1B2733">ce véhicule ?</text>
+  <text x="20" y="230" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" fill="#4E5D6C">Le prix dépend surtout de lusage.</text>
+
+  <rect x="20" y="254" width="350" height="64" rx="14" fill="#fff" stroke="#D5DDE5"/>
+  <circle cx="48" cy="286" r="10" fill="none" stroke="#7A8794" stroke-width="1.5"/>
+  <text x="72" y="282" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" fill="#1B2733">Privé</text>
+  <text x="72" y="302" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="14" fill="#4E5D6C">Courses, famille, loisirs</text>
+
+  <rect x="20" y="328" width="350" height="64" rx="14" fill="#E8F4FB" stroke="#116A97" stroke-width="2"/>
+  <circle cx="48" cy="360" r="10" fill="none" stroke="#116A97" stroke-width="6"/>
+  <text x="72" y="356" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" fill="#1B2733">Trajet domicile-travail</text>
+  <text x="72" y="376" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="14" fill="#4E5D6C">Tous les jours ouvrés</text>
+
+  <rect x="20" y="402" width="350" height="64" rx="14" fill="#fff" stroke="#D5DDE5"/>
+  <circle cx="48" cy="434" r="10" fill="none" stroke="#7A8794" stroke-width="1.5"/>
+  <text x="72" y="430" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" fill="#1B2733">Taxi ou transport</text>
+  <text x="72" y="450" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="14" fill="#4E5D6C">Activité rémunérée</text>
+
+  <text x="20" y="500" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1B2733">Où dort le véhicule la nuit ?</text>
+  <rect x="20" y="512" width="350" height="48" rx="10" fill="#F5F7F9" stroke="#D5DDE5"/>
+  <rect x="26" y="518" width="108" height="36" rx="8" fill="none"/>
+  <text x="80" y="542" text-anchor="middle" font-size="15" font-weight="600" fill="#4E5D6C" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif">Rue</text>
+  <rect x="140" y="518" width="110" height="36" rx="8" fill="#fff"/>
+  <text x="195" y="542" text-anchor="middle" font-size="15" font-weight="600" fill="#116A97" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif">Parcelle</text>
+  <text x="310" y="542" text-anchor="middle" font-size="15" font-weight="600" fill="#4E5D6C" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif">Garage</text>
+
+  <text x="20" y="592" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1B2733">Kilomètres par an</text>
+  <rect x="20" y="604" width="350" height="48" rx="8" fill="#fff" stroke="#B0081C" stroke-width="2"/>
+  <text x="36" y="636" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="18" fill="#1B2733">120</text>
+  <text x="20" y="676" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="14" fill="#B0081C">Indiquez une estimation entre 1 000 et 100 000 km.</text>
+
+  <rect y="700" width="390" height="80" fill="#fff"/>
+  <line x1="0" y1="700" x2="390" y2="700" stroke="#D5DDE5"/>
+  <rect x="20" y="716" width="350" height="48" rx="10" fill="#F5C800"/>
+  <text x="195" y="748" text-anchor="middle" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="17" font-weight="700" fill="#1B2733">Continuer</text>
+</svg>
