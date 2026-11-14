@@ -97,12 +97,12 @@ export function Parcours<D extends Donnees>({ id, nom, phases, etapes, initial, 
   const { definirContexte } = useAide();
 
   // Reprise du brouillon : localStorage n'existe qu'après l'hydratation, d'où la lecture dans un effet.
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture unique de localStorage après hydratation
   useEffect(() => {
     try {
       const brut = localStorage.getItem(cle);
       if (brut) {
         const s = JSON.parse(brut) as { d: D; index: number };
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture unique de localStorage après hydratation
         setD({ ...initial, ...s.d });
         setIndex(Math.min(s.index, etapes.length - 1));
       }
