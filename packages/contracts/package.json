@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "mock": "tsx watch mock/server.ts",
-    "openapi": "tsx scripts/generate-openapi.ts"
+    "openapi": "tsx scripts/generate-openapi.ts",
+    "dev": "tsx watch mock/server.ts"
   },
   "dependencies": {
     "zod": "^4.6.7",

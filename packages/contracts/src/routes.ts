@@ -352,7 +352,7 @@ export const routes = {
   backofficeTransitionClaim: {
     method: 'POST',
     path: '/v1/backoffice/claims/{claimId}/transition',
-    summary: "Faire avancer un sinistre (transitions autorisées : CLAIM_TRANSITIONS)",
+    summary: 'Faire avancer un sinistre (transitions autorisées : CLAIM_TRANSITIONS)',
     tag: 'backoffice',
     params: ClaimParams,
     body: TransitionClaimBody,

@@ -452,3 +452,88 @@ describe('gabarits « localisateur » et « erreur technique »', () => {
     ]);
   });
 });
+
+describe('suivi client et back-office', () => {
+  const steps = {
+    contact: {
+      lastName: 'Kabongo',
+      firstName: 'Mireille',
+      phone: '+243812345678',
+      plate: '4521AB01',
+    },
+    type: { type: 'bris_de_glace' },
+    whenWhere: { date: '2026-11-10', time: '08:15', province: 'kinshasa', commune: 'Gombe' },
+    circumstances: { description: 'Un caillou a fissuré le pare-brise sur le boulevard.' },
+    damage: { natures: ['pare_brise'] },
+    people: { injured: false },
+    liability: { thirdPartyInvolved: false },
+    documents: {},
+  };
+
+  async function declared(api: ApiClient) {
+    const draftId = await newDraft(api, 'claim');
+    await saveSteps(api, draftId, steps);
+    const claim = await api.call('submitClaim', { params: { draftId } });
+    if (!claim.ok) throw new Error(claim.error.message);
+    return claim.data;
+  }
+
+  it('retrouve un dossier par n° + téléphone, sans révéler lequel est faux', async () => {
+    const { api } = setup();
+    const claim = await declared(api);
+    const found = await api.call('lookupClaim', {
+      query: { number: claim.number.toLowerCase(), phone: '081 234 5678' },
+    });
+    expect(found.ok && found.data.id).toBe(claim.id);
+    const wrong = await api.call('lookupClaim', {
+      query: { number: claim.number, phone: '+243999999999' },
+    });
+    expect(!wrong.ok && wrong.status).toBe(404);
+  });
+
+  it('fait avancer un dossier selon les transitions autorisées, visible côté client', async () => {
+    const { api } = setup();
+    const claim = await declared(api);
+    const list = await api.call('backofficeListClaims', {});
+    expect(list.ok && list.data.items[0]?.holderName).toBe('Mireille Kabongo');
+
+    const skip = await api.call('backofficeTransitionClaim', {
+      params: { claimId: claim.id },
+      body: { status: 'paid' },
+    });
+    expect(!skip.ok && skip.status).toBe(409);
+
+    for (const status of ['received', 'under_review', 'offer_made'] as const) {
+      const step = await api.call('backofficeTransitionClaim', {
+        params: { claimId: claim.id },
+        body: { status },
+      });
+      expect(step.ok && step.data.status).toBe(status);
+    }
+    const seen = await api.call('getClaim', { params: { claimId: claim.id } });
+    expect(seen.ok && seen.data.timeline.map((e) => e.status)).toEqual([
+      'declared',
+      'received',
+      'under_review',
+      'offer_made',
+    ]);
+  });
+
+  it('exige un motif pour refuser', async () => {
+    const { api } = setup();
+    const claim = await declared(api);
+    const noReason = await api.call('backofficeTransitionClaim', {
+      params: { claimId: claim.id },
+      body: { status: 'rejected' },
+    });
+    expect(!noReason.ok && noReason.status).toBe(422);
+    const withReason = await api.call('backofficeTransitionClaim', {
+      params: { claimId: claim.id },
+      body: {
+        status: 'rejected',
+        reason: 'Le contrat ne couvre pas le bris de glace (formule Tiers).',
+      },
+    });
+    expect(withReason.ok && withReason.data.statusReason).toContain('bris de glace');
+  });
+});

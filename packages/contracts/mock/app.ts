@@ -8,6 +8,8 @@ import {
   AUTO_QUOTE_PREREQUISITES,
   AutoApplication,
   AutoClaimDeclaration,
+  CLAIM_STATUS_LABELS,
+  CLAIM_TRANSITIONS,
   type Claim,
   convertMoney,
   type Draft,
@@ -87,6 +89,8 @@ export function createMockApp(options: MockOptions = {}) {
   const paymentsByIdempotencyKey = new Map<string, string>();
   const policies = new Map<string, Policy>();
   const claims = new Map<string, Claim & { createdMs: number }>();
+  /** Données du déclarant, pour la file du back-office et le suivi par n° + téléphone. */
+  const claimMeta = new Map<string, { holderName: string; phone: string; plate: string | null }>();
   const certificates = new Map<string, { policyId: string }>();
   const certificateDetails = new Map<
     string,
@@ -812,8 +816,92 @@ export function createMockApp(options: MockOptions = {}) {
       createdMs: now().getTime(),
     };
     claims.set(id, claim);
+    claimMeta.set(id, {
+      holderName: `${d.contact.firstName} ${d.contact.lastName}`,
+      phone: d.contact.phone,
+      plate: d.contact.plate,
+    });
     draft.status = 'completed';
     return ok(c, 'submitClaim', claimView(claim));
+  });
+
+  // Déclarée AVANT getClaim : « lookup » ne doit pas être pris pour un identifiant.
+  app.get(r('lookupClaim'), (c) => {
+    const query = routes.lookupClaim.query.safeParse(c.req.query());
+    if (!query.success) {
+      return fail(
+        c,
+        422,
+        'VALIDATION_FAILED',
+        'Numéro ou téléphone invalide',
+        fieldErrors(query.error),
+      );
+    }
+    const number = query.data.number.trim().toUpperCase();
+    const found = [...claims.values()].find(
+      (cl) => cl.number === number && claimMeta.get(cl.id)?.phone === query.data.phone,
+    );
+    // Même réponse qu'il s'agisse du numéro ou du téléphone : on ne révèle pas lequel est faux.
+    return found
+      ? ok(c, 'lookupClaim', claimView(found))
+      : fail(c, 404, 'NOT_FOUND', 'Aucun dossier ne correspond à ce numéro et ce téléphone');
+  });
+
+  app.get(r('backofficeListClaims'), (c) => {
+    const items = [...claims.values()]
+      .map((cl) => claimView(cl))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .map((cl) => {
+        const meta = claimMeta.get(cl.id);
+        const phone = meta?.phone ?? '';
+        return {
+          id: cl.id,
+          number: cl.number,
+          product: cl.product,
+          type: cl.type,
+          status: cl.status,
+          holderName: meta?.holderName ?? 'Inconnu',
+          maskedPhone: phone ? `${phone.slice(0, 7)} ••• ${phone.slice(-4)}` : '',
+          plate: meta?.plate ?? null,
+          missingDocuments: cl.requiredDocuments.filter(
+            (doc) => doc.mandatory && doc.status === 'missing',
+          ).length,
+          createdAt: cl.createdAt,
+          updatedAt: cl.updatedAt,
+        };
+      });
+    return ok(c, 'backofficeListClaims', { items });
+  });
+
+  app.post(r('backofficeTransitionClaim'), async (c) => {
+    const stored = claims.get(param(c, 'claimId'));
+    if (!stored) return fail(c, 404, 'NOT_FOUND', 'Sinistre introuvable');
+    const current = claimView(stored);
+    const body = await parseBody(c, routes.backofficeTransitionClaim.body);
+    if (!body.success) {
+      return fail(c, 422, 'VALIDATION_FAILED', 'Transition invalide', fieldErrors(body.error));
+    }
+    const next = body.data.status;
+    if (!CLAIM_TRANSITIONS[current.status].includes(next)) {
+      return fail(
+        c,
+        409,
+        'VALIDATION_FAILED',
+        `Passage impossible de « ${CLAIM_STATUS_LABELS[current.status]} » à « ${CLAIM_STATUS_LABELS[next]} »`,
+      );
+    }
+    const message = body.data.message ?? DEFAULT_CLAIM_MESSAGES[next];
+    const updated = {
+      ...stored,
+      ...current,
+      status: next,
+      statusReason: next === 'rejected' ? body.data.reason : current.statusReason,
+      timeline: [...current.timeline, { at: iso(), status: next, message }],
+      updatedAt: iso(),
+      createdMs: stored.createdMs,
+    };
+    claims.set(updated.id, updated);
+    return ok(c, 'backofficeTransitionClaim', claimView(updated));
   });
 
   app.get(r('getClaim'), (c) => {
@@ -929,6 +1017,19 @@ function fold(value: string): string {
     .trim()
     .toLowerCase();
 }
+
+/** Messages standard affichés au client à chaque étape de son dossier. */
+const DEFAULT_CLAIM_MESSAGES: Record<Claim['status'], string> = {
+  declared: 'Votre déclaration a bien été envoyée.',
+  received: 'Votre déclaration a été reçue par un gestionnaire.',
+  under_review: 'Votre gestionnaire étudie votre dossier.',
+  expertise: 'Un expert va évaluer les dégâts, sur place ou sur photos.',
+  offer_made: "Une offre d'indemnisation vous a été envoyée par SMS.",
+  accepted: 'Vous avez accepté l’offre : le paiement est lancé.',
+  paid: 'L’indemnité a été versée sur votre compte.',
+  rejected: 'Votre demande a été refusée. Le motif est indiqué ci-dessous.',
+  closed: 'Votre dossier est clôturé.',
+};
 
 function stripOutcome(payment: StoredPayment): Payment {
   const { outcome: _outcome, ...rest } = payment;
