@@ -299,10 +299,11 @@ export function createMockApp(options: MockOptions = {}) {
     if (!query.success) {
       return fail(c, 422, 'VALIDATION_FAILED', 'Recherche invalide', fieldErrors(query.error));
     }
-    const { q, region, province, lat, lng } = query.data;
+    const { q, region, province, city, lat, lng } = query.data;
     const needle = q?.toLowerCase();
     const items = AGENCIES.filter((a) => !region || a.region === region)
       .filter((a) => !province || a.province === province)
+      .filter((a) => !city || fold(a.city) === fold(city))
       .filter((a) => !needle || `${a.name} ${a.city} ${a.address}`.toLowerCase().includes(needle))
       .map((a) => ({
         ...a,
@@ -333,6 +334,102 @@ export function createMockApp(options: MockOptions = {}) {
     }));
     return ok(c, 'listProvinces', { items });
   });
+
+  // --- Rendez-vous : créneaux d'une heure, 8 h 30–15 h 30, 7 jours ouvrables, heure locale ---
+  const bookedSlots = new Set<string>();
+
+  function slotsFor(agency: (typeof AGENCIES)[number], fromDate: string) {
+    const offset = agency.timeZone === 'Africa/Lubumbashi' ? '+02:00' : '+01:00';
+    const items: { id: string; start: string; end: string }[] = [];
+    const day = new Date(`${fromDate}T12:00:00Z`);
+    while (items.length < 7 * 7) {
+      const weekday = day.getUTCDay();
+      if (weekday !== 0 && weekday !== 6) {
+        const date = day.toISOString().slice(0, 10);
+        for (const hour of [8, 9, 10, 11, 13, 14, 15]) {
+          const hh = String(hour).padStart(2, '0');
+          const start = `${date}T${hh}:30:00${offset}`;
+          const end = `${date}T${String(hour + 1).padStart(2, '0')}:30:00${offset}`;
+          const id = `${agency.slug}@${start}`;
+          if (new Date(start).getTime() > now().getTime() && !bookedSlots.has(id)) {
+            items.push({ id, start, end });
+          }
+        }
+      }
+      day.setUTCDate(day.getUTCDate() + 1);
+    }
+    return items;
+  }
+
+  app.get(r('listAppointmentSlots'), (c) => {
+    const agency = AGENCIES.find((a) => a.slug === decodeURIComponent(param(c, 'slug')));
+    if (!agency) return fail(c, 404, 'NOT_FOUND', 'Agence introuvable');
+    const query = routes.listAppointmentSlots.query.safeParse(c.req.query());
+    if (!query.success) {
+      return fail(c, 422, 'VALIDATION_FAILED', 'Date invalide', fieldErrors(query.error));
+    }
+    const from = query.data.from ?? iso().slice(0, 10);
+    return ok(c, 'listAppointmentSlots', {
+      agencySlug: agency.slug,
+      timeZone: agency.timeZone,
+      items: slotsFor(agency, from),
+    });
+  });
+
+  app.post(r('createAppointment'), async (c) => {
+    const body = await parseBody(c, routes.createAppointment.body);
+    if (!body.success) {
+      return fail(c, 422, 'VALIDATION_FAILED', 'Demande invalide', fieldErrors(body.error));
+    }
+    const agency = AGENCIES.find((a) => a.slug === body.data.agencySlug);
+    if (!agency) return fail(c, 404, 'NOT_FOUND', 'Agence introuvable');
+    const slot = slotsFor(agency, iso().slice(0, 10)).find((s) => s.id === body.data.slotId);
+    if (!slot) {
+      return fail(
+        c,
+        409,
+        'VALIDATION_FAILED',
+        'Ce créneau vient d’être pris, choisissez-en un autre',
+        {
+          slotId: ['Créneau indisponible'],
+        },
+      );
+    }
+    bookedSlots.add(slot.id);
+    const phone = body.data.phone;
+    return ok(c, 'createAppointment', {
+      id: newId('rdv'),
+      reference: nextNumber('RDV'),
+      agencyName: agency.name,
+      agencyAddress: agency.address,
+      start: slot.start,
+      end: slot.end,
+      smsSentTo: `${phone.slice(0, 7)} ••• ${phone.slice(-4)}`,
+    });
+  });
+
+  app.get(r('getContactInfo'), (c) =>
+    ok(c, 'getContactInfo', {
+      // Numéros publiés sur sonas.cd (relevé du 14/11/2026) ; jours d'ouverture à confirmer.
+      phones: [
+        {
+          purpose: 'information',
+          label: 'Informations et souscription',
+          number: '+243 840 393 642',
+          hours: 'Lun–ven · 7 h 30–16 h',
+        },
+        {
+          purpose: 'sinistre',
+          label: 'Déclarer un sinistre',
+          number: '+243 81 641 5515',
+          hours: null,
+        },
+        { purpose: 'urgence', label: 'Blessés ou danger immédiat', number: '112', hours: null },
+      ],
+      email: 'sonas@sonas.cd',
+      whatsappChannelUrl: null,
+    }),
+  );
 
   app.get(r('getExchangeRate'), (c) =>
     ok(c, 'getExchangeRate', {
@@ -821,6 +918,16 @@ function requiredDocumentsFor(
   }
   // Une même pièce peut être demandée par plusieurs règles : on garde la première.
   return docs.filter((x, i) => docs.findIndex((y) => y.code === x.code) === i);
+}
+
+/** Compare deux noms de ville sans accents ni casse (« Mbuji-Mayi » = « mbuji mayi »). */
+function fold(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[\s-]+/g, ' ')
+    .trim()
+    .toLowerCase();
 }
 
 function stripOutcome(payment: StoredPayment): Payment {

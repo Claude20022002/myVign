@@ -410,3 +410,45 @@ describe('provinces et agences', () => {
     expect(result.data.items[0]?.distanceKm).not.toBeNull();
   });
 });
+
+describe('gabarits « localisateur » et « erreur technique »', () => {
+  it('page ville : filtre exact, sans accents ni casse', async () => {
+    const { api } = setup();
+    const result = await api.call('listAgencies', { query: { city: 'mbuji mayi' } });
+    if (!result.ok) throw new Error();
+    expect(result.data.items.map((a) => a.slug).sort()).toEqual(['dibindi', 'mbuji-mayi']);
+  });
+
+  it('prend un rendez-vous et refuse le même créneau deux fois', async () => {
+    const { api } = setup();
+    const slots = await api.call('listAppointmentSlots', { params: { slug: 'goma' }, query: {} });
+    if (!slots.ok) throw new Error();
+    expect(slots.data.timeZone).toBe('Africa/Lubumbashi');
+    const slot = slots.data.items[0];
+    if (!slot) throw new Error('aucun créneau');
+    expect(slot.start).toMatch(/\+02:00$/);
+
+    const body = {
+      agencySlug: 'goma',
+      slotId: slot.id,
+      firstName: 'Mireille',
+      lastName: 'Kabongo',
+      phone: '+243 81 234 5678',
+    };
+    const booked = await api.call('createAppointment', { body });
+    expect(booked.ok && booked.data.reference).toMatch(/^RDV-/);
+    const again = await api.call('createAppointment', { body });
+    expect(again.ok).toBe(false);
+    expect(!again.ok && again.status).toBe(409);
+  });
+
+  it('expose les numéros du centre de contact', async () => {
+    const { api } = setup();
+    const contact = await api.call('getContactInfo', {});
+    expect(contact.ok && contact.data.phones.map((p) => p.purpose)).toEqual([
+      'information',
+      'sinistre',
+      'urgence',
+    ]);
+  });
+});

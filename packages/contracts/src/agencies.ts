@@ -49,6 +49,8 @@ export const AgencyListQuery = z.object({
   q: z.string().max(100).optional(),
   region: RegionCode.optional(),
   province: Province.optional(),
+  /** Pages « Assurance {ville} » : correspondance exacte, sans accents ni casse. */
+  city: z.string().max(80).optional(),
   /** Tri par distance quand la position de l'utilisateur est connue. */
   lat: z.coerce.number().min(-90).max(90).optional(),
   lng: z.coerce.number().min(-180).max(180).optional(),

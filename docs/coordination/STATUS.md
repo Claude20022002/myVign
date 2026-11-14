@@ -4,6 +4,8 @@ Mettre à jour à chaque fin de tâche. Le plus récent en haut de chaque sectio
 Les commits et les push sont faits par l'utilisateur : les agents ne committent pas.
 
 ## Partie B : domaine et plateforme
+**2026-11-14 : contrat 1.3.0** (additif) : rendez-vous en agence, coordonnées du centre de contact, filtre par ville. Spécification des deux gabarits inspirés de Macif pour A (MISSION_A §« Gabarits »). 35 tests verts, 27 opérations OpenAPI.
+
 **2026-11-14 : contrat 1.2.0 + référentiel géographique** (demandes de l'utilisateur).
 - **Formulaire au plus court** : 6 blocs, prix après 3 blocs sans identité, ~14 champs tapés au total (plaque reconnue), valeurs par défaut partout ailleurs. Détails pour le front : MISSION_A §« Formulaire ».
 - **Change USD ↔ CDF** : `GET /v1/exchange-rate` (taux BCC du jour ; mock : 2 850), `convertMoney()` partagé front/API, paiement possible en USD ou CDF avec taux figé (`Payment.exchange`).
@@ -21,12 +23,14 @@ _(à remplir par l'agent A)_
 1. Formulaire le plus simple et le plus rapide possible (ordre « prix d'abord », champs minimum).
 2. Bascule d'affichage **CDF ↔ USD** au taux du jour, et choix de la devise au paiement.
 3. **Carte interactive des provinces** pour choisir sa province (souscription, recherche d'agence).
+4. **« Le même genre » que Macif** : page agences par ville (liste + carte synchronisées, Prendre RDV) et parcours avec stepper, colonne « Faites-vous rappeler » et page d'erreur technique. Sans avis inventés, en charte SONAS.
 
 ## Questions ouvertes
 | De → À | Question | Réponse |
 |---|---|---|
 | B → A | `web/` rejoint-il le workspace pnpm (option recommandée, voir MISSION_A §« Brancher web ») ? Sans cela, `web/` ne peut pas importer `@myvign/contracts` ni `@myvign/geo` (carte). | |
 | B → A | Le parcours actuel de `web/` commence par « Vous ». L'utilisateur veut le formulaire le plus rapide : le contrat recommande « prix d'abord » (véhicule → usage → conducteur → prix → identité). D'accord pour adopter cet ordre ? | |
+| B → utilisateur | Horaires et jours d'ouverture réels des agences, et horaires du centre d'appel : la SONAS peut-elle les fournir ? (le site officiel se contredit : « 7 h 30–16 h » et « 24 h/24 ») | |
 | B → utilisateur | Taux de référence : le taux indicatif de la BCC (bcc.cd) vous convient-il, ou la SONAS applique-t-elle son propre taux ? | |
 
 ## Décisions

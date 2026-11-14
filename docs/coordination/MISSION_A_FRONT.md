@@ -77,6 +77,26 @@ Règles : un sujet par écran ; **ne jamais afficher un champ qui a une valeur p
 - **Accessibilité et rapidité** : chaque province est focusable au clavier, avec un nom accessible et l'état sélectionné. La carte ne remplace jamais une **liste ou une recherche** (Kinshasa et Kasaï-Oriental sont minuscules). Pré-sélectionner la province par géolocalisation (bouton « Utiliser ma position »), sinon Kinshasa.
 - Mention obligatoire sous la carte : « © contributeurs OpenStreetMap » (licence ODbL).
 
+### Gabarits inspirés de Macif (demande du 2026-11-14)
+L'utilisateur veut « le même genre » que deux pages Macif : la **structure et l'ergonomie**, pas l'identité visuelle. Aucun logo, nom, slogan ni couleur Macif : tout reste en charte SONAS (`DESIGN.md`).
+
+**1. Page agences par ville** (`/agences/[province]/[ville]`, générée statiquement depuis `@myvign/geo`, une page par ville = référencement local)
+- Fil d'Ariane : Accueil › Trouver une agence › {Province} › {Ville}. Titre « Assurance {Ville} · {Province} ».
+- Barre « Ma recherche : {ville} » + « Modifier ma recherche » (texte, « Utiliser ma position »).
+- Titre « {n} agences SONAS à {Ville} » ; **liste numérotée à gauche, carte à droite** avec marqueurs numérotés **synchronisés** (survol ou focus d'une carte ↔ marqueur). Sur mobile : liste d'abord, carte repliable « Voir sur la carte ».
+- Chaque agence : nom, adresse (ou « Adresse communiquée par téléphone » si `address` est nul), distance, **statut « Ouvert » / « Fermé actuellement »** calculé depuis `openingHours` dans le fuseau `timeZone` de l'agence, boutons **« Prendre RDV »** (`listAppointmentSlots` → `createAppointment`) et « Voir plus » (fiche agence : horaires, appeler, itinéraire, nous écrire).
+- Bloc **« Réalisez votre devis en ligne »** : tuiles des produits (`listProducts`), le bouton jaune unique de la page.
+- Bloc **« Agences dans les villes à proximité »** : villes les plus proches (même province d'abord), liens internes.
+- **Pas de bloc d'avis** : la SONAS n'a aucun avis public. N'afficher **aucune note ni étoile inventée**. Un vrai recueil d'avis après sinistre ou souscription pourra venir plus tard.
+- Carte : **MapLibre GL** chargée à la demande. Fond de carte : **ne pas utiliser `tile.openstreetmap.org`** (interdit pour un usage en production). Préférer des tuiles vectorielles **Protomaps (fichier PMTiles de la RDC auto-hébergé sur le CDN**, sans clé ni coût par requête), sinon un fournisseur commercial. Mention « © contributeurs OpenStreetMap ».
+- Les horaires du mock sont **fictifs** tant que la SONAS ne les a pas confirmés.
+
+**2. Parcours de devis : stepper + colonne d'aide**
+- Bandeau stepper en haut, étapes nommées : **Véhicule · Usage · Conducteur · Tarif · Coordonnées · Validation · Paiement** (correspond aux blocs du contrat ; même logique que Macif : tarif avant coordonnées). Étapes faites cochées et cliquables pour revenir, étapes futures grisées.
+- Colonne de droite (sous le contenu sur mobile) : un argument de réassurance, encart **« Faites-vous rappeler »** (`createCallback`, contexte du brouillon transmis), **« Contactez nos conseillers »** avec numéros et horaires venant de `getContactInfo` (jamais en dur).
+- **Page d'erreur technique (E6)**, même structure que l'exemple : titre « Une erreur technique est survenue », phrase rassurante (« Vos réponses sont enregistrées »), action principale **« Prendre rendez-vous »**, alternative « Être rappelé », numéro du centre de contact. Le brouillon reste repris possible (60 jours).
+- Mentions légales en bas du parcours : consentement, traitement des données, droits (Code du numérique), en texte simple et court.
+
 ## Exigences de qualité (bloquantes en CI à terme)
 - **Performance**, profil mobile en 3G lente : LCP < 2,5 s, INP < 200 ms, CLS < 0,1, JavaScript < 120 Ko compressés par page de parcours. Server Components par défaut, polices auto-hébergées, images AVIF/WebP, photos de sinistre compressées sur le téléphone (environ 300 Ko) avant envoi.
 - **Accessibilité** : WCAG 2.2 AA, zéro violation axe sérieuse.

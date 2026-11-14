@@ -1,5 +1,12 @@
 import { z } from 'zod';
 import { Agency, AgencyList, AgencyListQuery, ProvinceList } from './agencies';
+import {
+  Appointment,
+  AppointmentSlotList,
+  AppointmentSlotsQuery,
+  ContactInfo,
+  CreateAppointmentBody,
+} from './appointments';
 import { Callback, CallbackSlotList, CreateCallbackBody } from './callbacks';
 import { Product, ProductCode, ProductList } from './catalog';
 import { Claim, ClaimParams, CreateUploadBody, UploadTicket } from './claims';
@@ -114,6 +121,38 @@ export const routes = {
     summary: 'Les 26 provinces et la couverture SONAS (carte interactive)',
     tag: 'agencies',
     success: { status: 200, schema: ProvinceList },
+    errors: [500],
+    public: true,
+  },
+
+  // --- Rendez-vous et contact ---
+  listAppointmentSlots: {
+    method: 'GET',
+    path: '/v1/agencies/{slug}/appointment-slots',
+    summary: "Créneaux de rendez-vous d'une agence (7 jours ouvrables)",
+    tag: 'agencies',
+    params: z.object({ slug: z.string().min(1).max(120) }),
+    query: AppointmentSlotsQuery,
+    success: { status: 200, schema: AppointmentSlotList },
+    errors: [404, 422, 500],
+    public: true,
+  },
+  createAppointment: {
+    method: 'POST',
+    path: '/v1/appointments',
+    summary: 'Prendre rendez-vous en agence (confirmation par SMS)',
+    tag: 'agencies',
+    body: CreateAppointmentBody,
+    success: { status: 201, schema: Appointment },
+    errors: [404, 409, 422, 429, 500],
+    public: true,
+  },
+  getContactInfo: {
+    method: 'GET',
+    path: '/v1/contact',
+    summary: 'Numéros, horaires et canaux du centre de contact',
+    tag: 'catalog',
+    success: { status: 200, schema: ContactInfo },
     errors: [500],
     public: true,
   },

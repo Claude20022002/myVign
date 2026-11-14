@@ -4,7 +4,7 @@ Contrat d'API de myVign : **source unique de vérité** entre le front (`web/`),
 
 | Fichier | Rôle |
 |---|---|
-| `src/routes.ts` | Registre des 24 routes `/v1` : méthode, chemin, schémas d'entrée et de sortie, statuts d'erreur |
+| `src/routes.ts` | Registre des 27 routes `/v1` : méthode, chemin, schémas d'entrée et de sortie, statuts d'erreur |
 | `src/products/auto.ts` | Souscription auto en 6 blocs, **prix après les 3 premiers**, valeurs par défaut partout où c'est possible |
 | `src/exchange.ts` | Taux du jour USD → CDF et `convertMoney()` (même calcul côté front et côté API) |
 | `src/products/auto-claim.ts` | Blocs de la déclaration de sinistre auto (§3.4) |
