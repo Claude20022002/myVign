@@ -212,6 +212,7 @@ export function createMockApp(options: MockOptions = {}) {
     // La couverture démarre au plus tôt au paiement confirmé (CA 16).
     const today = iso().slice(0, 10);
     const wanted = app.success ? app.data.contract.startDate : today;
+    // biome-ignore lint/complexity/useMathMinMax: dates ISO en texte, Math.max ne s'applique pas.
     const start = wanted > today ? wanted : today;
     const months =
       app.success && app.data.contract.duration === 'courte_duree'

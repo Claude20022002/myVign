@@ -9,6 +9,7 @@
       "infra/**",
       "*.json",
       "!**/node_modules",
+      "!**/*.md",
       "!**/dist",
       "!**/.next",
       "!**/coverage",

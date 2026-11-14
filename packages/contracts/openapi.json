@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "API myVign (SONAS)",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Contrat généré depuis packages/contracts/src/routes.ts. Ne pas modifier à la main."
   },
   "servers": [
@@ -828,6 +828,8 @@
                         "particulier",
                         "4x4_suv_pickup",
                         "utilitaire_leger",
+                        "minibus",
+                        "camion",
                         "moto",
                         "autre"
                       ]
@@ -842,17 +844,31 @@
                         "electrique"
                       ]
                     },
+                    "fiscalHorsepower": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "maximum": 9007199254740991
+                    },
+                    "seats": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "maximum": 9007199254740991
+                    },
+                    "manufactureYear": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": 1950,
+                      "maximum": 2100
+                    },
                     "firstRegistrationDate": {
                       "nullable": true,
                       "type": "string",
                       "format": "date",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
-                    },
-                    "estimatedValueUsd": {
-                      "nullable": true,
-                      "type": "integer",
-                      "minimum": -9007199254740991,
-                      "maximum": 9007199254740991
                     }
                   },
                   "required": [
@@ -862,8 +878,10 @@
                     "version",
                     "category",
                     "energy",
-                    "firstRegistrationDate",
-                    "estimatedValueUsd"
+                    "fiscalHorsepower",
+                    "seats",
+                    "manufactureYear",
+                    "firstRegistrationDate"
                   ],
                   "additionalProperties": false
                 }
@@ -2151,7 +2169,39 @@
                       "method": {
                         "type": "string",
                         "enum": [
+                          "afrimoney"
+                        ]
+                      },
+                      "phone": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "method",
+                      "phone"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "enum": [
                           "card"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "method"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "enum": [
+                          "agency"
                         ]
                       }
                     },
@@ -2188,7 +2238,9 @@
                         "mpesa",
                         "orange_money",
                         "airtel_money",
-                        "card"
+                        "afrimoney",
+                        "card",
+                        "agency"
                       ]
                     },
                     "status": {
@@ -2239,6 +2291,10 @@
                       "type": "string",
                       "format": "uri"
                     },
+                    "agencyReference": {
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "failureReason": {
                       "nullable": true,
                       "type": "string",
@@ -2249,6 +2305,48 @@
                         "operator_unavailable",
                         "unknown"
                       ]
+                    },
+                    "receipt": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "operatorTransactionId": {
+                          "type": "string"
+                        },
+                        "amount": {
+                          "type": "object",
+                          "properties": {
+                            "amount": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "CDF",
+                                "USD"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amount",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "paidAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        }
+                      },
+                      "required": [
+                        "operatorTransactionId",
+                        "amount",
+                        "paidAt"
+                      ],
+                      "additionalProperties": false
                     },
                     "policyId": {
                       "nullable": true,
@@ -2276,7 +2374,9 @@
                     "maskedPhone",
                     "instructions",
                     "redirectUrl",
+                    "agencyReference",
                     "failureReason",
+                    "receipt",
                     "policyId",
                     "createdAt",
                     "expiresAt"
@@ -2392,7 +2492,9 @@
                         "mpesa",
                         "orange_money",
                         "airtel_money",
-                        "card"
+                        "afrimoney",
+                        "card",
+                        "agency"
                       ]
                     },
                     "status": {
@@ -2443,6 +2545,10 @@
                       "type": "string",
                       "format": "uri"
                     },
+                    "agencyReference": {
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "failureReason": {
                       "nullable": true,
                       "type": "string",
@@ -2453,6 +2559,48 @@
                         "operator_unavailable",
                         "unknown"
                       ]
+                    },
+                    "receipt": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "operatorTransactionId": {
+                          "type": "string"
+                        },
+                        "amount": {
+                          "type": "object",
+                          "properties": {
+                            "amount": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "CDF",
+                                "USD"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amount",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "paidAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        }
+                      },
+                      "required": [
+                        "operatorTransactionId",
+                        "amount",
+                        "paidAt"
+                      ],
+                      "additionalProperties": false
                     },
                     "policyId": {
                       "nullable": true,
@@ -2480,7 +2628,9 @@
                     "maskedPhone",
                     "instructions",
                     "redirectUrl",
+                    "agencyReference",
                     "failureReason",
+                    "receipt",
                     "policyId",
                     "createdAt",
                     "expiresAt"
@@ -2698,10 +2848,43 @@
                       "type": "string",
                       "description": "Code de vérification imprimé sous le QR code"
                     },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "provisoire",
+                        "definitif"
+                      ]
+                    },
                     "snecaNumber": {
                       "nullable": true,
-                      "description": "Numéro attribué par le SNECA (ARCA)",
+                      "description": "Numéro attribué par le SNECA (ARCA), si définitif",
                       "type": "string"
+                    },
+                    "insurer": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "enum": [
+                            "SONAS SA"
+                          ]
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "arcaAgreement": {
+                          "type": "string",
+                          "enum": [
+                            "12007"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "address",
+                        "arcaAgreement"
+                      ],
+                      "additionalProperties": false
                     },
                     "policyNumber": {
                       "type": "string"
@@ -2709,8 +2892,20 @@
                     "holderName": {
                       "type": "string"
                     },
+                    "holderAddress": {
+                      "type": "string"
+                    },
+                    "holderProfession": {
+                      "type": "string"
+                    },
                     "insuredObject": {
                       "type": "string"
+                    },
+                    "coveredCountries": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "validFrom": {
                       "type": "string",
@@ -2733,10 +2928,15 @@
                   },
                   "required": [
                     "code",
+                    "kind",
                     "snecaNumber",
+                    "insurer",
                     "policyNumber",
                     "holderName",
+                    "holderAddress",
+                    "holderProfession",
                     "insuredObject",
+                    "coveredCountries",
                     "validFrom",
                     "validTo",
                     "verifyUrl",
