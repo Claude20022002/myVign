@@ -115,10 +115,10 @@ Le contrat d’API (`@myvign/contracts`, v1.0.0) est la source de vérité : fro
 |---|---|
 | Charte et aperçu HTML | Définis |
 | Recherche métier (`docs/`) | Disponible |
-| Contrat d’API | Schémas Zod, routes `/v1`, parcours auto |
-| Tarif simulé, référentiels, agences | Présents dans `web/src` |
-| Interface Next.js | Échafaudage, pages métier non branchées |
-| API Nest, mock HTTP, infra Docker | Annoncés dans les scripts, pas encore en place |
+| Contrat d’API (`packages/contracts`) | v1.4 : 30 routes `/v1`, client typé, API simulée, 35 tests |
+| Référentiel géographique (`packages/geo`) | 26 provinces, carte SVG, 59 agences |
+| Site (`web/`) | **Démo complète** : souscription auto, paiement mobile money, certificat QR, vérification, sinistre et suivi, agences et rendez-vous, espace gestionnaire, bascule FC / $ |
+| API NestJS, base de données, infra cloud | À venir (phase 1) ; la démo tourne sur l’API simulée |
 
 ## Démarrer
 
@@ -126,19 +126,20 @@ Le contrat d’API (`@myvign/contracts`, v1.0.0) est la source de vérité : fro
 
 ```bash
 pnpm install
-pnpm dev          # Next.js → http://localhost:3000
+pnpm dev          # site → http://localhost:3000 et API simulée → http://localhost:4010
 pnpm build
 pnpm typecheck
-pnpm lint         # Biome
-pnpm format
+pnpm test         # contrat, référentiel géographique
+pnpm lint         # Biome (packages) ; le site a son ESLint : pnpm --filter @myvign/web lint
 ```
 
-Autres scripts racine (cibles encore incomplètes) : `pnpm mock`, `pnpm openapi`, `pnpm infra:up`.
+Script de présentation à la SONAS : [docs/DEMO.md](docs/DEMO.md).
 
 ## Documentation
 
 | Fichier | Contenu |
 |---|---|
+| [docs/DEMO.md](docs/DEMO.md) | Script de démonstration |
 | [docs/descriptif.md](docs/descriptif.md) | Brief produit |
 | [DESIGN.md](DESIGN.md) | Couleurs, typo, anatomie des écrans |
 | [docs/design/apercu-charte.html](docs/design/apercu-charte.html) | Charte en situation |

@@ -52,3 +52,6 @@ desktop.ini
 
 # --- Fichiers générés ---
 packages/contracts/openapi.json
+
+# --- Cache Turborepo ---
+.turbo/

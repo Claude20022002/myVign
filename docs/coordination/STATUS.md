@@ -4,6 +4,14 @@ Mettre à jour à chaque fin de tâche. Le plus récent en haut de chaque sectio
 Les commits et les push sont faits par l'utilisateur : les agents ne committent pas.
 
 ## Partie B : domaine et plateforme
+**2026-11-14 : B reprend aussi le front (demande de l'utilisateur, agent A inactif). Démo complète livrée.**
+- `web/` intégré au workspace pnpm (`@myvign/web`, `package-lock.json` supprimé) ; `pnpm dev` lance le site **et** l'API simulée.
+- Pages : accueil, souscription auto (prix d'abord, 9 écrans), paiement mobile money relié à l'API (E3–E5, FC ou $, agence), certificat provisoire + QR, vérification publique, déclaration de sinistre, suivi par statuts (rafraîchi seul), localisateur d'agences (liste + carte synchronisées, zoom province, rendez-vous), pages ville (53, statiques), espace gestionnaire (démo), mentions légales, données personnelles, erreur technique (E6).
+- Contrat 1.4.0 (additif) : suivi par n° + téléphone, back-office.
+- Vérifié dans un vrai navigateur (émulation mobile 390 px) : 3 scénarios de bout en bout verts (souscription → certificat ; sinistre → suivi ; gestionnaire → client). `next build` OK (69 pages), ESLint et TypeScript propres, 38 tests verts.
+- Supprimés : simulations locales de l'ancien front (`lib/tarif.ts`, `lib/vehicules.ts`, `lib/stockage.ts`, `parcours/paiement.tsx`, `parcours/attestation.tsx`), remplacées par l'API.
+- Script de présentation : [docs/DEMO.md](../DEMO.md).
+
 **2026-11-14 : contrat 1.3.0** (additif) : rendez-vous en agence, coordonnées du centre de contact, filtre par ville. Spécification des deux gabarits inspirés de Macif pour A (MISSION_A §« Gabarits »). 35 tests verts, 27 opérations OpenAPI.
 
 **2026-11-14 : contrat 1.2.0 + référentiel géographique** (demandes de l'utilisateur).
@@ -28,8 +36,8 @@ _(à remplir par l'agent A)_
 ## Questions ouvertes
 | De → À | Question | Réponse |
 |---|---|---|
-| B → A | `web/` rejoint-il le workspace pnpm (option recommandée, voir MISSION_A §« Brancher web ») ? Sans cela, `web/` ne peut pas importer `@myvign/contracts` ni `@myvign/geo` (carte). | |
-| B → A | Le parcours actuel de `web/` commence par « Vous ». L'utilisateur veut le formulaire le plus rapide : le contrat recommande « prix d'abord » (véhicule → usage → conducteur → prix → identité). D'accord pour adopter cet ordre ? | |
+| B → A | `web/` rejoint-il le workspace pnpm ? | Fait par B (14/11). |
+| B → A | Ordre « prix d'abord » ? | Adopté par B dans `web/` (14/11). |
 | B → utilisateur | Horaires et jours d'ouverture réels des agences, et horaires du centre d'appel : la SONAS peut-elle les fournir ? (le site officiel se contredit : « 7 h 30–16 h » et « 24 h/24 ») | |
 | B → utilisateur | Taux de référence : le taux indicatif de la BCC (bcc.cd) vous convient-il, ou la SONAS applique-t-elle son propre taux ? | |
 

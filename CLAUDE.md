@@ -5,7 +5,7 @@ Deux agents travaillent **en parallèle** sur ce dépôt. Lire d'abord sa fiche 
 
 | Partie | Fiche de mission | Possède (seul à modifier) |
 |---|---|---|
-| **A · Front** | [docs/coordination/MISSION_A_FRONT.md](docs/coordination/MISSION_A_FRONT.md) | `web/` (site public, parcours, espace client), futur `backoffice/`, `e2e/`, `DESIGN.md`, `docs/design/`, `docs/readme/` |
+| **A · Front** (assuré par l'agent B depuis le 14/11/2026, à la demande de l'utilisateur) | [docs/coordination/MISSION_A_FRONT.md](docs/coordination/MISSION_A_FRONT.md) | `web/` (site public, parcours, espace client), futur `backoffice/`, `e2e/`, `DESIGN.md`, `docs/design/`, `docs/readme/` |
 | **B · Domaine et plateforme** | [docs/coordination/MISSION_B_BACK.md](docs/coordination/MISSION_B_BACK.md) | `apps/api`, `apps/worker`, `packages/*` sauf `contracts`, `infra/`, fichiers racine (`package.json`, `pnpm-workspace.yaml`, `turbo.json`, `biome.json`, `.github/`) |
 | **Partagé** | [docs/coordination/CONTRACT_CHANGES.md](docs/coordination/CONTRACT_CHANGES.md) | `packages/contracts` (le contrat d'API), `docs/coordination/` |
 

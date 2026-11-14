@@ -210,7 +210,10 @@ export function createMockApp(options: MockOptions = {}) {
         paidAt: iso(),
       };
       // La prime du contrat est celle du tarif payé (dans la devise du tarif), jamais recalculée.
-      payment.policyId = issuePolicy(payment.draftId, payment.exchange?.tariffAmount ?? payment.amount);
+      payment.policyId = issuePolicy(
+        payment.draftId,
+        payment.exchange?.tariffAmount ?? payment.amount,
+      );
     }
   }
 

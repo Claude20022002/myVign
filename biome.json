@@ -14,7 +14,8 @@
       "!**/.next",
       "!**/coverage",
       "!docs/sonas-site",
-      "!**/openapi.json"
+      "!**/openapi.json",
+      "!packages/geo/src/provinces-map.ts"
     ]
   },
   "formatter": {

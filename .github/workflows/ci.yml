@@ -24,8 +24,10 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Lint et format (Biome)
+      - name: Lint et format (Biome, paquets)
         run: pnpm lint
+      - name: Lint du site (ESLint)
+        run: pnpm --filter @myvign/web lint
       - name: Typage
         run: pnpm typecheck
       - name: Tests
