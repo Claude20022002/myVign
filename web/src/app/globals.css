@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Jetons de DESIGN.md (charte SONAS, couleurs du logo) */
+@theme {
+  --color-bleu-logo: #1790cd;
+  --color-jaune-logo: #f5c800;
+  --color-rouge-logo: #ca0920;
+
+  --color-bleu-action: #116a97;
+  --color-bleu-survol: #0d5173;
+  --color-bleu-nuit: #0a405c;
+  --color-bleu-teinte: #e8f4fb;
+  --color-bleu-clair: #c8e8f9;
+  --color-jaune-survol: #e6bb00;
+  --color-jaune-teinte: #fff9e0;
+  --color-rouge-texte: #b0081c;
+  --color-rouge-teinte: #fef0f2;
+
+  --color-fond: #f5f7f9;
+  --color-carte: #ffffff;
+  --color-encre: #1b2733;
+  --color-texte-2: #4e5d6c;
+  --color-texte-3: #6b7885;
+  --color-filet-champ: #7a8794;
+  --color-filet: #d5dde5;
+
+  --color-succes: #1e6b45;
+  --color-succes-teinte: #eaf5ef;
+  --color-vigilance: #7a4b00;
+  --color-vigilance-teinte: #fff6e0;
+
+  --font-titre: var(--font-saira), system-ui, sans-serif;
+  --font-texte: var(--font-atkinson), system-ui, sans-serif;
+
+  --radius-champ: 8px;
+  --radius-bouton: 10px;
+  --radius-carte: 14px;
+
+  --shadow-carte: 0 1px 2px rgb(10 64 92 / 0.06), 0 8px 24px rgb(10 64 92 / 0.06);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-fond);
+    color: var(--color-encre);
+    font-family: var(--font-texte);
+    font-size: 17px;
+    line-height: 1.55;
+    touch-action: manipulation;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titre);
+    font-weight: 600;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-bleu-action);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-bleu-clair);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .prix {
+    font-family: var(--font-titre);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .lien {
+    color: var(--color-bleu-action);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 600;
+  }
+  .lien:hover {
+    color: var(--color-bleu-survol);
+  }
+}
+
+/* Une seule animation de transition d'écran, courte, coupée si l'utilisateur le demande. */
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.anim-entree {
+  animation: entree 180ms ease-out both;
+}
+@keyframes feuille {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+.anim-feuille {
+  animation: feuille 200ms ease-out both;
+}
+@media (min-width: 768px) {
+  @keyframes feuille {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-entree,
+  .anim-feuille {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
 }
