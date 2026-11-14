@@ -263,7 +263,9 @@ export const KNOWN_VEHICLES: Record<string, z.output<typeof VehicleInfo>> = {
     category: 'particulier',
     energy: 'essence',
     firstRegistrationDate: '2021-03-01',
-    estimatedValueUsd: 1_450_000,
+    fiscalHorsepower: 6,
+    seats: 5,
+    manufactureYear: 2020,
   },
 };
 
