@@ -1,0 +1,26 @@
+{
+  "name": "myvign",
+  "private": true,
+  "description": "myVign : plateforme d'assurance en ligne SONAS (souscription, paiement mobile money, attestation, sinistres).",
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "mock": "pnpm --filter @myvign/contracts mock",
+    "openapi": "pnpm --filter @myvign/contracts openapi",
+    "infra:up": "docker compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infra/docker-compose.yml down"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.7",
+    "turbo": "2.11.11",
+    "typescript": "~6.0.3"
+  }
+}
