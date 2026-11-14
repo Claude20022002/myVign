@@ -3,7 +3,7 @@
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { BoutonAide } from "@/components/aide/aide";
 import { Logo } from "./logo";
 
@@ -24,29 +24,16 @@ export function BandeauDemo() {
 }
 
 export function Entete() {
-  const chemin = usePathname();
   const [ouvert, setOuvert] = useState(false);
   return (
     <header className="no-print sticky top-0 z-40 border-t-[3px] border-bleu-logo border-b border-b-filet bg-carte/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2.5">
         <Logo />
         <nav aria-label="Principale" className="ml-4 hidden flex-1 lg:block">
-          <ul className="flex gap-1">
-            {LIENS.map((l) => {
-              const actif = l.href !== "/#assurances" && chemin.startsWith(l.href);
-              return (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    aria-current={actif ? "page" : undefined}
-                    className={`inline-flex min-h-11 items-center rounded-bouton px-3 font-semibold hover:bg-fond ${actif ? "text-bleu-action shadow-[inset_0_-3px_0_var(--color-bleu-logo)]" : "text-encre"}`}
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          {/* usePathname lit l'URL : sous <Suspense> pour que l'en-tête reste dans l'enveloppe statique (Next 16). */}
+          <Suspense fallback={<Liens chemin="" />}>
+            <LiensActifs />
+          </Suspense>
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <BoutonAide />
@@ -76,5 +63,30 @@ export function Entete() {
         </nav>
       )}
     </header>
+  );
+}
+
+function LiensActifs() {
+  return <Liens chemin={usePathname()} />;
+}
+
+function Liens({ chemin }: { chemin: string }) {
+  return (
+    <ul className="flex gap-1">
+      {LIENS.map((l) => {
+        const actif = chemin !== "" && l.href !== "/#assurances" && chemin.startsWith(l.href);
+        return (
+          <li key={l.href}>
+            <Link
+              href={l.href}
+              aria-current={actif ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center rounded-bouton px-3 font-semibold hover:bg-fond ${actif ? "text-bleu-action shadow-[inset_0_-3px_0_var(--color-bleu-logo)]" : "text-encre"}`}
+            >
+              {l.label}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

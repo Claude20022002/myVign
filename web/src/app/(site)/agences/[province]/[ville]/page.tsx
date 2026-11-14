@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { AgencesVille } from "@/components/agences/agences";
 import { BlocDevis } from "@/components/site/bloc-devis";
 import { nomProvince, VILLES } from "@/lib/villes";
@@ -20,7 +21,16 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return v ? { title: `Assurance ${v.ville} · agences SONAS`, description: `Les agences SONAS à ${v.ville} (${nomProvince(v.province)}) : adresses, horaires, rendez-vous en ligne.` } : {};
 }
 
-export default async function PageVille({ params }: { params: Promise<Params> }) {
+// Partial Prefetching activé : les paramètres sont lus dans un <Suspense> (Next 16, Cache Components).
+export default function PageVille({ params }: { params: Promise<Params> }) {
+  return (
+    <Suspense fallback={<p className="mx-auto max-w-4xl px-4 py-8 text-texte-2">Chargement…</p>}>
+      <ContenuVille params={params} />
+    </Suspense>
+  );
+}
+
+async function ContenuVille({ params }: { params: Promise<Params> }) {
   const v = trouver(await params);
   if (!v) notFound();
   const proches = VILLES.filter((x) => x.province === v.province && x.slug !== v.slug);
