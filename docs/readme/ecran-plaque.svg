@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 780" role="img" aria-labelledby="t">
+  <title id="t">Écran plaque dimmatriculation</title>
+  <rect width="390" height="780" rx="28" fill="#F5F7F9"/>
+  <rect width="390" height="3" fill="#1790CD"/>
+  <rect y="3" width="390" height="64" fill="#fff"/>
+  <line x1="0" y1="67" x2="390" y2="67" stroke="#D5DDE5"/>
+  <text x="20" y="44" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="600" fill="#1790CD">SONAS</text>
+  <rect x="286" y="18" width="84" height="36" rx="10" fill="#fff" stroke="#D5DDE5"/>
+  <text x="328" y="42" text-anchor="middle" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" font-weight="600" fill="#116A97">Aide</text>
+
+  <text x="20" y="96" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="13" fill="#4E5D6C">Vous</text>
+  <text x="108" y="96" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="13" font-weight="700" fill="#1B2733">Véhicule</text>
+  <text x="210" y="96" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="13" fill="#4E5D6C">Formule</text>
+  <text x="308" y="96" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="13" fill="#4E5D6C">Paiement</text>
+  <rect x="20" y="104" width="78" height="4" rx="2" fill="#1790CD"/>
+  <rect x="108" y="104" width="86" height="4" rx="2" fill="#1790CD"/>
+  <rect x="210" y="104" width="80" height="4" rx="2" fill="#D5DDE5"/>
+  <rect x="308" y="104" width="62" height="4" rx="2" fill="#D5DDE5"/>
+
+  <text x="20" y="148" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" fill="#4E5D6C">Votre véhicule, 1 sur 5</text>
+  <text x="20" y="188" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="26" font-weight="600" fill="#1B2733">Quelle est la plaque</text>
+  <text x="20" y="220" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="26" font-weight="600" fill="#1B2733">de votre véhicule ?</text>
+  <text x="20" y="254" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" fill="#4E5D6C">On retrouve la marque et le modèle pour vous.</text>
+
+  <text x="20" y="300" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1B2733">Immatriculation</text>
+  <rect x="20" y="312" width="350" height="48" rx="8" fill="#fff" stroke="#7A8794"/>
+  <text x="36" y="344" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="18" font-weight="700" fill="#1B2733">4521AB 01</text>
+  <text x="20" y="384" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" fill="#4E5D6C">4 chiffres, 2 lettres, puis le code de la province.</text>
+
+  <rect x="20" y="410" width="350" height="72" rx="10" fill="#E8F4FB"/>
+  <text x="40" y="440" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1B2733">Peugeot 208, essence</text>
+  <text x="40" y="464" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" fill="#116A97">Ce nest pas votre véhicule ? Corriger</text>
+  <text x="195" y="516" text-anchor="middle" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="16" font-weight="600" fill="#116A97">Je nai pas encore de plaque</text>
+
+  <rect y="620" width="390" height="160" fill="#fff"/>
+  <line x1="0" y1="620" x2="390" y2="620" stroke="#D5DDE5"/>
+  <text x="20" y="650" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="14" fill="#1E6B45">Enregistré automatiquement</text>
+  <text x="20" y="682" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="15" fill="#4E5D6C">Estimation</text>
+  <text x="370" y="682" text-anchor="end" font-family="Saira, Segoe UI, system-ui, sans-serif" font-size="22" font-weight="600" fill="#1B2733">1 290 000 FC</text>
+  <rect x="20" y="700" width="350" height="48" rx="10" fill="#F5C800"/>
+  <text x="195" y="732" text-anchor="middle" font-family="Atkinson Hyperlegible Next, Segoe UI, system-ui, sans-serif" font-size="17" font-weight="700" fill="#1B2733">Continuer</text>
+</svg>
