@@ -1,5 +1,5 @@
-myVign est une plateforme pour permettre aux usagers de se trouver une assurance ou obtenir une
-vignette pour pour la Sonas en RDC. Souscrire en ligne aux assurances
+myVign est une plateforme pour permettre aux usagers de se trouver une assurance
+auprès de la Sonas en RDC. Souscrire en ligne aux assurances
 
 Sonas: auto, voyage, scolaire, incendie, transport et entreprise. Devis instantané et maiement par Mobile Money.
 

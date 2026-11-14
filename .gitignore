@@ -1,0 +1,51 @@
+# --- Outillage Claude Code et skills tiers (local) ---
+.claude/
+.impeccable/
+CLAUDE.local.md
+
+# --- Ressources récupérées sur sonas.cd (54 Mo, propriété SONAS) ---
+docs/sonas-site/
+
+# --- Médias lourds ---
+*.mp4
+*.mov
+*.avi
+
+# --- Dépendances et builds (futur projet web) ---
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Python (scripts, tests Playwright) ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# --- Secrets et environnement ---
+.env
+.env.*
+!.env.example
+*.pem
+
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Système et éditeurs ---
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+.vscode/*
+!.vscode/extensions.json
+.idea/
