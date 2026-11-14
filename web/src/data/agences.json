@@ -1,0 +1,434 @@
+[
+ {
+  "id": "gombe-blvd-30-juin",
+  "nom": "Direction générale (siège)",
+  "region": "Direction générale",
+  "adresse": "6664, Imm. Sankuru, bd du 30 Juin, Gombe",
+  "telephone": "+243816877156",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "bandundu",
+  "nom": "Bandundu",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "17, avenue du Parc. C/Basoko/Bandundu-Ville",
+  "telephone": "",
+  "ville": "Bandundu"
+ },
+ {
+  "id": "funa",
+  "nom": "Funa",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "6160, Boulevard Lumumba Q/Funa",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "kikwit",
+  "nom": "Kikwit",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Av. Du Port n°4, Ville- basse C/Lukolela, Ville de Kikwit.",
+  "telephone": "",
+  "ville": "Kikwit"
+ },
+ {
+  "id": "kimbanseke",
+  "nom": "Kimbanseke",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Boulevard LUMUMBA N*7 C/Kimbaseke",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "kingabwa",
+  "nom": "Kingabwa",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Avenue des Poids lourds numéro 104 C/Limete",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "limete",
+  "nom": "Limete",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "337, place Mandrandele, 7eme rue",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "masina",
+  "nom": "Masina",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Boulevard Lumumba n°16, Croisement du Boulevard Lumumba et Avenue Matankumu. C/Masina",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "matete",
+  "nom": "Matete",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Quartier Ngilima I, n°1 C/MATETE.",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "ndjili",
+  "nom": "N'djili",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "N* 2,AV. MARECHAL Q.7. C/ NDJILI",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "ngaba",
+  "nom": "Ngaba",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "By pass numéro 17 C/ Ngaba",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "nioki",
+  "nom": "Nioki",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Av. de la Révolution no 65, Q. Kingabwa, C-R/NIOKI.",
+  "telephone": "",
+  "ville": "Nioki"
+ },
+ {
+  "id": "nsele-2",
+  "nom": "N'sélé",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Boulevard Congo , N*21 Q/Kinkole pêcheurs C/Nsele.",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "ste-therese",
+  "nom": "Sainte-Thérèse",
+  "region": "Kinshasa-Est/Bandundu",
+  "adresse": "Av. Kwilu Ngongo n°33bis, Q.4, C/N'DJILI.",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "bumba",
+  "nom": "Bumba",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "...",
+  "telephone": "",
+  "ville": "Bumba"
+ },
+ {
+  "id": "gbadolite",
+  "nom": "Gbadolite",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Blvd Mobutu n'33. C/ Gbadolité Ville de Gbadolité",
+  "telephone": "",
+  "ville": "Gbadolite"
+ },
+ {
+  "id": "gombe-30-juin",
+  "nom": "Gombe 30 Juin",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "6664 Immeuble SANKURU Boulevard du 30 Juin, Kinshasa/Gombe",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "kalamu",
+  "nom": "Kalamu",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Av. Victoire N*... C/Kalamu, Ref: Ecole de Navigation",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "kasa-vubu",
+  "nom": "Kasa-Vubu",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Av. Victoire N*... Rond-Point Gambela C/Kasa-Vubu",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "kintambo",
+  "nom": "Kintambo",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Av. Tabora n*52 croisement Kasavubu-Tabora, C/Kintambo",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "liberation-ex-24-novembre",
+  "nom": "Libération (ex-24 Novembre)",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Avenue Kabambare N*273, C/Lingwala",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "lisala",
+  "nom": "Lisala",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Av.Yemo c/ bolikango ville de LISALA",
+  "telephone": "",
+  "ville": "Lisala"
+ },
+ {
+  "id": "ndolo",
+  "nom": "Ndolo",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Av. Aérodrome n*21 c/ Barumbu",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "ngiri-ngiri",
+  "nom": "Ngiri-Ngiri",
+  "region": "Kinshasa-Ouest/Équateur",
+  "adresse": "Av. De liberation (Ex-24 Novembre) n*1035, C/NGIRI. Immeuble mavuzi. Ref. Rond-point Molaert",
+  "telephone": "",
+  "ville": "Kinshasa"
+ },
+ {
+  "id": "aru",
+  "nom": "Aru",
+  "region": "Est",
+  "adresse": "Av HCR",
+  "telephone": "",
+  "ville": "Aru"
+ },
+ {
+  "id": "beni",
+  "nom": "Beni",
+  "region": "Est",
+  "adresse": "N•1, Av. Zombya , Q. Malepe, C. BEU, Ville de BENI / Nord Kivu.",
+  "telephone": "+243998624324",
+  "ville": "Beni"
+ },
+ {
+  "id": "bukavu",
+  "nom": "Bukavu",
+  "region": "Est",
+  "adresse": "141, Av. Patrice Emery Lumumba Quartier Ndendere Commune d'Ibanda Ville de Bukavu Province du Sud-Kivu R.D. Congo",
+  "telephone": "+243825511353",
+  "ville": "Bukavu"
+ },
+ {
+  "id": "butembo",
+  "nom": "Butembo",
+  "region": "Est",
+  "adresse": "436 AVENUE PRESIDENT DE LA REPUBLIQUE, QUARTIER DE L'EVECHE, COMMUNE. BULENGERA,  BUTEMBO",
+  "telephone": "+243998384058",
+  "ville": "Butembo"
+ },
+ {
+  "id": "goma",
+  "nom": "Goma",
+  "region": "Est",
+  "adresse": "50, Boulevard Kanyamuhanga, Quartier des Volcans, Commune de Goma, Ville de Goma, Province du Nord-Kivu",
+  "telephone": "+243893221604",
+  "ville": "Goma"
+ },
+ {
+  "id": "kindu",
+  "nom": "Kindu",
+  "region": "Est",
+  "adresse": "9, avenue de la paix , commune kasuku. Quartier/RVA",
+  "telephone": "+243818106346",
+  "ville": "Kindu"
+ },
+ {
+  "id": "uvira",
+  "nom": "Uvira",
+  "region": "Est",
+  "adresse": "N° 49.av. du Congo Quartier Kimanga. Commune de Kalundu",
+  "telephone": "+243813183504",
+  "ville": "Uvira"
+ },
+ {
+  "id": "boma",
+  "nom": "Boma",
+  "region": "Ouest",
+  "adresse": "Avenue du Jardin BC 310, Commune de Nzadi, Ville de Boma",
+  "telephone": "",
+  "ville": "Boma"
+ },
+ {
+  "id": "matadi",
+  "nom": "Matadi",
+  "region": "Ouest",
+  "adresse": "Av. Major Vangu n°15/Quartier : Ville Basse, Commune/ Matadi",
+  "telephone": "",
+  "ville": "Matadi"
+ },
+ {
+  "id": "mbanza-ngungu",
+  "nom": "Mbanza-Ngungu",
+  "region": "Ouest",
+  "adresse": "Avenue Mobutu n° 378 Quartier Nokia Ville de Mbanza-Ngungu",
+  "telephone": "",
+  "ville": "Mbanza-Ngungu"
+ },
+ {
+  "id": "muanda",
+  "nom": "Muanda",
+  "region": "Ouest",
+  "adresse": "Avenue du Commerce n°14 Quartier Muanda Ville Muanda",
+  "telephone": "",
+  "ville": "Muanda"
+ },
+ {
+  "id": "tshela",
+  "nom": "Tshela",
+  "region": "Ouest",
+  "adresse": "Avenue Taty n° 29 Quartier Kabila Secteur de Tshela",
+  "telephone": "",
+  "ville": "Tshela"
+ },
+ {
+  "id": "dibindi",
+  "nom": "Dibindi",
+  "region": "Sud",
+  "adresse": "1445, av. INGA, C/ DIBINDI, Q/ NINKOKA,  MBUJIMAYI",
+  "telephone": "",
+  "ville": "Dibindi"
+ },
+ {
+  "id": "dpi-lubumbashi",
+  "nom": "DPI/Lubumbashi",
+  "region": "Sud",
+  "adresse": "12, av. SENDWE, C/ LUBUMBASHI, Q/ MAKUTANO,  LUBUMBASHI",
+  "telephone": "",
+  "ville": "Lubumbashi"
+ },
+ {
+  "id": "golf",
+  "nom": "Golf",
+  "region": "Sud",
+  "adresse": "1, av. DES ROCHES, C/ LUBUMBASHI, Q/ GOLF (ARRET FINA),  LUBUMBASH",
+  "telephone": "",
+  "ville": "Lubumbashi"
+ },
+ {
+  "id": "kalemie",
+  "nom": "Kalemie",
+  "region": "Sud",
+  "adresse": "127, av. BLVD LUMUMBA, C/ KALEMIE, Q/ KATAKI,  KALEMIE",
+  "telephone": "",
+  "ville": "Kalemie"
+ },
+ {
+  "id": "kamina",
+  "nom": "Kamina",
+  "region": "Sud",
+  "adresse": "Direction de région Sud",
+  "telephone": "",
+  "ville": "Kamina"
+ },
+ {
+  "id": "kampemba",
+  "nom": "Kampemba",
+  "region": "Sud",
+  "adresse": "7871, av. KABALO, C/ LUBUMBASHI, Q/ MAKUTANO,  LUBUMBASHI",
+  "telephone": "",
+  "ville": "Lubumbashi"
+ },
+ {
+  "id": "kananga",
+  "nom": "Kananga",
+  "region": "Sud",
+  "adresse": "12, av. KINKOLE, QUARTER: MALANDJI, C/ KANANGA,  KANANGA",
+  "telephone": "",
+  "ville": "Kananga"
+ },
+ {
+  "id": "kasumbalesa-2",
+  "nom": "Kasumbalesa",
+  "region": "Sud",
+  "adresse": "02, ROUTE MUSHOSI/SODIMICO, KASUMBALESA DOUANE,  KASUMBALESA",
+  "telephone": "",
+  "ville": "Kasumbalesa"
+ },
+ {
+  "id": "katuba",
+  "nom": "Katuba",
+  "region": "Sud",
+  "adresse": "371, av. NGONGO LUTETE, C/ LUBUMBASHI, Q/ MAKOMENO,  LUBUMBASHI, PHONES",
+  "telephone": "",
+  "ville": "Lubumbashi"
+ },
+ {
+  "id": "kipushi",
+  "nom": "Kipushi",
+  "region": "Sud",
+  "adresse": "52, av. MOBUTU/LUMUMBA, C/ KIPUSHI, Q/ KAMARENGE,  KIPUSHI",
+  "telephone": "",
+  "ville": "Kipushi"
+ },
+ {
+  "id": "kolwezi",
+  "nom": "Kolwezi",
+  "region": "Sud",
+  "adresse": "96, av. KAMBA, C/ DILALA, Q/ BIASHARA,  KOLWEZI",
+  "telephone": "",
+  "ville": "Kolwezi"
+ },
+ {
+  "id": "likasi",
+  "nom": "Likasi",
+  "region": "Sud",
+  "adresse": "18/20, av. LUMUMBA, C/ LIKASI, Q/ CENTRE VILLE,  LIKASI",
+  "telephone": "",
+  "ville": "Likasi"
+ },
+ {
+  "id": "lodja",
+  "nom": "Lodja",
+  "region": "Sud",
+  "adresse": "IMMEUBLE APRO, av. DU 30 JUIN, C/ LODJA, Q/ LOKENYE,  LODJA",
+  "telephone": "",
+  "ville": "Lodja"
+ },
+ {
+  "id": "lubumbashi",
+  "nom": "Lubumbashi",
+  "region": "Sud",
+  "adresse": "7678, av. MUNONGO, C/ LUBUMBASHI, Q/ MAKUTANO,  LUBUMBASHI",
+  "telephone": "",
+  "ville": "Lubumbashi"
+ },
+ {
+  "id": "mbuji-mayi",
+  "nom": "Mbuji-Mayi",
+  "region": "Sud",
+  "adresse": "1, av. LUMUMBA, C/ DIULU, Q/ BIPA,  MBUJIMAYI",
+  "telephone": "",
+  "ville": "Mbuji-Mayi"
+ },
+ {
+  "id": "ruashi",
+  "nom": "Ruashi",
+  "region": "Sud",
+  "adresse": "53, av. BLVD FELIX ANTOINE TSHISEKEDI (EX-CHAUSSEE KASENGA, C/ KAMPEMBA, Q/ BELAIR,  LUBUMBASHI",
+  "telephone": "",
+  "ville": "Lubumbashi"
+ },
+ {
+  "id": "sakania",
+  "nom": "Sakania",
+  "region": "Sud",
+  "adresse": "13, av. DE LA MISSION, C/ SAKANIA, Q/ SELENGE,  SAKANIA",
+  "telephone": "",
+  "ville": "Sakania"
+ },
+ {
+  "id": "tshikapa-2",
+  "nom": "Tshikapa",
+  "region": "Sud",
+  "adresse": "3, av. DU STADE (Voir ROND POINT 6H00), C/ KANZALA,  TSHIKAPA",
+  "telephone": "",
+  "ville": "Tshikapa"
+ }
+]
