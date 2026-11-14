@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>myVign · Aperçu de la charte SONAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Saira:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bleu-logo: #1790CD;
+    --jaune-logo: #F5C800;
+    --rouge-logo: #CA0920;
+    --bleu-action: #116A97;
+    --bleu-survol: #0D5173;
+    --bleu-nuit: #0A405C;
+    --bleu-teinte: #E8F4FB;
+    --jaune-survol: #E6BB00;
+    --jaune-teinte: #FFF9E0;
+    --rouge-texte: #B0081C;
+    --rouge-teinte: #FEF0F2;
+    --fond: #F5F7F9;
+    --carte: #FFFFFF;
+    --encre: #1B2733;
+    --texte-2: #4E5D6C;
+    --texte-3: #6B7885;
+    --filet-champ: #7A8794;
+    --filet: #D5DDE5;
+    --succes: #1E6B45;
+    --succes-teinte: #EAF5EF;
+    --vigilance: #7A4B00;
+    --vigilance-teinte: #FFF6E0;
+    --titre: "Saira", system-ui, sans-serif;
+    --texte: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--fond);
+    color: var(--encre);
+    font-family: var(--texte);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  h1, h2, h3 { font-family: var(--titre); font-weight: 600; line-height: 1.2; margin: 0; text-wrap: balance; }
+  a { color: var(--bleu-action); }
+  a:not(.btn):hover { color: var(--bleu-survol); }
+  :focus-visible { outline: 3px solid var(--bleu-action); outline-offset: 2px; }
+
+  /* En-tête du document */
+  .doc-head {
+    background: var(--carte);
+    border-top: 3px solid var(--bleu-logo);
+    border-bottom: 1px solid var(--filet);
+  }
+  .doc-head .inner { max-width: 1160px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 20px; }
+  .doc-head img { height: 52px; width: auto; }
+  .doc-head p { margin: 0; color: var(--texte-2); }
+
+  main { max-width: 1160px; margin: 0 auto; padding: 40px 24px 64px; }
+  section + section { margin-top: 64px; }
+  .intro { max-width: 68ch; }
+  .intro h1 { font-size: 32px; }
+  .intro p { color: var(--texte-2); margin: 12px 0 0; }
+  section > h2 { font-size: 24px; }
+  section > .lead { color: var(--texte-2); margin: 8px 0 24px; max-width: 68ch; }
+
+  /* Palette */
+  .groupe { margin-top: 28px; }
+  .groupe h3 { font-size: 18px; margin-bottom: 12px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 14px; }
+  .swatch { background: var(--carte); border: 1px solid var(--filet); border-radius: 14px; overflow: hidden; }
+  .swatch .chip { height: 72px; display: flex; align-items: flex-end; padding: 8px 10px; font-weight: 700; font-size: 15px; }
+  .swatch .meta { padding: 10px 12px 12px; font-size: 14px; line-height: 1.4; }
+  .swatch .meta b { display: block; font-size: 15px; }
+  .swatch .meta code { font-family: var(--texte); color: var(--texte-2); }
+  .swatch .meta span { color: var(--texte-2); display: block; margin-top: 2px; }
+
+  /* Hiérarchie */
+  .niveaux { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .niveau { background: var(--carte); border: 1px solid var(--filet); border-radius: 14px; padding: 20px; }
+  .niveau h3 { font-size: 18px; }
+  .niveau p { margin: 8px 0 16px; color: var(--texte-2); font-size: 16px; }
+  .budget { display: flex; height: 14px; border-radius: 7px; overflow: hidden; margin-top: 24px; }
+  .budget span:nth-child(1) { flex: 85; background: var(--filet); }
+  .budget span:nth-child(2) { flex: 12; background: var(--bleu-logo); }
+  .budget span:nth-child(3) { flex: 3; background: var(--jaune-logo); }
+  .budget-legende { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px; font-size: 15px; color: var(--texte-2); }
+
+  /* Composants */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 0 22px; border-radius: 10px;
+    font: 700 17px/1 var(--texte); text-decoration: none; cursor: pointer;
+    border: 0; transition: background-color 150ms ease;
+  }
+  .btn-principal { background: var(--jaune-logo); color: var(--encre); }
+  .btn-principal:hover { background: var(--jaune-survol); }
+  .btn-secondaire { background: var(--carte); color: var(--bleu-action); border: 1.5px solid var(--bleu-action); }
+  .btn-secondaire:hover { background: var(--bleu-teinte); }
+  .btn-urgence { background: var(--rouge-logo); color: #fff; }
+  .btn-urgence:hover { background: var(--rouge-texte); }
+  .btn-bloc { width: 100%; }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+  /* Écrans */
+  .ecrans { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+  .ecran-legende { max-width: 390px; }
+  .ecran-legende p { color: var(--texte-2); font-size: 15px; margin: 10px 0 0; }
+  .tel {
+    width: 390px; max-width: 100%;
+    background: var(--fond);
+    border: 1px solid var(--filet); border-radius: 28px;
+    overflow: hidden; display: flex; flex-direction: column; min-height: 780px;
+    box-shadow: 0 1px 2px rgba(10, 64, 92, .06), 0 12px 32px rgba(10, 64, 92, .08);
+  }
+  .tel-head {
+    background: var(--carte); border-top: 3px solid var(--bleu-logo); border-bottom: 1px solid var(--filet);
+    display: flex; align-items: center; justify-content: space-between; padding: 10px 16px;
+  }
+  .tel-head img { height: 34px; width: auto; }
+  .aide {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px;
+    background: var(--carte); border: 1px solid var(--filet); border-radius: 10px;
+    color: var(--bleu-action); font: 600 16px var(--texte);
+  }
+  .phases { list-style: none; margin: 0; padding: 16px 16px 0; display: flex; gap: 6px; }
+  .phases li { flex: 1; font-size: 14px; color: var(--texte-2); }
+  .phases li::before { content: ""; display: block; height: 4px; border-radius: 2px; background: var(--filet); margin-bottom: 6px; }
+  .phases li.fait::before, .phases li.encours::before { background: var(--bleu-logo); }
+  .phases li.encours { color: var(--encre); font-weight: 600; }
+  .tel-corps { padding: 20px 16px 24px; flex: 1; }
+  .position { font-size: 15px; color: var(--texte-2); margin: 0 0 6px; }
+  .tel-corps h2 { font-size: 24px; line-height: 30px; }
+  .tel-corps .sous-titre { color: var(--texte-2); margin: 6px 0 22px; }
+  .champ { margin-bottom: 20px; }
+  .champ label, .champ legend { display: block; font-weight: 600; font-size: 16px; margin-bottom: 6px; padding: 0; }
+  .champ input {
+    width: 100%; height: 48px; padding: 0 14px;
+    background: var(--carte); border: 1px solid var(--filet-champ); border-radius: 8px;
+    font: 400 18px var(--texte); color: var(--encre);
+  }
+  .champ input:focus { outline: none; border: 2px solid var(--bleu-action); padding: 0 13px; }
+  .champ .aide-champ { font-size: 15px; color: var(--texte-2); margin-top: 6px; }
+  .champ.erreur input { border: 2px solid var(--rouge-texte); padding: 0 13px; }
+  .msg-erreur { display: flex; gap: 6px; color: var(--rouge-texte); font-size: 15px; margin-top: 6px; }
+  fieldset { border: 0; margin: 0 0 20px; padding: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .choix { display: grid; gap: 10px; }
+  .choix label {
+    display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 14px;
+    background: var(--carte); border: 1px solid var(--filet); border-radius: 14px;
+    font-weight: 400; cursor: pointer; margin: 0;
+  }
+  .choix label:hover { border-color: var(--bleu-action); }
+  .choix input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .choix .pastille { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--filet-champ); flex: none; }
+  .choix input:checked + label { background: var(--bleu-teinte); border: 2px solid var(--bleu-action); padding: 11px 13px; }
+  .choix input:checked + label .pastille { border: 6px solid var(--bleu-action); }
+  .choix input:focus-visible + label { outline: 3px solid var(--bleu-action); outline-offset: 2px; }
+  .choix small { display: block; color: var(--texte-2); font-size: 15px; }
+  .segmente { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--fond); border: 1px solid var(--filet); border-radius: 10px; padding: 3px; gap: 3px; }
+  .segmente input { position: absolute; opacity: 0; }
+  .segmente label { text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin: 0; font-weight: 600; color: var(--texte-2); cursor: pointer; }
+  .segmente input:checked + label { background: var(--carte); color: var(--bleu-action); box-shadow: 0 1px 2px rgba(10, 64, 92, .12); }
+  .encadre { display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; font-size: 15px; line-height: 1.45; }
+  .encadre.info { background: var(--bleu-teinte); color: var(--encre); }
+  .encadre.urgence { background: var(--rouge-teinte); color: var(--rouge-texte); flex-direction: column; }
+  .encadre svg { flex: none; margin-top: 2px; }
+  .tel-pied { background: var(--carte); border-top: 1px solid var(--filet); padding: 12px 16px 16px; }
+  .estimation { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .estimation span { color: var(--texte-2); font-size: 15px; }
+  .prix { font-family: var(--titre); font-weight: 600; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .prix small { font-family: var(--texte); font-weight: 400; font-size: 15px; color: var(--texte-2); }
+  .sauve { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--succes); margin-bottom: 10px; }
+  .lien-sec { display: block; text-align: center; margin-top: 12px; font-weight: 600; }
+
+  .doc-foot { background: var(--bleu-nuit); color: #fff; }
+  .doc-foot .inner { max-width: 1160px; margin: 0 auto; padding: 28px 24px; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .doc-foot p { margin: 0; color: #C8E8F9; font-size: 15px; }
+  .doc-foot strong { color: var(--jaune-logo); }
+
+  @media (max-width: 860px) {
+    .niveaux { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <div class="inner">
+    <img src="../sonas-site/images/brand/logo-sonas.png" alt="SONAS, leader des assurances en RDC" width="75" height="52">
+    <p>myVign · aperçu de la charte, version 1</p>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <h1>Les couleurs du logo, dosées pour ne pas fatiguer</h1>
+    <p>Le bleu porte l'identité, le jaune désigne l'action à faire, le rouge est gardé pour l'urgence. Tout le reste est neutre, pour que l'œil se pose d'abord sur ce qui compte.</p>
+  </section>
+
+  <section aria-labelledby="t-palette">
+    <h2 id="t-palette">Palette</h2>
+    <p class="lead">Contrastes mesurés selon le WCAG 2.2. Le bleu et le jaune du logo ne servent jamais de couleur de texte : leurs versions foncées prennent le relais.</p>
+
+    <div class="groupe">
+      <h3>Couleurs du logo</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#1790CD" aria-hidden="true"></div><div class="meta"><b>Bleu logo</b><code>#1790CD</code><span>Identité, progression, icônes. Pas de texte dessus (3,6:1).</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#F5C800;color:#1B2733">Aa 9,5:1</div><div class="meta"><b>Jaune logo</b><code>#F5C800</code><span>Action principale, une par écran</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#CA0920;color:#fff">Aa 5,9:1</div><div class="meta"><b>Rouge logo</b><code>#CA0920</code><span>Urgence uniquement</span></div></div>
+      </div>
+    </div>
+
+    <div class="groupe">
+      <h3>Déclinaisons</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#116A97;color:#fff">Aa 6,0:1</div><div class="meta"><b>Bleu action</b><code>#116A97</code><span>Liens, sélection, focus</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#0A405C;color:#fff">Aa 11:1</div><div class="meta"><b>Bleu nuit</b><code>#0A405C</code><span>Pied de page, espace client</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#E8F4FB;color:#116A97">Aa 5,3:1</div><div class="meta"><b>Bleu teinte</b><code>#E8F4FB</code><span>Choix sélectionné, info</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#FFF9E0;color:#1B2733">Aa</div><div class="meta"><b>Jaune teinte</b><code>#FFF9E0</code><span>Formule recommandée</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#FEF0F2;color:#B0081C">Aa 6,5:1</div><div class="meta"><b>Rouge teinte</b><code>#FEF0F2</code><span>Fond d'erreur, d'urgence</span></div></div>
+      </div>
+    </div>
+
+    <div class="groupe">
+      <h3>Neutres et états</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#F5F7F9;color:#1B2733">Aa 14:1</div><div class="meta"><b>Fond</b><code>#F5F7F9</code><span>Moins éblouissant que le blanc</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#1B2733;color:#fff">Aa</div><div class="meta"><b>Encre</b><code>#1B2733</code><span>Titres et texte courant</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#4E5D6C;color:#fff">Aa 6,8:1</div><div class="meta"><b>Texte secondaire</b><code>#4E5D6C</code><span>Aides, légendes</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#fff;box-shadow:inset 0 0 0 2px #7A8794" aria-hidden="true"></div><div class="meta"><b>Filet de champ</b><code>#7A8794</code><span>Contour des champs (3,7:1)</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#EAF5EF;color:#1E6B45">Aa 5,8:1</div><div class="meta"><b>Succès</b><code>#1E6B45</code><span>Paiement confirmé</span></div></div>
+        <div class="swatch"><div class="chip" style="background:#FFF6E0;color:#7A4B00">Aa 6,9:1</div><div class="meta"><b>Vigilance</b><code>#7A4B00</code><span>Conseil, pièce manquante</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-hier">
+    <h2 id="t-hier">Hiérarchie de l'attention</h2>
+    <p class="lead">La couleur vive est un budget : sur chaque écran, elle va à ce que le client cherche en premier.</p>
+    <div class="niveaux">
+      <div class="niveau">
+        <h3>Vif : ce qu'on cherche tout de suite</h3>
+        <p>Un seul bouton jaune par écran. Le rouge apparaît seulement quand il y a un danger.</p>
+        <a class="btn btn-principal" href="#t-ecrans">Obtenir mon devis</a>
+      </div>
+      <div class="niveau">
+        <h3>Marque : les repères</h3>
+        <p>Progression, choix sélectionné, liens et actions secondaires.</p>
+        <a class="btn btn-secondaire" href="#t-ecrans">Trouver une agence</a>
+      </div>
+      <div class="niveau">
+        <h3>Calme : tout le reste</h3>
+        <p>Textes, cartes, champs. Le prix se distingue par sa taille, pas par sa couleur.</p>
+        <span class="prix">1 290 000 FC <small>par an</small></span>
+      </div>
+    </div>
+    <div class="budget" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="budget-legende"><span>Neutres, environ 85 %</span><span>Bleu, environ 12 %</span><span>Jaune et rouge, 3 % au plus</span></div>
+  </section>
+
+  <section aria-labelledby="t-ecrans" id="t-ecrans">
+    <h2 id="t-ecrans-titre">Formulaires découpés</h2>
+    <p class="lead">Quatre phases nommées, cinq champs au plus par écran, une seule question posée en titre.</p>
+
+    <div class="ecrans">
+      <div class="ecran-legende">
+        <div class="tel">
+          <div class="tel-head">
+            <img src="../sonas-site/images/brand/logo-sonas.png" alt="SONAS" width="49" height="34">
+            <button class="aide" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              Aide
+            </button>
+          </div>
+          <ol class="phases" aria-label="Avancement">
+            <li class="fait">Vous</li>
+            <li class="encours" aria-current="step">Véhicule</li>
+            <li>Formule</li>
+            <li>Paiement</li>
+          </ol>
+          <div class="tel-corps">
+            <p class="position">Votre véhicule, 1 sur 5</p>
+            <h2>Quelle est la plaque de votre véhicule&#8239;?</h2>
+            <p class="sous-titre">On retrouve la marque et le modèle pour vous.</p>
+            <div class="champ">
+              <label for="plaque">Immatriculation</label>
+              <input id="plaque" name="immatriculation" value="4521AB 01" autocomplete="off" spellcheck="false" inputmode="text">
+              <div class="aide-champ">4 chiffres, 2 lettres, puis le code de la province.</div>
+            </div>
+            <div class="encadre info">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#116A97" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              <div><strong>Peugeot 208, essence</strong><br>Ce n'est pas votre véhicule ? <a href="#plaque">Corriger</a></div>
+            </div>
+            <a class="lien-sec" href="#plaque">Je n'ai pas encore de plaque</a>
+          </div>
+          <div class="tel-pied">
+            <div class="sauve"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Enregistré automatiquement</div>
+            <div class="estimation"><span>Estimation</span><span class="prix">1 290 000 FC <small>/ an</small></span></div>
+            <button class="btn btn-principal btn-bloc" type="button">Continuer</button>
+          </div>
+        </div>
+        <p>Une seule question, une aide sous le champ, le résultat préremplit l'écran suivant. Le jaune ne sert qu'au bouton.</p>
+      </div>
+
+      <div class="ecran-legende">
+        <div class="tel">
+          <div class="tel-head">
+            <img src="../sonas-site/images/brand/logo-sonas.png" alt="SONAS" width="49" height="34">
+            <button class="aide" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              Aide
+            </button>
+          </div>
+          <ol class="phases" aria-label="Avancement">
+            <li class="fait">Vous</li>
+            <li class="encours" aria-current="step">Véhicule</li>
+            <li>Formule</li>
+            <li>Paiement</li>
+          </ol>
+          <div class="tel-corps">
+            <p class="position">Votre véhicule, 4 sur 5</p>
+            <h2>Comment utilisez-vous ce véhicule&#8239;?</h2>
+            <p class="sous-titre">Le prix dépend surtout de l'usage.</p>
+            <fieldset>
+              <legend class="sr-only">Usage principal</legend>
+              <div class="choix">
+                <input type="radio" name="usage" id="u1"><label for="u1"><span class="pastille"></span><span>Privé<small>Courses, famille, loisirs</small></span></label>
+                <input type="radio" name="usage" id="u2" checked><label for="u2"><span class="pastille"></span><span>Trajet domicile-travail<small>Tous les jours ouvrés</small></span></label>
+                <input type="radio" name="usage" id="u3"><label for="u3"><span class="pastille"></span><span>Taxi ou transport de personnes<small>Activité rémunérée</small></span></label>
+              </div>
+            </fieldset>
+            <fieldset class="champ">
+              <legend>Où dort le véhicule la nuit&#8239;?</legend>
+              <div class="segmente">
+                <input type="radio" name="nuit" id="n1"><label for="n1">Rue</label>
+                <input type="radio" name="nuit" id="n2" checked><label for="n2">Parcelle</label>
+                <input type="radio" name="nuit" id="n3"><label for="n3">Garage</label>
+              </div>
+            </fieldset>
+            <div class="champ erreur">
+              <label for="km">Kilomètres par an</label>
+              <input id="km" name="km" inputmode="numeric" value="120">
+              <div class="msg-erreur" id="km-err"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" style="flex:none;margin-top:3px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Indiquez une estimation entre 1 000 et 100 000 km.</div>
+            </div>
+          </div>
+          <div class="tel-pied">
+            <div class="estimation"><span>Estimation</span><span class="prix">1 290 000 FC <small>/ an</small></span></div>
+            <button class="btn btn-principal btn-bloc" type="button">Continuer</button>
+          </div>
+        </div>
+        <p>Choix visibles plutôt que listes déroulantes. Le bleu marque la sélection, le rouge foncé l'erreur, avec une icône et la correction à faire.</p>
+      </div>
+
+      <div class="ecran-legende">
+        <div class="tel">
+          <div class="tel-head">
+            <img src="../sonas-site/images/brand/logo-sonas.png" alt="SONAS" width="49" height="34">
+            <button class="aide" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              Aide
+            </button>
+          </div>
+          <ol class="phases" aria-label="Avancement">
+            <li class="encours" aria-current="step">Vous</li>
+            <li>Le sinistre</li>
+            <li>Les dégâts</li>
+            <li>Envoi</li>
+          </ol>
+          <div class="tel-corps">
+            <p class="position">Déclarer un sinistre auto, 1 sur 3</p>
+            <h2>Tout le monde va bien&#8239;?</h2>
+            <p class="sous-titre">Si quelqu'un est blessé, appelez d'abord les secours.</p>
+            <div class="encadre urgence">
+              <strong>Blessés ou danger immédiat</strong>
+              <a class="btn btn-urgence btn-bloc" href="tel:112">Appeler le 112</a>
+            </div>
+            <div class="choix" style="margin-top:20px">
+              <input type="radio" name="assist" id="a1"><label for="a1"><span class="pastille"></span><span>Besoin d'une dépanneuse<small>Assistance 24 h/24</small></span></label>
+              <input type="radio" name="assist" id="a2" checked><label for="a2"><span class="pastille"></span><span>Personne n'est blessé<small>Je continue ma déclaration</small></span></label>
+            </div>
+          </div>
+          <div class="tel-pied">
+            <div class="sauve"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Brouillon gardé 60 jours</div>
+            <button class="btn btn-principal btn-bloc" type="button">Continuer</button>
+          </div>
+        </div>
+        <p>Seul cas où le rouge du logo devient un bouton. Le jaune reste l'action pour avancer dans la déclaration.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="doc-foot">
+  <div class="inner">
+    <p>Pied de page en bleu nuit : une grande surface sombre et peu saturée qui repose l'œil.</p>
+    <p>Sinistre : <strong>+243 81 641 5515</strong></p>
+  </div>
+</footer>
+
+</body>
+</html>
