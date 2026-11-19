@@ -8,6 +8,9 @@ docs/sonas-site/
 
 # --- Médias lourds ---
 *.mp4
+!docs/marketing/video-promo/rendus/sonas-visite-du-site.mp4
+!docs/marketing/video-promo/rendus/sonas-visite-du-site-v2.mp4
+!docs/marketing/video-promo/archives/visite-du-site-v1/sonas-visite-du-site.mp4
 *.mov
 *.avi
 

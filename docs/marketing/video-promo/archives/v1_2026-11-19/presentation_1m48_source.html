@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>myVign · présentation SONAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700&family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=block" rel="stylesheet">
+<style>
+  /* Charte : DESIGN.md (palette du logo SONAS). Rendu image par image par rendu.py : rien ne bouge tout seul. */
+  :root {
+    --bleu-logo:#1790CD; --bleu-action:#116A97; --bleu-nuit:#0A405C; --bleu-teinte:#E8F4FB;
+    --jaune:#F5C800; --jaune-teinte:#FFF9E0; --rouge:#CA0920;
+    --fond:#F5F7F9; --carte:#FFFFFF; --encre:#1B2733; --texte-2:#4E5D6C; --texte-3:#6B7885; --filet:#D5DDE5;
+    --succes:#1E6B45; --succes-teinte:#EAF5EF;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1920px; height:1080px; overflow:hidden; background:var(--fond); color:var(--encre);
+    font-family:"Atkinson Hyperlegible Next", "Segoe UI", sans-serif; -webkit-font-smoothing:antialiased; }
+  .scene { position:absolute; inset:0; padding:150px 150px 120px; opacity:0; }
+  .titre { font-family:Saira, sans-serif; font-weight:600; letter-spacing:-0.01em; }
+  h1.titre { font-size:72px; line-height:1.08; max-width:1100px; }
+  .kicker { font-weight:700; font-size:26px; color:var(--bleu-action); margin-bottom:18px; display:flex; align-items:center; gap:14px; }
+  .kicker .num { font-family:Saira; font-weight:700; background:var(--bleu-teinte); color:var(--bleu-action); border-radius:12px; padding:2px 14px; }
+  .lead { font-size:34px; line-height:1.45; color:var(--texte-2); margin-top:24px; max-width:1000px; }
+  .liste { list-style:none; margin-top:44px; display:grid; gap:26px; max-width:940px; }
+  .liste li { display:flex; gap:22px; align-items:flex-start; font-size:33px; line-height:1.35; }
+  .liste li svg { flex:none; width:46px; height:46px; padding:9px; border-radius:50%; background:var(--bleu-teinte); color:var(--bleu-action); margin-top:-2px; }
+  .liste li small { display:block; font-size:24px; color:var(--texte-2); margin-top:4px; }
+  .carte { background:var(--carte); border:1px solid var(--filet); border-radius:22px; padding:36px 40px; }
+  .chiffre { font-family:Saira; font-weight:600; font-size:96px; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+  .source { position:absolute; left:150px; bottom:52px; font-size:19px; color:var(--texte-3); }
+  .telephone { position:absolute; right:110px; top:60px; height:960px; }
+  svg.ico { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  /* Chrome commun */
+  #entete { position:absolute; left:150px; right:150px; top:48px; display:flex; justify-content:space-between; align-items:center; z-index:5; }
+  #entete img { height:62px; }
+  #entete span { font-size:21px; color:var(--texte-3); }
+  #filet { position:absolute; left:0; right:0; top:0; height:6px; background:var(--bleu-logo); z-index:6; }
+  #progres { position:absolute; left:0; bottom:0; height:6px; background:var(--bleu-logo); z-index:6; }
+  #compteur { position:absolute; right:150px; bottom:46px; font-family:Saira; font-weight:600; font-size:22px; color:var(--texte-3); z-index:5; }
+  .barre { height:30px; border-radius:15px; background:var(--filet); overflow:hidden; }
+  .barre > div { height:100%; border-radius:15px; background:var(--bleu-logo); width:0; }
+  .barre.fonce > div { background:var(--bleu-nuit); }
+  .grille3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:32px; margin-top:64px; }
+  .tuile { display:flex; flex-direction:column; gap:18px; }
+  .tuile .ic { width:72px; height:72px; padding:16px; border-radius:18px; background:var(--bleu-teinte); color:var(--bleu-action); }
+  .tuile b { font-size:31px; line-height:1.25; }
+  .tuile span { font-size:24px; color:var(--texte-2); line-height:1.4; }
+  .grille3.compacte { margin-top:52px; gap:26px; }
+  .grille3.compacte .carte { padding:28px 32px; }
+  .grille3.compacte .tuile { gap:12px; }
+  .grille3.compacte .ic { width:60px; height:60px; padding:13px; }
+  .bouton { display:inline-flex; align-items:center; gap:14px; background:var(--jaune); color:var(--encre); font-weight:700; font-size:34px; padding:24px 44px; border-radius:16px; }
+  .encart { background:var(--jaune-teinte); border-radius:18px; padding:26px 34px; font-size:30px; line-height:1.4; }
+</style>
+</head>
+<body>
+<div id="filet"></div>
+<div id="entete"><img src="../../../../web/public/logo-sonas.png" alt=""><span>myVign · la SONAS en ligne</span></div>
+
+<!-- 1 · Ouverture -->
+<section class="scene" data-dur="4.5" data-sans-entete>
+  <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:34px;">
+    <img src="../../../../web/public/logo-sonas.png" style="height:190px" data-in="0.2" data-a="scale">
+    <h1 class="titre" style="font-size:104px; max-width:none" data-in="0.7">La SONAS en ligne</h1>
+    <p class="lead" style="margin:0; max-width:1300px; font-size:38px" data-in="1.2">Souscrire, payer, être indemnisé&nbsp;: sur le téléphone de chaque Congolais.</p>
+    <p style="font-size:24px; color:var(--texte-3)" data-in="1.8" data-a="fade">Présentation aux équipes de la SONAS · novembre 2026</p>
+  </div>
+</section>
+
+<!-- 2 · Le marché -->
+<section class="scene" data-dur="7.0">
+  <p class="kicker" data-in="0.2">Le contexte</p>
+  <h1 class="titre" data-in="0.4">Un marché de l’assurance qui grandit vite</h1>
+  <div class="grille3" style="margin-top:80px">
+    <div class="carte" data-in="0.8"><div class="chiffre"><span data-compte="377.9" data-dec="1" data-in="0.8" data-d="1.6">0</span>&nbsp;M$</div><p style="font-size:28px; margin-top:18px">de primes en 2024 en RDC</p><p style="font-size:23px; color:var(--texte-2); margin-top:8px">contre 67&nbsp;M$ en 2019</p></div>
+    <div class="carte" data-in="1.4"><div class="chiffre"><span data-compte="600" data-in="1.4" data-d="1.6">0</span>&nbsp;M$</div><p style="font-size:28px; margin-top:18px">visés par l’ARCA en 2026</p><p style="font-size:23px; color:var(--texte-2); margin-top:8px">et plus d’un milliard en 2030</p></div>
+    <div class="carte" data-in="2.0"><div class="chiffre"><span data-compte="0.5" data-dec="1" data-in="2.0" data-d="1.2">0</span>&nbsp;%</div><p style="font-size:28px; margin-top:18px">du PIB&nbsp;: la pénétration reste très faible</p><p style="font-size:23px; color:var(--texte-2); margin-top:8px">3,5&nbsp;$ de primes par habitant</p></div>
+  </div>
+  <p class="lead" data-in="3.4" style="margin-top:60px">Depuis janvier 2026, l’assurance est exigée aux contrôles routiers.<br>Des milliers de véhicules circulent encore sans assurance.</p>
+  <p class="source" data-in="1" data-a="fade">Sources&nbsp;: ARCA, rapport 2024 (via Atlas Magazine) ; étude de marché myVign, novembre 2026.</p>
+</section>
+
+<!-- 3 · La SONAS -->
+<section class="scene" data-dur="10.0">
+  <p class="kicker" data-in="0.2">Où en est la SONAS</p>
+  <h1 class="titre" data-in="0.4">Le premier réseau du pays, mais une part de marché qui recule</h1>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:56px; margin-top:70px">
+    <div data-in="1.0">
+      <p style="font-size:27px; font-weight:700">Part de marché non-vie</p>
+      <div style="margin-top:26px; display:grid; gap:18px; font-size:24px">
+        <div>2021 · <b>26,4&nbsp;%</b><div class="barre fonce" style="margin-top:8px"><div data-barre="26.4" data-max="40" data-in="1.2"></div></div></div>
+        <div>2024 · <b>17,9&nbsp;%</b><div class="barre" style="margin-top:8px"><div data-barre="17.9" data-max="40" data-in="1.6"></div></div></div>
+      </div>
+      <p style="font-size:23px; color:var(--texte-2); margin-top:18px">De 2ᵉ à 3ᵉ assureur non-vie</p>
+    </div>
+    <div data-in="2.0">
+      <p style="font-size:27px; font-weight:700">Croissance des primes en 2024</p>
+      <div style="margin-top:26px; display:grid; gap:18px; font-size:24px">
+        <div>SONAS · <b>+4,8&nbsp;%</b><div class="barre" style="margin-top:8px"><div data-barre="4.8" data-max="15" data-in="2.2"></div></div></div>
+        <div>Marché · <b>+12,6&nbsp;%</b><div class="barre fonce" style="margin-top:8px"><div data-barre="12.6" data-max="15" data-in="2.5"></div></div></div>
+      </div>
+    </div>
+    <div data-in="3.0">
+      <p style="font-size:27px; font-weight:700">Frais de gestion (part des primes)</p>
+      <div style="margin-top:26px; display:grid; gap:18px; font-size:24px">
+        <div>SONAS · <b>79,6&nbsp;%</b><div class="barre" style="margin-top:8px"><div data-barre="79.6" data-max="100" data-in="3.2"></div></div></div>
+        <div>Marché · <b>33&nbsp;%</b><div class="barre fonce" style="margin-top:8px"><div data-barre="33" data-max="100" data-in="3.5"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="encart" data-in="5.0" style="margin-top:70px; max-width:1300px">
+    <b>Le levier&nbsp;:</b> chaque point de frais de gestion gagné vaut environ <b>0,6&nbsp;M$ par an</b> (sur 61,3&nbsp;M$ de primes). Le numérique réduit la saisie, le guichet et les appels.
+  </div>
+  <p class="source" data-in="1" data-a="fade">Source&nbsp;: ARCA, rapport 2024 (via Atlas Magazine) ; parts de marché calculées sur les primes non-vie.</p>
+</section>
+
+<!-- 4 · Concurrence -->
+<section class="scene" data-dur="6.5">
+  <p class="kicker" data-in="0.2">La concurrence</p>
+  <h1 class="titre" data-in="0.4">Les concurrents se sont déjà lancés en ligne</h1>
+  <div class="grille3" style="grid-template-columns:repeat(2, 1fr); max-width:1500px">
+    <div class="carte tuile" data-in="0.8"><div class="ic"><svg class="ico" data-icone="smartphone"></svg></div><b>Rawsur · « My Rawsur » (2023)</b><span>Polices et déclaration de sinistre dans une application.</span></div>
+    <div class="carte tuile" data-in="1.1"><div class="ic"><svg class="ico" data-icone="wallet"></svg></div><b>Activa · A-SureCover (2026)</b><span>Produits par USSD et mobile money.</span></div>
+    <div class="carte tuile" data-in="1.4"><div class="ic"><svg class="ico" data-icone="qr-code"></svg></div><b>SNECA (ARCA)</b><span>Certificats électroniques vérifiables par QR code.</span></div>
+    <div class="carte tuile" data-in="1.7"><div class="ic"><svg class="ico" data-icone="search"></svg></div><b>Aucun ne fait tout</b><span>Personne n’offre encore le parcours complet&nbsp;: prix affiché, paiement, certificat, sinistre suivi.</span></div>
+  </div>
+  <p class="source" data-in="1" data-a="fade">Source&nbsp;: benchmark des concurrents myVign (docs/benchmark_concurrents.md), novembre 2026.</p>
+</section>
+
+<!-- 5 · La solution -->
+<section class="scene" data-dur="6.0">
+  <p class="kicker" data-in="0.2">La solution</p>
+  <h1 class="titre" data-in="0.4">myVign&nbsp;: tout le parcours, de bout en bout, sur le téléphone</h1>
+  <div style="position:relative; display:grid; grid-template-columns:repeat(4, 1fr); gap:40px; margin-top:110px">
+    <div style="position:absolute; left:6%; right:6%; top:56px; height:4px; background:var(--filet)"><div data-barre="100" data-max="100" data-in="0.8" data-d="1.6" style="height:100%; background:var(--bleu-logo); width:0"></div></div>
+    <div class="tuile" style="align-items:center; text-align:center" data-in="0.8"><div class="ic" style="width:116px; height:116px; padding:28px; border-radius:50%; position:relative"><svg class="ico" data-icone="car"></svg></div><b>Un prix tout de suite</b><span>avec la seule plaque</span></div>
+    <div class="tuile" style="align-items:center; text-align:center" data-in="1.2"><div class="ic" style="width:116px; height:116px; padding:28px; border-radius:50%; position:relative"><svg class="ico" data-icone="wallet"></svg></div><b>Payé en mobile money</b><span>M-Pesa, Orange, Airtel, Afrimoney</span></div>
+    <div class="tuile" style="align-items:center; text-align:center" data-in="1.6"><div class="ic" style="width:116px; height:116px; padding:28px; border-radius:50%; position:relative"><svg class="ico" data-icone="qr-code"></svg></div><b>Certificat avec QR</b><span>vérifiable par la police</span></div>
+    <div class="tuile" style="align-items:center; text-align:center" data-in="2.0"><div class="ic" style="width:116px; height:116px; padding:28px; border-radius:50%; position:relative"><svg class="ico" data-icone="list-checks"></svg></div><b>Sinistre suivi</b><span>étape par étape</span></div>
+  </div>
+  <p class="lead" data-in="3.0" style="margin-top:90px">Sans compte, sans déplacement, environ 5 minutes. Et les agences restent au cœur du réseau.</p>
+</section>
+
+<!-- 6 · Souscrire -->
+<section class="scene" data-dur="10.0">
+  <p class="kicker" data-in="0.2"><span class="num">1</span> Souscrire</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">Le prix avant toute question personnelle</h1>
+  <ul class="liste">
+    <li data-in="1.2"><svg class="ico" data-icone="car"></svg><span>La plaque retrouve le véhicule<small>marque, modèle, puissance : rien à taper</small></span></li>
+    <li data-in="2.8"><svg class="ico" data-icone="gauge"></svg><span>Trois questions suffisent pour le prix<small>usage, stationnement, conducteur</small></span></li>
+    <li data-in="4.6"><svg class="ico" data-icone="banknote"></svg><span>Prix en francs congolais ou en dollars<small>au taux BCC du jour</small></span></li>
+    <li data-in="6.4"><svg class="ico" data-icone="circle-check"></svg><span>Une quinzaine de champs en tout<small>le reste est prérempli ou demandé après le paiement</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="souscription" data-in="0.4" alt="">
+</section>
+
+<!-- 7 · Payer -->
+<section class="scene" data-dur="9.5">
+  <p class="kicker" data-in="0.2"><span class="num">2</span> Payer et être couvert</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">Payé sur le téléphone, couvert tout de suite</h1>
+  <ul class="liste">
+    <li data-in="1.2"><svg class="ico" data-icone="wallet"></svg><span>M-Pesa, Orange Money, Airtel Money, Afrimoney<small>ou carte, ou paiement en agence avec une référence</small></span></li>
+    <li data-in="3.2"><svg class="ico" data-icone="shield-check"></svg><span>Couverture au paiement confirmé<small>Code des assurances, art. 16</small></span></li>
+    <li data-in="5.2"><svg class="ico" data-icone="file-check"></svg><span>Certificat provisoire immédiat avec QR<small>certificat définitif SNECA sous 10 jours (art. 120)</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="paiement" data-in="0.4" alt="">
+</section>
+
+<!-- 8 · Contrôle -->
+<section class="scene" data-dur="6.5">
+  <p class="kicker" data-in="0.2"><span class="num">3</span> Contrôle routier</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">Vérifié en quelques secondes</h1>
+  <ul class="liste">
+    <li data-in="1.0"><svg class="ico" data-icone="scan-line"></svg><span>Le QR ouvre la page de vérification<small>ou saisie du code sur le site</small></span></li>
+    <li data-in="2.0"><svg class="ico" data-icone="shield-check"></svg><span>Le nom de l’assuré est masqué<small>données personnelles protégées</small></span></li>
+    <li data-in="3.0"><svg class="ico" data-icone="file-check"></svg><span>Un frein aux fausses attestations<small>comme en Côte d’Ivoire depuis 2023</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="verification" data-in="0.4" alt="">
+</section>
+
+<!-- 9 · Sinistre -->
+<section class="scene" data-dur="10.0">
+  <p class="kicker" data-in="0.2"><span class="num">4</span> Déclarer et suivre un sinistre</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">La plainte n°&nbsp;1 des assurés, enfin traitée</h1>
+  <ul class="liste">
+    <li data-in="1.2"><svg class="ico" data-icone="siren"></svg><span>Sécurité et 112 d’abord<small>« Tout le monde va bien&nbsp;? »</small></span></li>
+    <li data-in="2.8"><svg class="ico" data-icone="clock"></svg><span>Jamais bloqué pour retard<small>Code des assurances, art. 19</small></span></li>
+    <li data-in="4.4"><svg class="ico" data-icone="file-text"></svg><span>La liste des pièces adaptée au cas<small>fini les dossiers classés faute de pièce</small></span></li>
+    <li data-in="6.2"><svg class="ico" data-icone="list-checks"></svg><span>Un suivi par étapes, mis à jour en direct<small>moins d’appels, plus de confiance</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="sinistre,suivi" data-in="0.3" alt="">
+</section>
+
+<!-- 10 · Gestionnaire -->
+<section class="scene" data-dur="7.0">
+  <p class="kicker" data-in="0.2"><span class="num">5</span> Côté SONAS</p>
+  <h1 class="titre" style="max-width:700px; font-size:64px" data-in="0.4">Un espace gestionnaire pour instruire les dossiers</h1>
+  <ul class="liste" style="max-width:660px">
+    <li data-in="1.2"><svg class="ico" data-icone="list-checks"></svg><span>La file des dossiers en temps réel</span></li>
+    <li data-in="2.0"><svg class="ico" data-icone="shield-check"></svg><span>Seules les actions autorisées<small>un refus exige un motif</small></span></li>
+    <li data-in="2.8"><svg class="ico" data-icone="users"></svg><span>Le client voit chaque étape</span></li>
+  </ul>
+  <p style="position:absolute; left:150px; bottom:110px; font-size:23px; color:var(--texte-2); max-width:700px" data-in="3.6" data-a="fade">En production&nbsp;: double authentification, rôles et journal d’audit.</p>
+  <div data-in="0.8" data-a="right" style="position:absolute; right:110px; top:200px; width:900px; border-radius:16px; overflow:hidden; border:1px solid var(--filet); box-shadow:0 30px 70px rgba(10,48,80,.16); background:#fff">
+    <div style="height:44px; background:#EEF2F6; display:flex; align-items:center; gap:10px; padding:0 18px"><i style="width:13px;height:13px;border-radius:50%;background:#D5DDE5"></i><i style="width:13px;height:13px;border-radius:50%;background:#D5DDE5"></i><i style="width:13px;height:13px;border-radius:50%;background:#D5DDE5"></i><span style="margin-left:18px; font-size:17px; color:var(--texte-3)">Espace gestionnaire</span></div>
+    <div style="height:660px; overflow:hidden"><img data-panoramique src="../../captures/desktop/30-gestion-file.png" style="width:1440px; margin-left:-270px; display:block" alt=""></div>
+  </div>
+</section>
+
+<!-- 11 · Réseau -->
+<section class="scene" data-dur="8.5">
+  <p class="kicker" data-in="0.2"><span class="num">6</span> Le réseau d’agences</p>
+  <h1 class="titre" style="max-width:820px" data-in="0.4">Le premier réseau du pays, enfin visible en ligne</h1>
+  <div style="margin-top:56px; display:flex; gap:56px" data-in="3.6">
+    <div><div class="chiffre"><span data-compte="59" data-in="3.6" data-d="1.4">0</span></div><p style="font-size:26px; margin-top:8px">agences</p></div>
+    <div><div class="chiffre"><span data-compte="20" data-in="3.6" data-d="1.4">0</span><span style="font-size:48px; color:var(--texte-3)">&nbsp;/ 26</span></div><p style="font-size:26px; margin-top:8px">provinces couvertes</p></div>
+  </div>
+  <ul class="liste" style="max-width:760px; margin-top:44px">
+    <li data-in="4.6"><svg class="ico" data-icone="clock"></svg><span>Ouvert ou fermé, à l’heure locale</span></li>
+    <li data-in="5.3"><svg class="ico" data-icone="calendar-check"></svg><span>Rendez-vous pris en ligne</span></li>
+    <li data-in="6.0"><svg class="ico" data-icone="map-pin"></svg><span>53 pages ville pour être trouvé sur Google</span></li>
+  </ul>
+  <svg id="carte" viewBox="0 0 1000 988" style="position:absolute; right:130px; top:140px; width:860px; height:850px"></svg>
+  <p class="source" data-in="1" data-a="fade">Carte&nbsp;: geoBoundaries, © contributeurs OpenStreetMap (ODbL). Positions d’agences approximatives.</p>
+</section>
+
+<!-- 12 · RDC -->
+<section class="scene" data-dur="9.0">
+  <p class="kicker" data-in="0.2">Ce que la SONAS y gagne</p>
+  <h1 class="titre" data-in="0.4">Moins de coûts, plus de primes, plus de confiance</h1>
+  <ul class="liste" style="max-width:1450px; margin-top:60px">
+    <li data-in="1.0"><svg class="ico" data-icone="trending-up"></svg><span>Plus de primes encaissées<small>une vente ouverte 24 h/24, dans les 26 provinces, y compris les 6 sans agence</small></span></li>
+    <li data-in="2.0"><svg class="ico" data-icone="receipt"></svg><span>Moins de frais de gestion<small>moins de saisie, de guichet et d’appels : le dossier arrive complet</small></span></li>
+    <li data-in="3.0"><svg class="ico" data-icone="qr-code"></svg><span>Moins de fraude<small>des certificats vérifiables par la police et par les acheteurs de véhicules</small></span></li>
+    <li data-in="4.0"><svg class="ico" data-icone="handshake"></svg><span>Plus de confiance<small>des sinistres suivis et des réponses motivées : l’image d’un assureur moderne</small></span></li>
+    <li data-in="5.0"><svg class="ico" data-icone="gauge"></svg><span>Des données en temps réel pour piloter<small>ventes, sinistres, délais, par agence et par province</small></span></li>
+  </ul>
+</section>
+
+<!-- 14 · Prochaines étapes -->
+<section class="scene" data-dur="9.0">
+  <p class="kicker" data-in="0.2">Prochaines étapes</p>
+  <h1 class="titre" data-in="0.4">De la démonstration au service ouvert au public</h1>
+  <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:24px; margin-top:80px; position:relative">
+    <div style="position:absolute; left:2%; right:2%; top:22px; height:4px; background:var(--filet)"><div data-barre="100" data-max="100" data-in="0.8" data-d="2.2" style="height:100%; background:var(--bleu-logo); width:0"></div></div>
+    <div data-in="0.8" style="position:relative"><i style="display:block; width:48px; height:48px; border-radius:50%; background:var(--succes); margin-bottom:20px"></i><b style="font-size:27px">Démonstration</b><p style="font-size:22px; color:var(--succes); margin-top:6px; font-weight:700">faite</p><p style="font-size:22px; color:var(--texte-2); margin-top:6px">tous les parcours, testés</p></div>
+    <div data-in="1.3" style="position:relative"><i style="display:block; width:48px; height:48px; border-radius:50%; background:var(--bleu-logo); margin-bottom:20px"></i><b style="font-size:27px">Plateforme réelle</b><p style="font-size:22px; color:var(--texte-2); margin-top:6px">API, base de données, hébergement</p></div>
+    <div data-in="1.8" style="position:relative"><i style="display:block; width:48px; height:48px; border-radius:50%; background:var(--bleu-logo); margin-bottom:20px"></i><b style="font-size:27px">Paiements réels</b><p style="font-size:22px; color:var(--texte-2); margin-top:6px">agrégateur mobile money</p></div>
+    <div data-in="2.3" style="position:relative"><i style="display:block; width:48px; height:48px; border-radius:50%; background:var(--bleu-logo); margin-bottom:20px"></i><b style="font-size:27px">SNECA</b><p style="font-size:22px; color:var(--texte-2); margin-top:6px">certificats définitifs avec l’ARCA</p></div>
+    <div data-in="2.8" style="position:relative"><i style="display:block; width:48px; height:48px; border-radius:50%; background:var(--bleu-logo); margin-bottom:20px"></i><b style="font-size:27px">Et ensuite</b><p style="font-size:22px; color:var(--texte-2); margin-top:6px">habitation, espace client, autres branches</p></div>
+  </div>
+  <div class="carte" data-in="4.0" style="margin-top:80px; max-width:1620px">
+    <p style="font-size:29px; font-weight:700">Ce dont nous avons besoin de la SONAS</p>
+    <p style="font-size:27px; color:var(--texte-2); margin-top:12px; line-height:1.5">Le barème auto · les horaires réels des agences · le taux de change de référence · l’accès au SNECA · le choix de l’agrégateur de paiement</p>
+  </div>
+</section>
+
+<!-- 15 · Fin -->
+<section class="scene" data-dur="5.0" data-sans-entete>
+  <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:36px">
+    <img src="../../../../web/public/logo-sonas.png" style="height:170px" data-in="0.2" data-a="scale">
+    <h1 class="titre" style="font-size:88px; max-width:none" data-in="0.7">Avec la SONAS, c’est réglé.</h1>
+    <span class="bouton" data-in="1.4" data-a="scale">Voir la démonstration en direct</span>
+    <p style="font-size:24px; color:var(--texte-3)" data-in="2.0" data-a="fade">Démonstration fonctionnelle · tarifs indicatifs en attente du barème SONAS</p>
+  </div>
+</section>
+
+<div id="progres"></div>
+<div id="compteur"></div>
+
+<script>
+  const FPS = 25;
+  const params = new URLSearchParams(location.search);
+  const CACHE = params.get("cache");
+  const scenes = [...document.querySelectorAll(".scene")];
+  let debut = 0;
+  for (const s of scenes) { s._debut = debut; s._duree = parseFloat(s.dataset.dur); debut += s._duree; }
+  const TOTAL = debut;
+  const entete = document.getElementById("entete");
+
+  const clamp = (x) => Math.max(0, Math.min(1, x));
+  const sortie = (x) => 1 - Math.pow(1 - clamp(x), 3);                 // ease-out cubique
+  const doux = (x) => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  const fr = (n, dec) => n.toLocaleString("fr-FR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+
+  function prete() {
+    return new Promise((ok, ko) => {
+      const s = document.createElement("script");
+      s.src = CACHE + "/donnees.js"; s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+    }).then(() => {
+      const D = window.DONNEES;
+      for (const el of document.querySelectorAll("[data-icone]")) {
+        el.setAttribute("viewBox", "0 0 24 24"); el.innerHTML = D.icones[el.dataset.icone] || "";
+      }
+      const carte = document.getElementById("carte");
+      const ordre = [...D.carte.formes].sort((a, b) => b.agences - a.agences);
+      carte.innerHTML =
+        D.carte.formes.map((f) => `<path d="${f.d}" data-province="${f.code}" data-ag="${f.agences}" data-rang="${ordre.indexOf(f)}" fill="#E3E8ED" stroke="#FFFFFF" stroke-width="1.5"/>`).join("") +
+        D.carte.agences.map((a, i) => `<circle cx="${a.x}" cy="${a.y}" r="0" fill="#116A97" stroke="#FFFFFF" stroke-width="2" data-point="${i}"/>`).join("");
+      return document.fonts.ready;
+    });
+  }
+
+  function melange(a, b, t) {               // couleurs hexadécimales
+    const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const [x, y] = [p(a), p(b)];
+    return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(",")})`;
+  }
+
+  async function render(t) {
+    const attentes = [];
+    let active = null;
+    for (const s of scenes) {
+      const l = t - s._debut;
+      const visible = l >= 0 && l < s._duree;
+      s.style.display = visible ? "block" : "none";
+      if (!visible) continue;
+      active = s;
+      const op = Math.min(sortie(l / 0.45), 1 - clamp((l - (s._duree - 0.45)) / 0.45));
+      s.style.opacity = op;
+      for (const el of s.querySelectorAll("[data-in]")) {
+        const p = sortie((l - parseFloat(el.dataset.in)) / parseFloat(el.dataset.d || 0.7));
+        if (el.dataset.compte !== undefined) {
+          const v = parseFloat(el.dataset.compte) * doux((l - parseFloat(el.dataset.in)) / parseFloat(el.dataset.d || 1.2));
+          el.textContent = fr(v, parseInt(el.dataset.dec || 0));
+          continue;
+        }
+        if (el.dataset.barre !== undefined) {
+          const p2 = doux((l - parseFloat(el.dataset.in)) / parseFloat(el.dataset.d || 1.0));
+          el.style.width = (parseFloat(el.dataset.barre) / parseFloat(el.dataset.max) * 100 * p2) + "%";
+          continue;
+        }
+        if (el.dataset.images !== undefined) {
+          el.style.opacity = sortie((l - parseFloat(el.dataset.in)) / 0.5);
+          el.style.transform = `translateY(${(1 - sortie((l - parseFloat(el.dataset.in)) / 0.8)) * 60}px)`;
+          const listes = el.dataset.images.split(",");
+          let k = Math.max(0, Math.floor((l - parseFloat(el.dataset.in)) * FPS));
+          let nom = listes[0];
+          for (const n of listes) { const c = window.DONNEES.images[n]; nom = n; if (k < c) break; k = n === listes.at(-1) ? c - 1 : k - c; }
+          const src = `${CACHE}/images/${nom}/${String(k + 1).padStart(4, "0")}.jpg`;
+          if (el.dataset.src !== src) { el.dataset.src = src; el.src = src; attentes.push(el.decode().catch(() => {})); }
+          continue;
+        }
+        const a = el.dataset.a || "up";
+        el.style.opacity = a === "aucun" ? 1 : p;
+        el.style.transform =
+          a === "up" ? `translateY(${(1 - p) * 34}px)` :
+          a === "right" ? `translateX(${(1 - p) * 120}px)` :
+          a === "scale" ? `scale(${0.9 + 0.1 * p})` : "none";
+      }
+      const pano = s.querySelector("[data-panoramique]");
+      if (pano) pano.style.transform = `translateY(${-doux((l - 1.5) / (s._duree - 2)) * 260}px)`;
+      const carte = s.querySelector("#carte");
+      if (carte) {
+        for (const pth of carte.querySelectorAll("path")) {
+          const ag = +pth.dataset.ag;
+          const p = ag > 0 ? doux((l - 0.8 - +pth.dataset.rang * 0.08) / 0.45) : doux((l - 0.6) / 0.6);
+          pth.setAttribute("fill", ag > 0 ? melange("#E3E8ED", "#BFE0F2", p) : melange("#F5F7F9", "#E3E8ED", p));
+        }
+        for (const c of carte.querySelectorAll("circle")) {
+          const i = +c.dataset.point;
+          const p = clamp((l - 2.0 - i * 0.025) / 0.3);
+          const rebond = p < 1 ? Math.sin(p * Math.PI) * 4 + p * 7 : 7;
+          c.setAttribute("r", (p <= 0 ? 0 : rebond).toFixed(2));
+        }
+      }
+    }
+    entete.style.opacity = active && active.hasAttribute("data-sans-entete") ? 0 : (active ? active.style.opacity : 0);
+    document.getElementById("progres").style.width = (t / TOTAL * 100) + "%";
+    const n = scenes.indexOf(active) + 1;
+    document.getElementById("compteur").textContent = active && !active.hasAttribute("data-sans-entete") ? `${String(n).padStart(2, "0")} / ${scenes.length}` : "";
+    document.getElementById("compteur").style.opacity = entete.style.opacity;
+    await Promise.all(attentes);
+  }
+  window.MOTION = { prete, render, TOTAL, FPS };
+</script>
+</body>
+</html>

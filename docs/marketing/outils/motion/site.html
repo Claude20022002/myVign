@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>La SONAS en ligne · le site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700&family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=block" rel="stylesheet">
+<style>
+  /* Charte : DESIGN.md (palette du logo SONAS). Rendu image par image par rendu.py : rien ne bouge tout seul. */
+  :root {
+    --bleu-logo:#1790CD; --bleu-action:#116A97; --bleu-nuit:#0A405C; --bleu-teinte:#E8F4FB;
+    --jaune:#F5C800; --jaune-teinte:#FFF9E0; --rouge:#CA0920;
+    --fond:#F5F7F9; --carte:#FFFFFF; --encre:#1B2733; --texte-2:#4E5D6C; --texte-3:#6B7885; --filet:#D5DDE5;
+    --succes:#1E6B45; --succes-teinte:#EAF5EF;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1920px; height:1080px; overflow:hidden; background:var(--fond); color:var(--encre);
+    font-family:"Atkinson Hyperlegible Next", "Segoe UI", sans-serif; -webkit-font-smoothing:antialiased; }
+  .scene { position:absolute; inset:0; padding:150px 150px 120px; opacity:0; }
+  .titre { font-family:Saira, sans-serif; font-weight:600; letter-spacing:-0.01em; }
+  h1.titre { font-size:72px; line-height:1.08; max-width:1100px; }
+  .kicker { font-weight:700; font-size:26px; color:var(--bleu-action); margin-bottom:18px; display:flex; align-items:center; gap:14px; }
+  .kicker .num { font-family:Saira; font-weight:700; background:var(--bleu-teinte); color:var(--bleu-action); border-radius:12px; padding:2px 14px; }
+  .lead { font-size:34px; line-height:1.45; color:var(--texte-2); margin-top:24px; max-width:1000px; }
+  .liste { list-style:none; margin-top:44px; display:grid; gap:26px; max-width:940px; }
+  .liste li { display:flex; gap:22px; align-items:flex-start; font-size:33px; line-height:1.35; }
+  .liste li svg { flex:none; width:46px; height:46px; padding:9px; border-radius:50%; background:var(--bleu-teinte); color:var(--bleu-action); margin-top:-2px; }
+  .liste li small { display:block; font-size:24px; color:var(--texte-2); margin-top:4px; }
+  .carte { background:var(--carte); border:1px solid var(--filet); border-radius:22px; padding:36px 40px; }
+  .chiffre { font-family:Saira; font-weight:600; font-size:96px; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+  .source { position:absolute; left:150px; bottom:52px; font-size:19px; color:var(--texte-3); }
+  .telephone { position:absolute; right:110px; top:60px; height:960px; }
+  .photo { position:absolute; overflow:hidden; border-radius:22px; box-shadow:0 28px 70px rgba(10,48,80,.18); background:#e9e9e9; }
+  .photo .zoom { position:absolute; width:125%; left:-12.5%; top:-13%; }   /* recadrage sur le portable de la photo */
+  svg.ico { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  /* Chrome commun */
+  #entete { position:absolute; left:150px; right:150px; top:48px; display:flex; justify-content:space-between; align-items:center; z-index:5; }
+  #entete img { height:62px; }
+  #entete span { font-size:21px; color:var(--texte-3); }
+  #filet { position:absolute; left:0; right:0; top:0; height:6px; background:var(--bleu-logo); z-index:6; }
+  #progres { position:absolute; left:0; bottom:0; height:6px; background:var(--bleu-logo); z-index:6; }
+  #compteur { position:absolute; right:150px; bottom:46px; font-family:Saira; font-weight:600; font-size:22px; color:var(--texte-3); z-index:5; }
+  .barre { height:30px; border-radius:15px; background:var(--filet); overflow:hidden; }
+  .barre > div { height:100%; border-radius:15px; background:var(--bleu-logo); width:0; }
+  .barre.fonce > div { background:var(--bleu-nuit); }
+  .grille3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:32px; margin-top:64px; }
+  .tuile { display:flex; flex-direction:column; gap:18px; }
+  .tuile .ic { width:72px; height:72px; padding:16px; border-radius:18px; background:var(--bleu-teinte); color:var(--bleu-action); }
+  .tuile b { font-size:31px; line-height:1.25; }
+  .tuile span { font-size:24px; color:var(--texte-2); line-height:1.4; }
+  .grille3.compacte { margin-top:52px; gap:26px; }
+  .grille3.compacte .carte { padding:28px 32px; }
+  .grille3.compacte .tuile { gap:12px; }
+  .grille3.compacte .ic { width:60px; height:60px; padding:13px; }
+  .plein { position:absolute; left:0; top:0; width:1920px; height:1080px; object-fit:cover; }
+  .legende { position:absolute; left:90px; bottom:64px; width:660px; background:rgba(255,255,255,.95); border-radius:22px; padding:38px 44px; box-shadow:0 24px 60px rgba(10,48,80,.18); }
+  .legende .kicker { margin-bottom:12px; }
+  .legende h2 { font-size:46px; line-height:1.1; }
+  .legende p:last-child { font-size:25px; line-height:1.45; color:var(--texte-2); margin-top:16px; }
+  #compteur { display:none; }
+  .bouton { display:inline-flex; align-items:center; gap:14px; background:var(--jaune); color:var(--encre); font-weight:700; font-size:34px; padding:24px 44px; border-radius:16px; }
+  .encart { background:var(--jaune-teinte); border-radius:18px; padding:26px 34px; font-size:30px; line-height:1.4; }
+</style>
+</head>
+<body>
+<div id="filet"></div>
+<div id="entete"><img src="../../../../web/public/logo-sonas.png" alt=""><span>La SONAS en ligne</span></div>
+
+<!-- 1 · Ouverture -->
+<section class="scene" data-dur="5" data-sans-entete>
+  <div style="position:absolute; left:150px; top:0; bottom:0; width:640px; display:flex; flex-direction:column; justify-content:center; gap:30px;">
+    <img src="../../../../web/public/logo-sonas.png" style="height:150px; align-self:flex-start" data-in="0.2" data-a="scale">
+    <h1 class="titre" style="font-size:92px; max-width:none" data-in="0.6">La SONAS en ligne</h1>
+    <p class="lead" style="margin:0; font-size:36px" data-in="1.0">Découvrez le site&nbsp;: sur ordinateur et sur téléphone.</p>
+  </div>
+  <div class="photo" data-in="0.3" data-a="right" style="right:110px; top:225px; width:1000px; height:563px"><img class="zoom" data-images="pc_accueil" data-in="0.3" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=""></div>
+  <img data-cache-src="telephone_accueil.png" data-in="0.9" style="position:absolute; left:830px; top:470px; width:250px" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+</section>
+
+<section class="scene" data-dur="7">
+  <img class="plein" data-images="pc_accueil" data-in="0" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+  <div class="legende" data-in="0.6">
+    <p class="kicker">L’accueil</p>
+    <h2 class="titre">Tout est là, dès la première page</h2>
+    <p>Un tarif, un sinistre à déclarer, un dossier à suivre, une attestation à vérifier, une agence à trouver.</p>
+  </div>
+</section>
+
+<section class="scene" data-dur="10">
+  <p class="kicker" data-in="0.2"><span class="num">1</span> S’assurer</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">Votre plaque suffit pour connaître votre prix</h1>
+  <ul class="liste">
+    <li data-in="1.2"><svg class="ico" data-icone="car"></svg><span>La plaque retrouve le véhicule<small>rien à taper</small></span></li>
+    <li data-in="3.4"><svg class="ico" data-icone="gauge"></svg><span>Trois questions sur l’usage et le conducteur<small>avant toute question personnelle</small></span></li>
+    <li data-in="5.8"><svg class="ico" data-icone="banknote"></svg><span>Le prix s’affiche aussitôt<small>en francs congolais ou en dollars</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="souscription" data-in="0.4" alt="">
+</section>
+
+<section class="scene" data-dur="9">
+  <p class="kicker" data-in="0.2"><span class="num">2</span> Payer</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">Payé sur le téléphone, couvert tout de suite</h1>
+  <ul class="liste">
+    <li data-in="1.2"><svg class="ico" data-icone="wallet"></svg><span>M-Pesa, Orange Money, Airtel Money, Afrimoney<small>ou carte, ou en agence</small></span></li>
+    <li data-in="3.4"><svg class="ico" data-icone="smartphone"></svg><span>Validation par code PIN<small>sur votre propre téléphone</small></span></li>
+    <li data-in="5.6"><svg class="ico" data-icone="file-check"></svg><span>Votre certificat avec code QR<small>envoyé aussi par SMS</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="paiement" data-in="0.4" alt="">
+</section>
+
+<section class="scene" data-dur="7">
+  <img class="plein" data-images="pc_verification" data-in="0" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+  <div class="legende" data-in="0.6">
+    <p class="kicker">Vérifier une attestation</p>
+    <h2 class="titre">Contrôlée en quelques secondes</h2>
+    <p>La police ou l’acheteur d’un véhicule scanne le code QR : l’attestation s’affiche, le nom de l’assuré reste masqué.</p>
+  </div>
+</section>
+
+<section class="scene" data-dur="9">
+  <p class="kicker" data-in="0.2"><span class="num">3</span> Déclarer un sinistre</p>
+  <h1 class="titre" style="max-width:900px" data-in="0.4">En cas d’accident, la sécurité d’abord</h1>
+  <ul class="liste">
+    <li data-in="1.2"><svg class="ico" data-icone="siren"></svg><span>Le 112 en un geste<small>« Tout le monde va bien&nbsp;? »</small></span></li>
+    <li data-in="3.4"><svg class="ico" data-icone="clock"></svg><span>Quelques questions simples<small>même en retard</small></span></li>
+    <li data-in="5.6"><svg class="ico" data-icone="file-text"></svg><span>La liste des pièces à préparer<small>adaptée à votre cas</small></span></li>
+  </ul>
+  <img class="telephone" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-images="sinistre" data-in="0.4" alt="">
+</section>
+
+<section class="scene" data-dur="7">
+  <img class="plein" data-images="pc_sinistre" data-in="0" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+  <div class="legende" data-in="0.6">
+    <p class="kicker">Suivre son dossier</p>
+    <h2 class="titre">Chaque étape est visible</h2>
+    <p>Déclaration, instruction, expertise, offre&nbsp;: chaque étape est datée, expliquée et mise à jour automatiquement.</p>
+  </div>
+</section>
+
+<section class="scene" data-dur="9">
+  <img class="plein" data-images="pc_agences" data-in="0" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+  <div class="legende" data-in="0.6">
+    <p class="kicker">Trouver une agence</p>
+    <h2 class="titre">59 agences dans 20 provinces</h2>
+    <p>Ouvertes ou fermées à l’heure locale, avec l’itinéraire, l’appel en un geste et la prise de rendez-vous en ligne.</p>
+  </div>
+</section>
+
+<section class="scene" data-dur="6">
+  <p class="kicker" data-in="0.2">Côté SONAS</p>
+  <h1 class="titre" style="max-width:640px; font-size:62px" data-in="0.4">Chaque dossier instruit en ligne</h1>
+  <ul class="liste" style="max-width:660px">
+    <li data-in="1.0"><svg class="ico" data-icone="list-checks"></svg><span>La file des dossiers en temps réel</span></li>
+    <li data-in="1.8"><svg class="ico" data-icone="users"></svg><span>L’assuré voit chaque étape</span></li>
+  </ul>
+  <div class="photo" data-in="0.6" data-a="right" style="right:110px; top:250px; width:960px; height:540px"><img class="zoom" data-images="pc_gestion" data-in="0.6" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=""></div>
+</section>
+
+<!-- Fin -->
+<section class="scene" data-dur="6" data-sans-entete>
+  <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:34px">
+    <img src="../../../../web/public/logo-sonas.png" style="height:170px" data-in="0.2" data-a="scale">
+    <h1 class="titre" style="font-size:88px; max-width:none" data-in="0.7">Avec la SONAS, c’est réglé.</h1>
+    <p class="lead" style="margin:0; font-size:34px" data-in="1.2">S’assurer · Payer · Vérifier · Déclarer · Suivre · Trouver une agence</p>
+    <p style="font-size:23px; color:var(--texte-3)" data-in="2.0" data-a="fade">Démonstration fonctionnelle · tarifs indicatifs en attente du barème SONAS</p>
+  </div>
+</section>
+
+<div id="progres"></div>
+<div id="compteur"></div>
+
+<script>
+  const FPS = 25;
+  const params = new URLSearchParams(location.search);
+  const CACHE = params.get("cache");
+  const scenes = [...document.querySelectorAll(".scene")];
+  let debut = 0;
+  for (const s of scenes) { s._debut = debut; s._duree = parseFloat(s.dataset.dur); debut += s._duree; }
+  const TOTAL = debut;
+  const entete = document.getElementById("entete");
+
+  const clamp = (x) => Math.max(0, Math.min(1, x));
+  const sortie = (x) => 1 - Math.pow(1 - clamp(x), 3);                 // ease-out cubique
+  const doux = (x) => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  const fr = (n, dec) => n.toLocaleString("fr-FR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+
+  function prete() {
+    return new Promise((ok, ko) => {
+      const s = document.createElement("script");
+      s.src = CACHE + "/donnees.js"; s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+    }).then(() => {
+      const D = window.DONNEES;
+      for (const el of document.querySelectorAll("[data-icone]")) {
+        el.setAttribute("viewBox", "0 0 24 24"); el.innerHTML = D.icones[el.dataset.icone] || "";
+      }
+      for (const el of document.querySelectorAll("[data-cache-src]")) el.src = CACHE + "/" + el.dataset.cacheSrc;
+      const carte = document.getElementById("carte") || document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      const ordre = [...D.carte.formes].sort((a, b) => b.agences - a.agences);
+      carte.innerHTML =
+        D.carte.formes.map((f) => `<path d="${f.d}" data-province="${f.code}" data-ag="${f.agences}" data-rang="${ordre.indexOf(f)}" fill="#E3E8ED" stroke="#FFFFFF" stroke-width="1.5"/>`).join("") +
+        D.carte.agences.map((a, i) => `<circle cx="${a.x}" cy="${a.y}" r="0" fill="#116A97" stroke="#FFFFFF" stroke-width="2" data-point="${i}"/>`).join("");
+      return document.fonts.ready;
+    });
+  }
+
+  function melange(a, b, t) {               // couleurs hexadécimales
+    const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const [x, y] = [p(a), p(b)];
+    return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(",")})`;
+  }
+
+  async function render(t) {
+    const attentes = [];
+    let active = null;
+    for (const s of scenes) {
+      const l = t - s._debut;
+      const visible = l >= 0 && l < s._duree;
+      s.style.display = visible ? "block" : "none";
+      if (!visible) continue;
+      active = s;
+      const op = Math.min(sortie(l / 0.45), 1 - clamp((l - (s._duree - 0.45)) / 0.45));
+      s.style.opacity = op;
+      for (const el of s.querySelectorAll("[data-in]")) {
+        const p = sortie((l - parseFloat(el.dataset.in)) / parseFloat(el.dataset.d || 0.7));
+        if (el.dataset.compte !== undefined) {
+          const v = parseFloat(el.dataset.compte) * doux((l - parseFloat(el.dataset.in)) / parseFloat(el.dataset.d || 1.2));
+          el.textContent = fr(v, parseInt(el.dataset.dec || 0));
+          continue;
+        }
+        if (el.dataset.barre !== undefined) {
+          const p2 = doux((l - parseFloat(el.dataset.in)) / parseFloat(el.dataset.d || 1.0));
+          el.style.width = (parseFloat(el.dataset.barre) / parseFloat(el.dataset.max) * 100 * p2) + "%";
+          continue;
+        }
+        if (el.dataset.images !== undefined) {
+          const dansCadre = el.parentElement.classList.contains("photo");   // le cadre porte déjà l'animation
+          el.style.opacity = dansCadre ? 1 : sortie((l - parseFloat(el.dataset.in)) / 0.5);
+          if (!dansCadre && !el.classList.contains("plein")) el.style.transform = `translateY(${(1 - sortie((l - parseFloat(el.dataset.in)) / 0.8)) * 60}px)`;
+          const listes = el.dataset.images.split(",");
+          let k = Math.max(0, Math.floor((l - parseFloat(el.dataset.in)) * FPS));
+          let nom = listes[0];
+          for (const n of listes) { const c = window.DONNEES.images[n]; nom = n; if (k < c) break; k = n === listes.at(-1) ? c - 1 : k - c; }
+          const src = `${CACHE}/images/${nom}/${String(k + 1).padStart(4, "0")}.jpg`;
+          if (el.dataset.src !== src) { el.dataset.src = src; el.src = src; attentes.push(el.decode().catch(() => {})); }
+          continue;
+        }
+        const a = el.dataset.a || "up";
+        el.style.opacity = a === "aucun" ? 1 : p;
+        el.style.transform =
+          a === "up" ? `translateY(${(1 - p) * 34}px)` :
+          a === "right" ? `translateX(${(1 - p) * 120}px)` :
+          a === "scale" ? `scale(${0.9 + 0.1 * p})` : "none";
+      }
+      const pano = s.querySelector("[data-panoramique]");
+      if (pano) pano.style.transform = `translateY(${-doux((l - 1.5) / (s._duree - 2)) * 260}px)`;
+      const carte = s.querySelector("#carte");
+      if (carte) {
+        for (const pth of carte.querySelectorAll("path")) {
+          const ag = +pth.dataset.ag;
+          const p = ag > 0 ? doux((l - 0.8 - +pth.dataset.rang * 0.08) / 0.45) : doux((l - 0.6) / 0.6);
+          pth.setAttribute("fill", ag > 0 ? melange("#E3E8ED", "#BFE0F2", p) : melange("#F5F7F9", "#E3E8ED", p));
+        }
+        for (const c of carte.querySelectorAll("circle")) {
+          const i = +c.dataset.point;
+          const p = clamp((l - 2.0 - i * 0.025) / 0.3);
+          const rebond = p < 1 ? Math.sin(p * Math.PI) * 4 + p * 7 : 7;
+          c.setAttribute("r", (p <= 0 ? 0 : rebond).toFixed(2));
+        }
+      }
+    }
+    entete.style.opacity = active && active.hasAttribute("data-sans-entete") ? 0 : (active ? active.style.opacity : 0);
+    document.getElementById("progres").style.width = (t / TOTAL * 100) + "%";
+    const n = scenes.indexOf(active) + 1;
+    document.getElementById("compteur").textContent = active && !active.hasAttribute("data-sans-entete") ? `${String(n).padStart(2, "0")} / ${scenes.length}` : "";
+    document.getElementById("compteur").style.opacity = entete.style.opacity;
+    await Promise.all(attentes);
+  }
+  window.MOTION = { prete, render, TOTAL, FPS };
+</script>
+</body>
+</html>

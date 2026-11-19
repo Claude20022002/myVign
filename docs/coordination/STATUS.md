@@ -3,6 +3,20 @@
 Mettre à jour à chaque fin de tâche. Le plus récent en haut de chaque section.
 Les commits et les push sont faits par l'utilisateur : les agents ne committent pas.
 
+## Marketing (B, à la demande de l'utilisateur)
+**2026-11-19 : dossier du film promotionnel « C'est réglé » livré dans `docs/marketing/`.**
+- 34 captures PC (3840×2160) et 33 captures mobiles (Chrome de l'émulateur Android `hestim_pixel`, Android 15 en fr-FR), scripts de reprise dans `docs/marketing/outils/`.
+- Inserts produit rendus (vrai site dans un téléphone, 16:9 et 9:16, 25 i/s) dans `docs/marketing/video-promo/inserts/`.
+- Benchmark, stratégie, storyboard 60/30/15/6 s, scripts ElevenLabs (Eleven v4), prompts Veo 3.1 / Kling 3.0, montage et livraison, 5 prompts Codex.
+- Skill local `.claude/skills/film-promo-ia/` (non versionné : `.claude/` est ignoré par git).
+- Aucun fichier de `web/` ni de `packages/` modifié. Les éléments de démo sont masqués au moment des captures seulement.
+- **2026-11-19 (suite)** : présentation animée pour les équipes SONAS (`docs/marketing/video-promo/rendus/presentation_sonas_motion.mp4`, 1 min 48, chiffres de l'étude de marché, rendu image par image depuis `docs/marketing/outils/motion/`), guide de production pas à pas et prompts Codex A, B, C (`08-guide-production.md`).
+- **2026-11-19 (v2)** : demande de l'utilisateur. Plus aucune mention du nom du dépôt dans les contenus ; appareils réels (cadre Pixel 8 de l'AOSP, photo de portable sous licence Burst) au lieu des appareils dessinés ; vues PC ajoutées (captures `captures/laptop/`, inserts `pc_*`). Les versions précédentes sont archivées dans `docs/marketing/video-promo/archives/`. ⚠️ Le site affiche encore « myVign » à 3 endroits (`web/src/components/site/entete.tsx`, `pied.tsx`, `app/(site)/mentions-legales/page.tsx`) : masqués dans les captures, non modifiés dans le code.
+- **2026-11-19 (v3)** : présentation v2 archivée (`archives/v2_2026-11-19/`) ; copie avec musique douce composée par programme (`presentation_sonas_motion_musique.mp4`, −26 dB RMS) ; nouvelle vidéo de présentation du site (`site_sonas_en_ligne.mp4` + `_musique.mp4`, 1 min 15, `docs/marketing/video-promo/10-video-site.md`).
+- **2026-11-19 (v4)** : voix off française générée dans ElevenLabs (voix « Paul K — Deep French Narrator », Eleven v4, offre gratuite) en pilotant une fenêtre Edge dédiée ; 24 répliques dans `docs/marketing/video-promo/voix/` ; vidéos `presentation_sonas_motion_voix.mp4` et `site_sonas_en_ligne_voix.mp4` (voix + musique douce). Scripts : `outils/voix_elevenlabs.py`, `outils/mixer_voix.py`.
+- **2026-11-19 (v5)** : voix off refaite avec « Adina » (voix française, demande de l'utilisateur) et textes réécrits avec des liaisons ; versions Paul K et essais archivés (`archives/v3_…`, `archives/v4_…`). Correctif du script : un seul bloc de voix, texte vérifié avant chaque génération.
+- **À décider par l'utilisateur ou la SONAS** : signature, voix (clonage d'un comédien de Kinshasa recommandé), musique originale, mentions légales, accords des opérateurs mobile money et de la police de circulation.
+
 ## Partie B : domaine et plateforme
 **2026-11-14 : B reprend aussi le front (demande de l'utilisateur, agent A inactif). Démo complète livrée.**
 - `web/` intégré au workspace pnpm (`@myvign/web`, `package-lock.json` supprimé) ; `pnpm dev` lance le site **et** l'API simulée.
